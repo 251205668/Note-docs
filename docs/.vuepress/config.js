@@ -1,6 +1,7 @@
 module.exports = {
   title: '前端面试知识总结',
   description: '自家使用,暂不外传',
+  bashL:'/blog/',
   locales: {
     '/': {
       lang: 'ZH',
@@ -23,7 +24,7 @@ module.exports = {
       }
     ]
   ],
-  dest: './docs/.vuepress/dist',
+  dest: '/docs/.vuepress/dist',
   evergreen: true,
   // 配置导航
   themeConfig: {
