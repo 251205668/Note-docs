@@ -24,7 +24,7 @@ module.exports = {
       }
     ]
   ],
-  dest: '/docs/.vuepress/dist',
+  dest: './docs/.vuepress/dist',
   evergreen: true,
   // 配置导航
   themeConfig: {

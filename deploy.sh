@@ -13,4 +13,4 @@ git init
 git add -A
 git commit -m 'deploy'
 
-git push -f https://gitee.com/wohenpi0918/blog.git master
+git push -f git@47.97.180.232:/home/git/repos/blog.git master 
