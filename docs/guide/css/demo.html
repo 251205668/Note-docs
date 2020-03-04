@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .color{
+      background-color: #409EFF;
+      position: relative;
+      width: 300px;
+      height: 115px;
+      border-radius: 4px;
+      color:#ffffff;
+      margin-left: 20px;
+    }
+    .text{
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .title{
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    .color-title{
+      font-size: 12px;
+      line-height: 24px;
+      opacity: .65;
+    }
+    .color-item{
+      position: absolute;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
+      height: 40px;
+      display: flex;
+    }
+    .color-item div{
+      flex: 1;
+      height: 40px;
+    }
+    h1{
+      margin: 20px 20px;
+    }
+    .button{
+      display: inline-block;
+      padding: 12px 20px;
+      text-align: center;
+      line-height: 1;
+      background: #fff;
+      border: 1px solid #dcdfed;
+      outline: none;
+      transition: .1s;
+      margin-left: 20px;
+      font-weight: 500;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    button:nth-of-type(2){
+      background-color: #67c23a;
+    }
+    button:nth-of-type(2):hover{
+      color: #fff;
+      border-color: #85ce61;
+      background-color: #85ce61;
+      cursor: pointer;
+    }
+    .button:hover{
+      color: #409EFF;
+      border-color: #c6e2ff;
+      background-color: #ecf5ff;
+      cursor: pointer;
+    }
+    
+    .button:focus{
+      color: #409EFF;
+      border-color: #409EFF;
+      background-color: #ecf5ff;
+      cursor: pointer;
+    }
+    .el-link{
+      margin-left: 20px;
+      display: inline-flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0;
+      outline: 0;
+      color: #333333;
+    }
+    a:hover:after{
+      content: " ";
+      position: absolute;
+      height: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-bottom: 1px solid #409EFF;
+    }
+    .el-link span:hover{
+      color: #409EFF
+    }
+    .el-input{
+      margin-left: 20px;
+      display: inline-block;
+      height: 40px;
+      line-height: 40px;
+      color: #606266;
+      border: 1px solid #dcdfed;
+      outline: none;
+      padding: 0 12px;
+      font-size: 14px;
+      border-radius: 4px;
+      transition: border .2s;
+    }
+    .el-input:focus{
+      border-color: #409EFF;
+    }
+    .switch{
+      margin-left: 20px;
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+      background-color: #409EFF;
+      border: 1px solid #409EFF;
+      border-radius: 10px;
+      outline: none;
+      transition: .3s;
+    }
+    .switch:hover{
+      background-color: #dcdfed;
+      border: none;
+    }
+    .switch:after{
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background-color: #ffffff;
+      left: 100%;
+      margin-left: -17px;
+      top: 1px;
+      border-radius: 50%;
+      transition: .2s;
+    }
+    .switch:hover:after{
+      position: absolute;
+      left: 17px;
+    }
+    .box{
+      display: inline-block;
+      margin-left: 20px;
+      height: 40px;
+      background-color:#ffffff;
+      text-align: center;
+      padding: 0 12px;
+      line-height: 40px;
+      font-size: 14px;
+      font-weight: 500;
+      outline: none;
+      border: 1px solid #dcdfed;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>颜色</h1>
+  <div class="color">
+    <div class="text">
+      <div class="title">Brand Color</div>
+      <div class="color-title">#409EFF</div>
+    </div>
+    <div class="color-item">
+      <div class="item1" style="background-color: rgb(83,168,255);"></div>
+      <div class="item2" style="background: rgb(102, 177, 255);"></div>
+      <div class="item3" style="background: rgb(121, 187, 255);"></div>
+      <div class="item4" style="background: rgb(140, 197, 255);"></div>
+      <div class="item5" style="background: rgb(160, 197, 255);"></div>
+      <div class="item6" style="background: rgb(180, 197, 255);"></div>
+      <div class="item7" style="background: rgb(200, 197, 255);"></div>
+      <div class="item8" style="background: rgb(220, 197, 255);"></div>
+      <div class="item9" style="background: rgb(240, 197, 255);"></div>
+    </div>
+  </div>
+
+  <h1>按钮</h1>
+  <button type="button" class="button">
+    默认按钮
+  </button>
+  <button type="button" class="button">
+    成功按钮
+  </button>
+  <h1>链接</h1>
+  <a href="#" class="el-link">
+    <span >主要链接</span>
+  </a>
+<h1>输入框</h1>
+<input type="text" class="el-input" placeholder="输入框">
+<h1>开关</h1>
+<div class="switch"></div>
+</body>
+
+</html>
