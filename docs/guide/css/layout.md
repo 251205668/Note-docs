@@ -192,7 +192,7 @@
       bottom 0
   ```
 6. flex
-    
+ 
     ```stylus
       .parent
         display flex
