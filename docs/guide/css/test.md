@@ -1,3 +1,5 @@
+# 移动端问题
+![https://user-gold-cdn.xitu.io/2019/12/18/16f1703193bfc0fe?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1](https://user-gold-cdn.xitu.io/2019/12/18/16f1703193bfc0fe?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1)
 ## h5回顾
 
 **常见的meta标签写法:**
@@ -28,6 +30,7 @@
 
 ## 常用属性
 
+参考[笔记](https://251205668.github.io/about/workclass.html#css%E6%98%93%E9%94%99%E5%A4%8D%E4%B9%A0)
 
 ## 适配移动端响应式
 1. 设置meta标签

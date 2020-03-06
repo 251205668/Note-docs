@@ -230,6 +230,7 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
       collapsable: false,
       children: [
         '/guide/css/test.md',
+        '/guide/css/layout.md'
       ]
     },
     {

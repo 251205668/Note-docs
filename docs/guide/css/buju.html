@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+  *{
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+  }
+  h1{
+    margin-left: 20px;
+  }
+  h2{
+    width: 200px;
+    margin: 0 auto;
+  }
+  .demo1{
+    padding: 20px;
+    min-width: 310px;
+  }
+  .demo1 .left{
+    float: left;
+    background-color: aqua;
+    height: 500px;
+    width: 200px;
+  }
+  .demo1 .right{
+    left:200px;
+    height: 500px;
+    background-color: #cccccc;
+  }
+  .title{
+    margin-top: 20px;
+    padding-left: 30px;
+    margin-left: 10px;
+    border-left: 5px solid black;
+    font-size: 20px;
+    line-height: 26px;
+  }
+  .demo1 .right1{
+    overflow: hidden;
+    height: 500px;
+    background-color: #cccccc;
+  }
+  .demo1 .tleft{
+    float:left;
+    width: 100px;
+    margin-right: 10px;
+    height: 500px;
+    background-color: aqua;
+  }
+  .demo1 .tcenter{
+    float: left;
+    width: 200px;
+    margin-right: 10px;
+    height: 500px;
+    background-color:#cccccc;
+  }
+  .demo1 .tright{
+   overflow: hidden;
+   height: 500px;
+   background-color: blueviolet;
+  }
+  .header{
+    height: 60px;
+    background-color: #cccccc;
+  }
+  .left2{
+    float: left;
+    width: 100px;
+    height: 500px;
+    background-color: aqua;
+    margin-left: -100%;
+    z-index: 999;
+  }
+  .center2{
+    float: left;
+    width: 100%;
+    height: 500px;
+  
+  }
+  .center-box{
+    height: 500px;
+    margin: 0 220px 0 130px;
+    background-color: rebeccapurple;
+  }
+  .right2{
+    float: left;
+    width: 200px;
+    height: 500px;
+    background-color: blue;
+    margin-left: -200px;
+  }
+  .footer{
+    clear: both;
+    height: 60px;
+    background-color: black;
+  }
+  </style>
+</head>
+
+<body>
+<h2>常见布局</h2>
+<h1>两列布局</h1>
+<div class="title">float实现</div>
+<div class="demo1">
+<div class="left"></div>
+<div class="right"></div>
+</div>
+
+<div class="title">float + overflow</div>
+<div class="demo1">
+<div class="left"></div>
+<div class="right1"></div>
+</div>
+<h1>三列布局</h1>
+<div class="title"></div>
+<div class="demo1">
+  <div class="tleft"></div>
+  <div class="tcenter"></div>
+  <div class="tright"></div>
+</div>
+<h1>双飞翼布局</h1>
+<div class="header"></div>
+<div class="parent">
+  <div class="center2">
+    <div class="center-box"></div>
+  </div>
+  <div class="left2"></div>
+<div class="right2"></div>
+</div>
+<div class="footer"></div>
+</body>
+
+</html>

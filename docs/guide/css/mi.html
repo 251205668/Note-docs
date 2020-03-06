@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    /*-------------------抽取公共样式-----------------*/
+* { /*为了方便,就这样清空默认样式了*/
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+}
+body {
+    background-color: #f5f5f5;
+}
+.container {  /*水平居中的内容盒子*/
+    width: 1226px;
+    height: 100%;
+    margin: 0 auto;
+    border: 1px solid #f00;
+}
+.common-title {
+    height: 58px;
+    background-color: #000;
+}
+.fl {float: left;}
+.fr {float: right;}
+.recommend-right,
+.flashsale-content,
+.phone-right > li,
+.household-content > li:last-child > p,
+.video-content > li,
+.links-left > ul li,
+.footer,
+.info-left,
+.info-right {border: 1px solid #000;}  /*添加边框样式只是为了方便观察,不是布局必须,可删*/
+
+
+/*-----header部分-----*/
+.header {
+    margin-bottom: 20px;
+    height: 40px;
+    background-color: #333;
+}
+.header-left {
+    width: 380px;
+    height: 100%;
+    background-color: #0f0;
+}
+.header-rigth {
+    width: 260px;
+    height: 100%;
+    background-color: #0f0;
+}
+
+
+/*--------top部分--------*/
+.top {
+    /*height: 1210px;*/
+    background-color: #fff;
+}
+.top-nav {
+    height: 100px;
+    background-color: #f00;
+}
+.top-slider {
+    margin-bottom: 14px;
+    position: relative; /*父相*/
+    height: 460px;
+    background-color: #00f;
+}
+.slider-navbar {
+    position: absolute; /*子绝*/
+    top: 0;
+    left: 0;
+    width: 234px;
+    height: 100%;
+    background-color: black;
+    opacity: .5;
+}
+.top-recommend {
+    margin-bottom: 26px;
+    height: 170px;
+    background-color: #0f0;
+}
+.recommend-left {
+    height: 100%;
+    width: 234px;
+    background-color: skyblue;
+}
+.recommend-right {
+    width: 978px;
+    height: 100%;
+}
+.recommend-right > ul {height: 100%;}
+.recommend-right > ul li {
+    float: left; /*三列等宽,浮动布局*/
+    width: 316px;
+    height: 100%;
+    background-color: deepskyblue;
+}
+.recommend-right > ul li + li { margin-left: 14px;}  /*设置浮动间隔*/
+.top-flashsale {
+    height: 438px;
+    background-color: #ff4455;
+}
+.flashsale-content {
+    padding-bottom: 40px;
+    height: 380px;
+}
+.content-timer {
+    margin-right: 14px;
+    width: 234px;
+    height: 100%;
+    background-color: #fff;
+}
+.content-shops {
+    overflow: hidden; /*触发bfc,以达到自适应*/
+    height: 100%;
+    background-color: #6effb1;
+}
+.content-shops > li {
+    float: left; /*四列等宽,浮动布局*/
+    width: 234px;
+    height: 100%;
+    background-color: #fff;
+}
+.content-shops > li + li {margin-left: 12.5px;}  /*设置浮动间隔*/
+
+
+/*--------center部分--------*/
+.module-box {  /*类似的模块*/
+    margin-bottom: 8px;
+    height: 686px;
+}
+.center {
+    margin: 0 auto;
+    margin-bottom: 60px;
+    padding-top: 60px;
+    width: 1226px;
+    /*height: 1791px;*/
+    background-color: #fff;
+}
+.center-phone {background-color: yellow;}
+.phone-content {
+    height: 628px;
+    background-color: pink;
+}
+.phone-left {
+    width: 234px;
+    height: 100%;
+    background-color: darkseagreen;
+}
+.phone-right {
+    overflow: hidden; /*触发bfc以达到自适应*/
+    height: 100%;
+    background-color: #ccc;
+}
+.phone-right > li {
+    margin-bottom: 28px; /*设置下边距*/
+    padding-left: 14px; /*用padding模拟盒子间隔*/
+    float: left; /*四列等宽,浮动布局*/
+    width: 25%;
+    height: 300px;
+    background-color: #f00;
+    background-clip: content-box; /*背景色从content开始绘起*/
+}
+.center-household {background-color: yellow;}
+.household-content {height: 614px;}
+.household-content > li {
+    position: relative; /*父相*/
+    margin-left: 14px; /*设置浮动间隔*/
+    margin-bottom: 28px; /*设置下边距*/
+    float: left; /*五列等宽,浮动布局*/
+    width: 234px;
+    height: 300px;
+    background-color: #d7d7d7;
+}
+.household-content > li:nth-child(1),
+.household-content > li:nth-child(6) {margin-left: 0; }  /*消除每行第一个的间隔*/
+.household-content > li:last-child p:first-child {
+    position: absolute; /*子绝*/
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 143px;
+}
+.household-content > li:last-child p:last-child {
+    position: absolute; /*子绝*/
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 143px;
+}
+.center-video {
+    height: 343px;
+    background-color: pink;
+}
+.video-content {height: 285px;}
+.video-content > li {
+    float: left; /*四列等宽,浮动布局*/
+    width: 296px;
+    height: 100%;
+}
+.video-content > li + li {margin-left: 14px; }   /*设定浮动间隔*/
+
+
+/*--------bottom部分--------*/
+.bottom {
+    /*height: 274px;*/
+    background-color: #fff;
+}
+.bottom-service {
+    height: 80px;
+    background-color: seagreen;
+}
+.bottom-service > ul {height: 100%;}
+.bottom-service > ul li {
+    position: relative; /*父相*/
+    padding: 0 50px; /*用padding模拟盒子间隔*/
+    float: left; /*五列等宽,浮动布局*/
+    width: 20%;
+    height: 100%;
+    background-color: goldenrod;
+    background-clip: content-box; /*背景色从content开始绘起*/
+}
+.bottom-service > ul li + li::before { /*用伪元素模拟分割线*/
+    position: absolute; /*子绝*/
+    top: 28px;
+    left: 0;
+    content: ''; /*伪元素必须有content*/
+    width: 1px;
+    height: 24px;
+    background-color: #999;
+}
+.bottom-links {
+    height: 192px;
+    background-color: #8545e0;
+}
+.links-left {
+    width: 960px;
+    height: 100%;
+    background-color: yellow;
+}
+.links-left > ul {height: 100%;}
+.links-left > ul li {
+    padding-right: 60px;
+    float: left; /*六列等宽,浮动布局*/
+    width: 16.666666666666667%;
+    height: 100%;
+    background-color: #ff0000;
+    background-clip: content-box; /*背景色从content开始绘起*/
+}
+.links-right {
+    width: 252px;
+    height: 100%;
+    background-color: yellow;
+}
+
+
+/*--------footer部分---------*/
+.footer {
+    margin: 0 auto;
+    padding: 30px 0;
+    width: 1226px;
+    height: 166px;
+}
+.footer-info {
+    height: 57px;
+    background-color: #6effb1;
+}
+.info-left {
+    width: 630px;
+    height: 100%;
+}
+.info-right {
+    width: 436px;
+    height: 100%;
+}
+.footer-slogan {
+    margin-top: 30px;
+    height: 19px;
+    background-color: #8545e0;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="header">
+      <div class="container">
+          <div class="header-left fl"></div>
+          <div class="header-rigth fr"></div>
+      </div>
+  </div>
+  <div class="top">
+      <div class="container">
+          <div class="top-nav"></div>
+          <div class="top-slider">
+              <div class="slider-navbar"></div>
+          </div>
+          <div class="top-recommend">
+              <div class="recommend-left fl"></div>
+              <div class="recommend-right fr">
+                  <ul>
+                      <li></li>
+                      <li></li>
+                      <li></li>
+                  </ul>
+              </div>
+          </div>
+          <div class="top-flashsale">
+              <div class="flashsale-title common-title"></div>
+              <div class="flashsale-content">
+                  <div class="content-timer fl"></div>
+                  <ul class="content-shops">
+                      <li></li>
+                      <li></li>
+                      <li></li>
+                      <li></li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="center">
+      <div class="center-phone module-box">
+          <div class="phone-title common-title"></div>
+          <div class="phone-content">
+              <div class="phone-left fl"></div>
+              <ul class="phone-right">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+              </ul>
+          </div>
+      </div>
+  
+      <div class="center-household module-box">
+          <div class="household-title common-title"></div>
+          <div class="household-content">
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li>
+                  <p></p>
+                  <p></p>
+              </li>
+          </div>
+      </div>
+  
+      <div class="center-video">
+          <div class="video-title common-title"></div>
+          <ul class="video-content">
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+          </ul>
+      </div>
+  </div>
+  <div class="bottom">
+      <div class="container">
+          <div class="bottom-service">
+              <ul>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+                  <li></li>
+              </ul>
+          </div>
+          <div class="bottom-links">
+              <div class="links-left fl">
+                  <ul>
+                      <li></li>
+                      <li></li>
+                      <li></li>
+                      <li></li>
+                      <li></li>
+                      <li></li>
+                  </ul>
+              </div>
+              <div class="links-right fr"></div>
+          </div>
+      </div>
+  </div>
+  <div class="footer">
+      <div class="footer-info">
+          <div class="info-left fl"></div>
+          <div class="info-right fr"></div>
+      </div>
+      <div class="footer-slogan"></div>
+  </div>
+  </body>
+
+
+</html>
