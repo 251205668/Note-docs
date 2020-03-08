@@ -192,6 +192,111 @@
     .parentx span{
       display: inline;
     }
+    .item{
+      display: flex;
+      margin-left: 20px;
+      flex-direction: column;
+      width: 230px;
+      height:300px;
+      align-items: center;
+      transition: all .3s linear;
+
+    }
+    .image-wrapper{
+      margin-top: 20px;
+    }
+    .image-wrapper img {
+      display: block;
+    }
+    .title{
+      margin-top: 18px;
+      font-size: 14px;
+      line-height: 21px;
+    }
+    .sub-title{
+      margin-top: 3px;
+      font-size: 12px;
+      color:#B0B0B0;
+      line-height: 18px;
+    }
+    .price{
+      margin-top: 10px;
+      font-size: 14px;
+      color:#FF6700;
+
+    }
+    .item:hover{
+      box-shadow: 0px 4px 8px #0000001f;
+      transform: translate3d(0,-3px,0);
+    }
+    .item-text{
+      margin-left: 20px;
+      width: 476px;
+      height: 76px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      font-size: 14px;
+      color:#545c63;
+      line-height: 28px;
+      transition: all .1s linear;
+      -webkit-transition: all .1s linear;
+    }
+    .item-text:hover{
+      background-color: #fff;
+      height: auto;
+      min-height: 84px;
+      z-index: 5;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 8px 16px rgba(7,17,27,.2);
+      -webkit-line-clamp: inherit;
+    }
+    .ractangle{
+      width: 0;
+      height: 0;
+      border-width: 100px;
+      border-style: solid;
+    }
+    .left{
+      border-color: transparent pink transparent transparent;
+      }
+      .els-input{
+        margin-left: 20px;
+        display: inline-block;
+        height: 50px;
+        line-height: 50px;
+        color: #606266;
+        border: 1px solid #dcdfed;
+        outline: none;
+        padding: 0 15px;
+        font-size: 13px;
+        border-radius: 4px;
+        transition: all .2s;
+      }
+      .input-wrapper{
+        position: relative;
+      }
+      .label{
+        position: absolute;
+        font-size: 13px;
+        left: 35px;
+        top: 18px;
+        transition: all .2s;
+      }
+      .els-input:focus{
+        border:1px solid #409EFF;
+
+      }
+      .els-input:focus + .label{
+          top:5px;
+          left: 25px;
+          font-size: 10px;
+          font-weight: 600;
+          opacity: 1;
+      }
   </style>
 </head>
 
@@ -237,6 +342,28 @@
 </div>
 <div class="parentx">
   <span>多行文本多行文本多行文本多行文本多行文本多行文本多行文本多行文本多行文本多行文本多行文本多行文本</span>
+</div>
+
+<div class="item">
+  <div class="image-wrapper">
+    <img width="160px" height="160px" src="https://image.yangxiansheng.top/img/undraw_tailwind_css_1egw.png?imagelist" alt=""/>
+  </div>
+  <div class="title">小米10</div>
+  <div class="sub-title">晓龙865/1亿像素相机</div>
+  <div class="price">3999元起</div>
+</div>
+
+<div class="item-text">
+  授课形式是录播+直播+讨论+练习+资料+答疑。录播是课程主体内容，直播是围绕“实际工作场景问题”内容，提升解决问题能力；讨论是在课程群中，与老师和小伙伴一起交流，定期组织“和工作相关的问题”，进行讨论；课程中设计了练习题，帮助验证学习效果；随课资料，让大家学习更顺畅；专业的老师帮助解答学习过程中的疑问，学习畅通又无忧。 祝您学习愉快~
+</div>
+
+<div class="ractangle left">
+
+</div>
+
+<div class="input-wrapper">
+  <input name="text" type="text" class="els-input">
+  <label for="text" class="label">姓名</label>
 </div>
 </body>
 
