@@ -35,6 +35,14 @@
     }
     console.log(time,inteval,timer)
     console.log(dayjs(326000).format('mm:ss'))
+
+    var type = function(data) {
+      var toString =Object.prototype.toString
+      var dataType = toString.call(data).replace(/\[object\s(.+)\]/,'$1').toLowerCase()
+      return dataType
+    }
+
+    console.log(type(new Map()))
   </script>
 </body>
 

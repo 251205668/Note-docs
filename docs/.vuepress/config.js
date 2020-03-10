@@ -230,21 +230,25 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
       collapsable: false,
       children: [
         '/guide/css/test.md',
-        '/guide/css/layout.md'
+        '/guide/css/layout.md',
+        '/guide/css/alwaysCode.md',
+        '/guide/css/iconfont.md',
+        '/guide/css/css-skill.md',
+        '/guide/css/code.md'
       ]
     },
     {
       title: groupB,
       collapsable: false,
       children: [
-        '/guide/js/test.md'
+        '/guide/js/base.md'
       ]
     },
     {
       title: groupC,
       collapsable: false,
       children: [
-        '/guide/js/test.md'
+        '/guide/js/higher.md'
       ]
     },
     {
