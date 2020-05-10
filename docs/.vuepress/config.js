@@ -96,7 +96,7 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
     {
       title: groupD,
       collapsable: false,
-      children: ['/guide/vue/test.md']
+      children: ['/guide/vue/vue.md']
     },
     {
       title: groupE,
@@ -106,7 +106,7 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
     {
       title: groupF,
       collapsable: true,
-      children: ['/guide/node/koa.md']
+      children: ['/guide/node/koa.md',"/guide/node/springboot.md"]
     },
     {
       title: groupG,
