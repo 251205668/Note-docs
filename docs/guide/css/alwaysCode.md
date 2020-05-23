@@ -217,6 +217,7 @@ white-sapce nowrap
 
 ```stylus
 display -webkit-box
+-webkit-box-orient: vertical;
 -wekit-line-clamp n
 text-overflow ellpisis
 overflow hidden
