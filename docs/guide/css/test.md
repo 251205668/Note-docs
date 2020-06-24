@@ -44,7 +44,3 @@
 
 4. rem(相对html的`font-size`大小)，常用的方法是配合媒体查询去改变html的font-size,
 
-
-// todo:jstodo:  常用js表单验证 正则表达式 vue表单验证 js视频学习(ES6-ES10 js基础面试 js高级面试) chrome标签经典代码练习(日常练习) js数据结构算法 文档记录 
-
-// todo:csstodo: **手写element常用组件代码**, 掘金经典布局手写代码,之前记得笔记经常复习使用 css动画掘金加上使用animate.css 移动端适配原理尺寸 吃透移动端响应式布局  css知识梳理  练习:灵活使用css技巧 30scode boostrap网站练习(练习一两个网站) 

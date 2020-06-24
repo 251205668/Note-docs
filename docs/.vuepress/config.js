@@ -24,10 +24,19 @@ module.exports = {
           {
             text: '指南',
             link: '/guide/'
+          },
+          {
+            text: '项目',
+            items:[
+              {
+                text:"大型电商",
+                link:"/project/shop/"
+              }
+            ]
           }
         ],
         lastUpdated: 'Last update',
-        sidebarDepth: 2,
+        sidebarDepth: 3,
         sidebar: {
           '/guide/': getGuideSidebar(
             '目录',
@@ -38,6 +47,15 @@ module.exports = {
             "Webpack实战分析",
             "Node.js基础到进阶",
             "面试题总结"
+          ),
+          '/project/shop/': getPShopSlideBar(
+            '介绍',
+            'SPU、SKU',
+            '封装请求',
+            '购物车',
+            '优惠券',
+            "订单",
+            "其他技巧"
           )
       }
     },
@@ -115,4 +133,53 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
     }
   ]
 }
+
+function getPShopSlideBar(group,groupA, groupB, groupC,groupD,groupE,groupF) {
+  return [
+    {
+      title: group,
+      collapsable: false,
+      children: [
+        '',
+      ]
+    },
+    {
+      title: groupA,
+      collapsable: false,
+      children: [
+        '/project/shop/md/sku.md',
+      ]
+    },
+    {
+      title: groupB,
+      collapsable: false,
+      children: [
+        '/project/shop/md/request.md'
+      ]
+    },
+    {
+      title: groupC,
+      collapsable: false,
+      children: [
+        '/project/shop/md/cart.md'
+      ]
+    },
+    {
+      title: groupD,
+      collapsable: false,
+      children: ['/project/shop/md/coupon.md']
+    },
+    {
+      title: groupE,
+      collapsable: false,
+      children: ['/project/shop/md/order.md']
+    },
+    {
+      title: groupF,
+      collapsable: false,
+      children: ['/project/shop/md/skill.md']
+    }
+  ]
+}
+
 
