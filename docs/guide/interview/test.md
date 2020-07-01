@@ -1,299 +1,167 @@
-## GIT常见命令大全
+## JS基础
 
-### [git命令大全](https://image.yangxiansheng.top/img/git命令大全.jpg?imagelist)
+### 引用类型和值类型
 
-![](https://image.yangxiansheng.top/img/git命令大全.jpg?imagelist)
-### [linux命令大全](https://image.yangxiansheng.top/img/linux命令.jfif?imagelist)
+js中创建的赋值方式分为`引用类型`和`值类型`,引用类型能够保持状态不改变。
 
-![](https://image.yangxiansheng.top/img/linux命令.jfif?imagelist)
+常见出现形式:
 
-## git初始化配置
-1. 设置git仓库的用户名，email
-
-```bash
-git config  -- global user.name 'yourname'
-git config  -- global user.email 'youremail'
+**值类型**
+```js
+let a = 100
+let b = a
+// b=100
 ```
-还可以配置本地的用户名，email ，**本地的用户名密码权重比全局要高**，当初始化完成，本项目的用户名邮箱会做本更
+常见的值类型包括字符串,布尔型,数值型
+![](https://image.yangxiansheng.top/img/20200701122432.png?imagelist)
 
-```bash
-git config --local user.name ''
-git config --local user.email ''
+**引用类型**
+```js
+let a = {age:100}
+let b = a
+b.age = 200
+// a= {age:200}
 ```
+![](https://image.yangxiansheng.top/img/20200701122443.png?imagelist)
 
-查看当前用户的配置信息
+**常见的引用类型包含对象,数组空值等**
 
-```bash
-git config --list --local or --lobal
-```
-打印结果:
+![](https://image.yangxiansheng.top/img/20200701143535.png?imagelist)
 
-![](https://image.yangxiansheng.top/img/git1.png?imagelist)
-2. 初始化一个git仓库的命令
+可见引用类型和值类型二者的区分,引用类型一但赋值之后`b`发生改变,`a`也发生改变。这是因为**用堆栈的角度分析,引用类型栈:key:a,value:内存地址,堆:key:内存地址,value:值,当a赋值给b,堆的值发生改变,内存地址是不变的,相应的b的值也会发生改变。而值类型则不同,他只是栈类型，值发生改变，key是不同的,值发生改变。**
 
-```bash
-cd project
-git init
+### typeof运算符
 
-or 
+**typeof**作用
 
-git init myproject
-```
+- 识别所有的`值类型`
+- 函数
+- 还能判断是不是引用类型。
 
-3. 配置免密ssh
+![](https://image.yangxiansheng.top/img/20200701144028.png?imagelist)
 
-:::tip
-
-配置公私钥，如果已经配置过ssh key需要备份
-:::
-```bash
-cd ~/.ssh
-mkdir key_backup
-cp id_rs a*key_backup
-```
+::: danger
+`typeof`并不能完全识别引用类型,他只能判断是否是引用类型，不能继续识别
 :::
 
-**生成sshkey**
-```bash
-$ ssh-keygen -t rsa C "251205668@qq.com"  需要输入密码 生成的公钥私钥会放在.ssh文件下
+![20200701144130.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701144130.png)
 
-公钥.pub文件粘贴进github网站key
+### 深拷贝
+
+深拷贝步骤分为: 1.保证类型为数组和对象 2.确定返回值 3.递归赋值
+
+```js
+let obj1 = {
+  name:"121",
+  address:"xxxx",
+  array:['a','b','c'],
+  obja:{
+    a:{
+      b:"1213"
+    }
+  }
+}
+// 浅拷贝
+let obj2 = obj1
+obj2.name="浅拷贝"
+console.log(obj1.name) // 浅拷贝
+
+// 深拷贝
+let obj2 = deepClone(obj1)
+obj2.name = "深拷贝"
+console.log(obj1.name)
+
+/**
+ *  手写深拷贝 三个步骤: 1.判断类型 2.确定返回值 3.递归赋值
+ * @param {Object} obj 
+ */
+function deepClone(obj = {}){
+  // 保证是数组或对象
+  if(typeof obj !== 'object' || obj === null){
+    return obj
+  }
+  // 确定返回值
+  let result 
+  if(obj instanceof Array){
+    result = []
+  }else{
+    result = {}
+  }
+  // 递归赋值 属性必须不是原型拥有
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+        // 递归保证深层结构赋值
+        result[key] = deepClone(obj[key])
+    }
+  }
+  return result
+
+}
 ```
-连接github 
+### 变量计算-类型转换
 
-```
-$ ssh git@github.com   --连接成功后显示
-```
-![](https://image.yangxiansheng.top/img/QQ截图20200228140352.png?imagelist)
-4. .git文件目录
+通常来说,两个等号会尽量保证类型相同,所以会进行类型转换。
 
-```bash
----HEAD   告诉我们git当前所处分支
----config 记录user信息
----refs   记录分支信息和标签信息
+![20200701152908.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701152908.png)
 
-```
-## git常见提交命令
-- 首次提交
+**两个等号的唯一使用场景**: 判断对象属性是否为`null`,其他情况全部使用`===`
 
-```bash
-git init 
-git add .
-git commit -a -m 'deploy'
-git remote add origin 'responity path'
-git pull
-git push -u origin master
-```
+```js
+const obj = {age:10}
+// 这句等同于  obj.a === 'undefined' || obj.a === null
+if(obj.a == null){
 
-- 最简单的提交方式
-
-```bash
-git pull
-git add . (. -u -A 都是处理全部的变更 +filename是对单文件或多文件的变更处理)
-git commit -m 'deploy' (此处不能出现变更文件名)
-git push origin master 当前分支推送远程仓库master
-```
-- 更换分支常规的提交
-
-```bash
-远程仓库新建分支
-
-git pull
-git checkout test
-git add -A
-git commit -m 'deploy'
-git checkout master 
-git merge origin/test
-git push -u origin master -u第一次推送，后面省去
-
-推送分支进远程分支不是主分支的话 要合并起来 不然会警告
-
-```
-
-## git比较常用的命令
-> 文件操作
-
-```bash
-git mv file1 flie2 --重命名文件file1，git自动add
-
-git rm fileName    --删除文件,自动add进暂存
-
-```
-
-> git状态显示
-
-```bash
-git status  查看当前分支信息和变更情况
-git log     查看当前分支的版本commit情况
-git log -1  查看第一条commit的情况
-git reflog  显示当前分支的最近几次提交
-git show <commit>:<filename>  显示某次提交时，某个文件的内容
-git show <commit>  显示某次提交的元数据和内容变化
-git show --name-only <commit>  显示某次提交发生变化的文件
-
+}
 ```
 
-> 分支操作
+`truly`变量和`falsly`变量,常见的有:
 
-```bash
-git branch -av 列出所有分支有具体commit信息
-git branch -r 列出远程分支名
-git branch branchname  基于当前分支创建分支
+![20200701153829.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701153829.png)
 
-重命名本地分支
-git branch -m <old-name> <new-name>
+使用场景经常为逻辑运算符
 
-删除分支
-git branch -d <name> # 删除分支
-git branch -D <name> # 强制删除分支
-删除远程分支(先在本地删除该分支)，原理是把一个空分支push到server上，相当于删除该分支。
-git push origin :<name>
+```js
+console.log('' && 'abc') // ''
+console.log(10 || 0) // 0
+```
+### 原型和原型链
 
+![20200701161415.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701161415.png)
 
-git checkout branchName  切换到该分支
-git checkout -b branchName master 基于master分支创建分支，并切换到该分支
+**类型判断-`instanceof`**
 
-git checkout head filename 撤销工作区的修改
-git checkout head 撤销所有文件的修改
+1. 判断引用类型
+2. `Object`可以充当任意`class`的父类
 
-撤销某个文件提交
+![20200701162342.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701162342.png)
 
-git reset HEAD --fileName 撤销暂存区内容 撤销暂存区内容
-然后再 git commit
+**显式原型和隐式原型之间的关系：**
 
-git reset --hard HEAD 将工作区和暂存区恢复成头指针状态 全部撤销
-git reset --hard head^^ 复位到head之前的版本
-git reset head~1 撤销一条记录 编辑commit编辑
-git push
+> js引擎自动会处理, `class`也是一个`function`
 
-回滚代码
-git log 查看提交历史
-git resset --hard log里面的哈希值 -回滚代码
-git reflog 查看本地所有的操作历史
+- 每个`class`都有一个显式原型`prototype`,这里存储函数
+- 每个实例都有一个隐式原型`__proto__`
+- 实例的隐式原型指向`class`的显式原型,实例就有用了属性和方法
 
-git reset --hard head^ 回滚到上一次提交
+这里**Student**是定义的类,然后传入属性`name`,`number`,再定义一个函数,**根据关系类`Student`具有显式原型`prototype`存放方法，然后实例化的时候隐式原型指向这个原型,从而调用方法**。
+
+![20200701163319.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701163319.png)
 
 
-暂时存放修改的文件
-git stash  存放到堆栈，使用场景:功能未开发完,不提交
-
-git stash apply  取出修改的内容
-
-
-git branch -d branchName 删除合并过的分支,未合并不能删除
-git branch -D branchName 不管合并 直接删除分支
-
-git diff HEAD HEAD^ 对比当前commit和父级commit区别
-git diff 比较工作区和暂存区差异
-git diff --fileName 文件工作区和暂存区差异
-git diff branch1 branch2 比较分支差异
-git diff branch1 branch2 --flieName 比较文件
-
-
-git commit -amend 对最近提交的coomit的message变更
-git commit -a -m 'message'  添加所有修改文件到暂存区，并提交版本库(不包括新增文件)
-
-git stash 将工作区暂存进堆栈
-git statsh apply 暂存空间取出来 并不删除堆栈记录
-git stash pop 删除堆栈记录
-
-
-git push -u origin master 第一次推送
-git push -f origin master
-git push -all origin master
-git push  '仓库地址' master
-
+```js
+console.log(Student.prototype) // 打印出student:{constructor:{},sayHi:}
+console.log(xialuo.__proto__) // 同样打印出刚刚的结果
+console.log(Student.prototype === xialuo.__proto__) // true
 ```
 
-> .gitignore常见用法
+**原型链**
 
-```bash
-.DS_Store  .DS_Store结尾文件或目录忽略管理
+每个显式原型下也有一个隐式原型，指向规则和上面一样。**在每一层首先寻找自身的属性或方法,如果没有通过隐式原型去找上一层的显示原型的方法,依次形成一个链**
 
-node_modules/
+`Student`的显式原型下有一个`__proto__`，指向`People`的显式原型`prtotype`
 
-dist/       dist文件夹下面的文件忽略关理,但是文件夹会管理
+![20200701165830.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701165830.png)
 
-* .idea     所有结尾是.idea文件忽略管理
-.vscode
+原型链的最高层`Object`的显示原型拥有`toString`和`hasOwnProperty`方法和自身隐式原型
 
-```
-
-## 多人协作
-
-git flow 工作流
-
-```bash
-git branch 查看本地分支
-
-在公司无权限推送master分支
-git checkout -b dev master -master 分支创建分支
-
-git status 查看文件记录
-
-一位成员修改一份文件,然后推送,另一位同学同时修改这份文件,提交会被拒绝
-
-git pull origin dev 拉取远程的dev分支,但是此时会有冲突，因为双方都修改了文件
-
-解决冲突
-推送
-git push origin dev
-
-选择性拉取远程分支内容(常用场景,不想合并全部分支)
-
-git fetch origin dev
-git merge FETCH-HEAD 上面拉取的后面的变量
-
-git push origin feature:feature 前面是本地分支 后面是远程的分支,自定义命名
-
-git fetch
-拉取远程分支 然后把内容输入到dev分支
-git fetch origin feature:dev
-
-
-```
-
-两种工作流
-预定三个分支:
-
-```bash
-dev    预发布分支
-fetaure 开发分支
-master  发布分支
-
-
-首先切换到dev分支
-
-git checkout dev
-
-合并开发
-
-git merge feature
-
-发布
-
-git checkout master
-git merge dev
-
-打上版本标签推送
-
-git tag v1.0.0
-
-git push origin master --tags
-
-删除tag
-git tag -d v1.0.0
-
-列出tag
-git tag --list
-
-
-删除远程分支或者tag
-git push origin :refs/tags/v1.0.0
-
-git push origin :远程分支
-
-删除本地分支
-git branch -D 分支
-
-```
+![20200701171044.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701171044.png)
