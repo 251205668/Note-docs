@@ -66,3 +66,85 @@ const stu1 = new Student('夏洛',100)
 console.log(Student.prototype)
 console.log(stu1.__proto__)
 console.log(Student.prototype === stu1.__proto__)
+
+
+
+// // 手写jquery简单实现 基本步骤就是获取dom,遍历并且赋值被this,书写遍历,监听,获取方法
+
+// class Jquery{
+//   constructor(selector){
+//     this.selector = selector
+//     const ele = document.querySelectorAll(selector)
+//     // 遍历赋值this
+//     for(let i = 0;i < ele.length;i++){
+//       this[i] = ele[i]
+//     }
+//     this.length = this.length
+//   }
+//   // 方法
+
+//   get(index){
+//     return this[index]
+//   }
+
+//   each(fn){
+//     for(let i = 0;i < this.length;i++){
+//       // 回调方法
+//       const elem = this[i]
+//       fn(elem)
+//     }
+//   }
+
+//   on(type,fn){
+//     this.each(elem=>{
+//       elem.addEventListener(type,fn)
+//     })
+//   }
+// }
+
+// const jq = new Jquery('p')
+// p.get(1)
+// p.on('click',()=>{alert('1')})
+
+// // 原型上扩展插件机制
+// Jquery.prototype.newfun =  function(q){
+//   alert(q)
+// }
+
+// // 造轮子的原理  就是继承原类扩展自身方法
+
+
+// 闭包
+
+// function create(){
+//   const a= 200
+//   return function(){
+//     console.log(a)
+//   }
+// }
+
+// const x = create()
+// const a = 100
+// x() // 打印 200
+
+function print(fn){
+  const a = 100
+  fn()
+}
+
+const a = 200
+function fn(){
+  console.log(a)
+}
+
+print(fn)
+
+
+function test1(){
+  console.log(this)
+}
+
+test1() // window
+test1.call({age:10})//{ age: 10 }
+const test2 = test1.bind({age:11}) // bind和call区别就在于bind需要定义变量接收函数并执行, call直接改变this指向之后执行
+test2()
