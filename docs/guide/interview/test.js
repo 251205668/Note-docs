@@ -148,3 +148,22 @@ test1() // window
 test1.call({age:10})//{ age: 10 }
 const test2 = test1.bind({age:11}) // bind和call区别就在于bind需要定义变量接收函数并执行, call直接改变this指向之后执行
 test2()
+
+
+// 手写bind 基本步骤: 在Function的原型上扩展方法, 第一步拆解参数获取this和参数 ，然后获取对象,通过对象调用apply方法
+
+Function.prototype.bind1 = function(){
+  // 获取参数
+  const args = Array.prototype.slice.call(arguments)
+  const t = args.shift()
+  const self = this
+  return function(){
+    return self.apply(t,args)
+  }
+}
+
+function test3(a,b,c){
+  console.log(this,a,b,c)
+}
+const test4 = test3.bind1({age:11},10,20,30)
+test4()

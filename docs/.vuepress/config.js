@@ -129,7 +129,7 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
     {
       title: groupG,
       collapsable: true,
-      children: ['/guide/interview/test.md']
+      children: ['/guide/interview/test.md','/guide/interview/web-api.md']
     }
   ]
 }

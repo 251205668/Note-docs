@@ -1,5 +1,24 @@
 # JS基础
 
+基本试题:
+
+::: tip
+1. `typeof`作用
+2. 何时使用 `===` 和 `==`
+3. 值类型和引用类型区别
+4. 手写深拷贝
+5. 如何判断一个变量是否是数组
+6. 利用原型链手写`Jquery`简单实现，考虑插件和扩展性
+7. `class`原型本质理解,结合原型链
+8. `this`使用场景,如何取值
+9. 手写`bind`函数
+10. 闭包的使用场景
+11. 作用域标签判断题
+12. 异步和同步区别
+13. 手写`Promise`加载请求和多张图片
+14. 异步使用场景
+:::
+
 ## 引用类型和值类型
 
 js中创建的赋值方式分为`引用类型`和`值类型`,引用类型能够保持状态不改变。
@@ -238,6 +257,11 @@ console.log(i) // error
 
 > 自由变量: 当前作用域下未定义,但是向上层级(父级作用域)能够找到并且合法的变量。比如这里的`fn3`中的 `a` `a1` `a2` 都是在本函数作用域下未定义,但是向上层级能够找到,所以他们是自由变量。
 
+例题: 
+
+![20200703112852.png](https://raw.githubusercontent.com/imageList/imglist/master/20200703112852.png)
+
+> 这种情况,点击每个`a`都会弹出对应的`i`，这是因为块级作用域,每次循环都会形成新的块,`i`就会不同,但是如果`i`定义为全局作用域,永远都会弹出`10`，函数没执行但是已经循环完。
 
 **闭包**
 
@@ -276,6 +300,24 @@ print(fn)
 
 ![20200702194853.png](https://raw.githubusercontent.com/imageList/imglist/master/20200702194853.png)
 
+**闭包的常见应用场景:**
+
+1. 使用闭包控制数据访问,只提供API访问数据。
+
+```js
+function createCache(){
+  const data = {} //外界无法访问这个数据,只能调用get函数获取值
+  return {
+    get: function(key){
+      return data[key]
+    },
+    set:function(key,value){
+      data[key] = value
+    }
+  }
+}
+```
+2. 
 
 **this指向问题**
 
@@ -329,5 +371,117 @@ class student{
 }
 
 ```
+**手写bind函数**
+
+书写`bind`函数步骤分为:
+
+- 拆解参数
+- 获取`this`和参数
+- 获取调用对象
+- 返回函数。
+
+在`Function`原型上扩展插件即可,将一个列表转换为数组:**`Array.prototype.slice.call(params)`**
+
+```js
+Function.prototype.bind1 = function(){
+  const args = Array.prototype.slice.call(arguments)
+  const t = args.shift()
+  // Function是个class this指向对象本身
+  const self = this
+  return function(){
+    // apply用法和call相似
+    return self.apply(t,args)
+  }
+}
+function test1 (a,b,c){
+  console.log(this,a,b,c)
+}
+const test2 = test1.bin1({age:11},10,20,30)
+test2() // {age:11} 10 20 30
+```
+
+## 异步和Promise
+
+![20200703151544.png](https://raw.githubusercontent.com/imageList/imglist/master/20200703151544.png)
+
+**异步**
+
+js是单线程语言,同时只能做一件事。
+
+异步就是不会阻塞其他进程的进行,不会阻塞其他代码的执行。
+
+异步出现的场景: `网络请求`和`定时任务`
 
 
+**Pormise**
+
+`Promise`的出现有效的解决了回调地狱的出现。
+
+模拟`ajsx`请求
+
+```js
+function getData(url){
+  return new Promise((resolve,reject)=>{
+    $.ajax({
+      url,
+      success(data){
+        resolve(data)
+      },
+      error(err){
+        reject(err)
+      }
+    })
+  })
+}
+
+.....
+
+const url1 = 'data1.json'
+const url2 = 'data2.json'
+const url3 = 'data3.json'
+
+getData(url1).then((data)=>{
+  console.log(data)
+  return getData(url2)
+}).then((data)=>{
+  console.log(data)
+  return getData(url3)
+}).then((data)=>{
+  console.log(data)
+}).catch(errpr=>{
+  console.log(error)
+})
+```
+使用`Promise`模拟加载多张图片
+
+```js
+function loadimg(src){
+  return new Promise((resovle,reject)=>{
+    const img =  document.createElement('img')
+    img.src = src
+    // 回调
+    img.onload=()=>{
+      resovle(img)
+    }
+    img.onerror=()=>{
+      reject(new Error('加载失败'))
+    }
+  })
+}
+// 展示到body
+function showImg(imgs){
+   imgs.forEach(img=>{
+    document.body.appendChild(img)
+  })
+}
+
+// 请求多张图片地址并加载(模拟懒加载)
+
+Promise.all([
+  Loadimg(src1)
+  Loadimg(src2)
+  Loadimg(src3)
+  Loadimg(src4)
+]).then(imgs=>showImg(imgs))
+
+```
