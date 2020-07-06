@@ -167,3 +167,19 @@ function test3(a,b,c){
 }
 const test4 = test3.bind1({age:11},10,20,30)
 test4()
+
+
+const xhr = new XMLHttpRequest()
+// 发送请求 false代表异步
+xhr.open("GET","/api",false)
+// 监听state改变
+xhr.onreadystatechange = function(){
+  if(xhr.readyState === 4){
+    if(xhr.status === 200){
+      // 相应结果
+      alert(xhr.responseText)
+    }
+  }
+
+}
+xhr.send(null)
