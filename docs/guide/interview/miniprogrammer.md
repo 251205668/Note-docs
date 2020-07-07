@@ -21,6 +21,12 @@ function slashPrice(price,discountpirce){
   }
 }
 ```
+`wxml`调用
+
+```html
+<wxs src="../../wxs/price.wxs" module="p"></wxs>
+  <l-price wx:if="{{discountPrice}}" deleted l-class="discount-pirce" color="#888" unit-size="22" size="22" value="{{p.slashPrice(price,discountPrice)}}"></l-price>
+```
 
 ## **动态计算宽高 是图片自适应高度或宽度**
 
