@@ -1,6 +1,6 @@
 ---
 home: true
-heroImage:  /head1.png
+heroImage:  http://resource.muyiy.cn/image/javascript.gif
 actionText: 立即开始 →
 actionLink: /guide/
 features:

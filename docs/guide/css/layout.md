@@ -1,5 +1,6 @@
 
 # 前端常见布局
+
 ![https://user-gold-cdn.xitu.io/2019/12/9/16eea33e6176a91f?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1](https://user-gold-cdn.xitu.io/2019/12/9/16eea33e6176a91f?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1)
 
 总结各种页面布局,几乎涵盖了网站所有的布局方式,多种方式实现并分析兼容性。[完整地址](https://juejin.im/post/5aa252ac518825558001d5de#heading-0)

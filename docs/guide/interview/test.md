@@ -485,3 +485,4 @@ Promise.all([
 ]).then(imgs=>showImg(imgs))
 
 ```
+
