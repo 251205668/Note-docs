@@ -486,3 +486,261 @@ Promise.all([
 
 ```
 
+## 常考面试题总结
+
+包含`js`基础,`js`进阶,`HTML`,`CSS`,`HTTP`,`浏览器`等面试题汇总
+
+### typeof作用
+
+- 判断值类型变量的类型
+- 判断是否是引用类型,但是无法具体判断类型
+- 可以判断`function` 
+
+### 何时使用 === 和 ==
+
+在判断对象属性是否为空时使用`==`,其他一律使用`===`，因为`==`会引起类型转换。
+
+```js
+if(data.a == null){
+
+}
+// 等效于
+if(data.a === 'undefined' || data.a === null)
+```
+### 值类型和引用类型区别
+
+一般的值类型,他是可以用`typeof`鉴定类型的,并且对应的是一个栈类型,变量名为`key`,值为`value`。
+
+```js
+const a = 1 // Number
+const a = 'a' // String
+const a = new Symbol() // symbol
+const a = !!a // boolean
+let a // undefined
+```
+
+引用类型,一般指的就是对象,他可以用`typeof`判断是否是引用类型,但是无法判断具体类型,对应的是一个堆栈模型,栈中`key`是对象名,`value`对应内存地址,然后堆模型中一个内存地址对应一个`value`。
+
+这也就是会出现这种情况的原因
+
+```js
+const a = 100
+let b 
+b = a
+b = 300
+console.log(a) // 100
+
+const x = {a:10}
+let y 
+y = x
+y = {a:20}
+console.log(x) // {a:20}
+```
+### 手写深拷贝
+
+```js
+function deepclone(target = {}){
+  if(typeof target !== 'object' || target == null){
+    return target
+  }
+  let result
+  if(target instanceof Array){
+    result = []
+  }else{
+    result = {}
+  }
+  for(let key in obj){
+    // 避免原型属性影响
+    if(obj.hasOwnProperty(key)){
+      result[key] = deepclone(obj[key])
+    }
+  }
+}
+```
+### 解释原型和原型链,并解释instanceof原理
+
+使用到原型方法`instanceof`
+
+原型: 以一个`student`,`people`这个两个类来说,假设`student`是继承于`people`这个类的。现在有一个`student`的原型`stu1`,那么`stu1`就有一个隐式原型`__proto__`指向`student`类的显式原型`prototype`。等同于
+`stu1.__proto__ === Student.prototype`,那么stu1就可以调用`Student`的方法和属性。
+
+原型链:**每个对象都有 __proto__ 属性，此属性指向该对象的构造函数的原型。** 现在`stu1`的隐式原型指向了`Student`的显式原型,然后`Student`的显式原型也有一个隐式原型,他指向`People`的显式原型。所有`Student`类包括实例可以使用`People`的方法,最后`People`的显示原型的隐式原型指向最高层`Object`的显示原型,他的隐式原型指向`null`。
+
+`instanceof`原理就迎刃而解,首先如果判断`Array`,`a`如果是数组，`a`的隐式原型顺着原型链向上找,找到`Array`这个`class`即为数组。
+
+### 利用原型链手写Jquery简单实现，考虑插件和扩展性
+
+获取`dom`,遍历赋值给`this`,最后书写方法
+```js
+class Jquery{
+  constructor(selector){
+    this.selector = selector
+    const ele = document.querySelector(selector)
+    for(let i =0;i < ele.length;i++){
+      this[i] = ele[i]
+    }
+    this.length = ele.length
+  }
+  get(index){
+    return this[index]
+  },
+  each(fn){
+    for(let i =0;i < this.length; i++){
+      const element = this[i]
+      fn(element)
+    }
+  },
+  on(type,fn){
+    this.forEach(element=>{
+      element.addEventListener(type,fn)
+    })
+  }
+}
+
+// 插件机制扩展原型方法
+Jquery.prototype.f1 = function(){
+
+}
+```
+
+### this使用场景,如何取值
+
+`this`取值原则: this去向有执行函数的的地方决定。
+
+大致可以分为六种:
+```js
+function test(){
+  console.log(this)
+}
+
+// one
+test() //window
+
+// two
+test.call({age:11}) // call改变this指向直接执行 {age:11}
+
+// three
+const test2 = test.bind({age:12}) //bind改变this指向后需要接收后再执行
+test2() // {age:12}
+
+// four
+class student{
+  fun1(){
+    setTimeout(()=>{
+      console.log(this) //箭头函数this指向父级作用域 -当前对象
+    })
+  }
+}
+
+// five
+class student{
+  fun1(){
+    setTimeout(function(){
+      console.log(this)  // window 执行阶段已跳出student管控
+    })
+  }
+}
+
+// six
+class student{
+  fun1(){
+    console.log(this) // student对象
+  }
+}
+```
+
+### 手写bind函数
+
+### 闭包和闭包作用
+
+### 谈谈你对作用域链的理解
+
+### 异步和同步区别
+
+### 手写Promise加载请求和多张图片
+
+### 异步使用场景
+
+### 解释下变量提升？
+
+### ES6模块与CommonJS模块有什么区别？
+
+### null与undefined的区别是什么？
+
+### async/await是什么？
+
+### 浏览器是如何渲染的(输入url的渲染全过程)
+
+### 什么是浏览器同源策略？和如何实现跨域
+
+### DOM的事件模型是什么
+
+### 实现防抖函数（debounce）
+
+### 实现节流函数
+
+### 实现节流函数（throttle）
+
+### 实现instanceOf
+
+### 模拟new
+
+### 实现一个call,bind,apply
+
+### 实现Promise
+
+### 解析 URL Params 为对象
+
+### 说说DOM事件流
+
+### 查找字符串中出现最多的字符和个数
+
+### doctype的作用是什么？
+
+### HTML5与HTML4的不同之处
+
+### src和href的区别？
+
+### 有几种前端储存的方式？区别
+
+### CSS选择器的优先级是怎样的？
+
+### link和@import的区别？
+
+### em\px\rem区别？
+
+### 伪类和伪元素的区别
+
+### 块级元素水平居中,垂直居中,水平垂直居中
+
+### 除了Flex还可以用什么进行布局
+
+### 清除浮动有哪些方法？
+
+### 盒模型的理解
+
+### 如何实现左侧宽度固定，右侧宽度自适应的布局
+
+### 谈谈对BFC的理解
+
+### GET和POST有什么区别？
+
+### 聊一聊HTTP的状态码有哪些？
+
+### HTTPS是如何保证安全的？
+
+### HTTP的缓存的过程是怎样的？
+
+### 请简述TCP\UDP的区别
+
+### HTTP2和HTTP1有什么区别
+
+### 能说说首屏加载优化有哪些方案么
+
+### 讲一下三次握手？
+
+### 讲一下四次握手？
+
+### Webpack面试题
+
+
