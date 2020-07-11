@@ -371,6 +371,34 @@ class student{
 }
 
 ```
+**经典问题**
+
+每个函数都是`Function`构造函数的实例对象,所以用`Function.prototype.fn`函数中`this`一定指向实例对象的。
+
+```js
+function Person() {
+  this.name = 'ClarenceC';
+}
+ 
+Person.prototype.greet = function(){
+  console.log('hello ' + this.name);
+}
+
+var person = new Person();
+console.log(person.name)
+
+person.greet()
+```
+Person是一个构造函数,`person.greet`中的`this`指向`person`实例对象
+
+```js
+Function.prototype.mycall = function(context,...args){
+  const context = context || window
+  context.fn = this // this指向context中的函数实例对象
+  context.fn()
+}
+```
+
 **手写bind函数**
 
 书写`bind`函数步骤分为:
@@ -649,31 +677,244 @@ class student{
 }
 ```
 
-### 手写bind函数
+### 实现一个call,bind,apply
+
+手写`bind`: 在`Function`原型扩展插件方法,第一步拆解参数,转为数组,提取第一项为`this`,剩余参数。返回一个`call`方法
+
+```js
+Function.prototype.bind1 = function(){
+  const args = Array.prototype.slice.call(arguments)
+  const self = this
+  const t = args.shift()
+  return function(){
+    return self.call(t,args)
+  }
+}
+```
+手写`call`,`apply`非常相似只需要返回函数即可,不需要执行。
+
+把他想成这样就行
+```js
+context = {
+  a:10,
+  bar:function(){
+    console.log(this)
+  }
+}
+
+// 这里如果bar()在对象充当属性,this就会指向context,然后再删除方法即可
+```
+- 取出`bar`函数
+- 判断是否是非函数
+- 定义函数`context[simbol实例] = fun`,一定要取`simbol`,因为`fun`可能是原有的函数
+- 执行然后删除对象函数,返回结果
+
+```js
+Function.prototype.mycall = function(context,...args){
+  const context = context || window
+  let func = this // this指向bar 函数实例
+  if(typeof func !== 'function'){new TypeError('is not a function')}
+  let caller = new Simbol()
+  context[caller] = func // 定义函数
+  let res = context[caller](...args) //执行 
+  delete context[caller] // 删除函数属性
+  return res 
+}
+```
 
 ### 闭包和闭包作用
 
-### 谈谈你对作用域链的理解
+闭包: 闭包是`函数`和`声明该函数词法环境`的组合。函数内自由变量的查找总是在定义函数的地方的上级作用域进行查找。
+
+举例
+```js
+function create(){
+  const a= 200
+  return function(){
+    console.log(a)
+  }
+}
+
+const x = create()
+const a = 100
+x() // 打印 200
+```
+
+闭包的作用: 闭包最大的作用就是`隐藏变量`，**闭包的一大特性就是内部函数总是可以访问其所在的外部函数中声明的参数和变量**,只提供API访问数据。
+
+```js
+function createCache(){
+  const data = {} //外界无法访问这个数据,只能调用get函数获取值
+  return {
+    get: function(key){
+      return data[key]
+    },
+    set:function(key,value){
+      data[key] = value
+    }
+  }
+}
+```
+
+### 谈谈你对作用域和作用域链的理解
+
+**作用域分为**: `全局作用域`,`函数作用域`,`块级作用域`。全局作用定义在外部,函数作用域定义在函数内部,块级作用域一般定义在判断语句或者循环语句当中。
+
+**作用域链**: `js`执行过程中会创造`可执行上下文`,可执行上下文的内部有外部词法环境的引用,通过引用获取外部变量和参数然后一起串联指向全局词法环境,形成作用域链。
+
 
 ### 异步和同步区别
 
+异步: `js`是单线程语言,一次只能做一件事，所以就有了异步的存在,异步不会阻塞其他线程,不会影响其他的代码执行。
+
+同步: 按一定的顺序执行
+
 ### 手写Promise加载请求和多张图片
+
+```js
+function loadImg(src){
+  return new Promise((resolve,reject)=>{
+    const img = document.createElement('img')
+    img.src = src
+    img.onload  = function(){
+      resolve(img)
+    }
+    img.onerror = function(){
+      reject(throw new Error('failed load'))
+    }
+  })
+}
+
+function showImg(imgs){
+  imgs.forEach(img=>{
+    document.body.append(img)
+  })
+}
+
+Promise.all([
+  loadImg(src1),loadImg(src2)...
+]).then(imgs=>{
+  showImg(imgs)
+}).catch((error)=>{
+  console.log(error)
+})
+
+```
 
 ### 异步使用场景
 
+- 网络请求
+- 定时任务
+
 ### 解释下变量提升？
+
+`js`引擎执行代码的时候会将`声明变量`代码放置顶部,然后再依次执行。所以所有的声明变量的语句都会在顶部最先执行,这就是变量提升。
+
+```js
+var a = 1
+//等同于
+
+var a
+a= 1
+```
 
 ### ES6模块与CommonJS模块有什么区别？
 
+- CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用
+- CommonJS 模块是运行时加载，ES6 模块是编译时输出接口
+
 ### null与undefined的区别是什么？
+
+`null`表示空值,一个对象可以是`null`,代表空对象,他是存在的但是值为空
+
+`undefined`代表不存在,除了有存在值为空,也存在`根本不存在的成员`。
 
 ### async/await是什么？
 
+**async**: 1. 声明一个异步函数，并且返回值一定是个`Promise`对象 2. 异步操作执行完才会调用`then()`方法的回调函数
+
+**await**: 1. 求值,既可以求出Proimise值,也可以求出表达式的值  2.阻塞线程 3.只能搭配`async`使用
+
 ### 浏览器是如何渲染的(输入url的渲染全过程)
+
+包含两个过程:
+
+**加载过程**
+
+- DNS解析域名,域名->IP地址
+- 浏览器根据IP地址发送http请求
+- 服务器接收请求,返回数据给浏览器
+
+**渲染过程**
+
+- 根据`HTML`、`Css`代码生成相应的`DOMTree`,`CSSOM`
+- 结合`DOMTree`和`CSSOM`生成`RenderTree`，然后将`css`挂载在`DOM`上
+- 根据`RenderTree`渲染页面
+- 页面遇到`<script></script>`标签停止渲染,执行完`js`代码后再继续渲染
+- 直至渲染完成
 
 ### 什么是浏览器同源策略？和如何实现跨域
 
+**同源策略**: 浏览器发送`ajax`请求要求浏览器和服务器必须同源。所谓同源就是`协议,端口,域名`都必须保持一致。
+
+**不受同源限制的三个标签**:
+
+`<script></script>`
+
+`<link />`
+
+`<img />`
+
+**实现跨域方法**:
+
+- JSONP实现: 
+
+原理: 利用`<script></script>`不受同源策略限制,进行跨域操作。
+
+- CORS跨域:
+
+原理: 使用额外的 `HTTP 头`来告诉浏览器 让运行在一个 `origin` (domain) 上的Web应用被准许访问来自不同源服务器上的指定的资源。
+
+- nginx反向代理:
+
+原理:所有客户端的请求都必须先经过nginx的处理，nginx作为代理服务器再讲请求转发给node或者java服务，这样就规避了同源策略。
+
+[具体实现](https://juejin.im/post/5c23993de51d457b8c1f4ee1)
+
 ### DOM的事件模型是什么
+
+- 脚本模型
+- 内联模型
+- 动态绑定
+
+```js
+<body>
+<!--行内绑定：脚本模型-->
+<button onclick="javascrpt:alert('Hello')">Hello1</button>
+<!--内联模型-->
+<button onclick="showHello()">Hello2</button>
+<!--动态绑定-->
+<button id="btn3">Hello3</button>
+</body>
+<script>
+/*DOM0：同一个元素，同类事件只能添加一个，如果添加多个，
+* 后面添加的会覆盖之前添加的*/
+function shoeHello() {
+alert("Hello");
+}
+var btn3 = document.getElementById("btn3");
+btn3.onclick = function () {
+alert("Hello");
+}
+</script>
+
+```
+
+### 说说DOM事件流
+
+- 事件捕获阶段
+- 目标接收事件
+- 事件冒泡阶段
 
 ### 实现防抖函数（debounce）
 
@@ -685,29 +926,96 @@ class student{
 
 ### 模拟new
 
-### 实现一个call,bind,apply
-
-### 实现Promise
+### 实现Promise(简单版)
 
 ### 解析 URL Params 为对象
 
-### 说说DOM事件流
-
 ### 查找字符串中出现最多的字符和个数
+
+### 箭头函数和普通函数的区别？
+
+### 谈谈对Promise的理解 ？
+
+### 将多维数组扁平化？
+
+```js
+function flatten(arr) {
+  return [].concat(...arr.map(v => {
+    return Array.isArray(v) ? flatten(v) : v;
+  }))
+}
+
+function flatten(arr) {
+  return arr.reduce((pre, cur) => {
+    return pre.concat(Array.isArray(cur) ? flatten(cur) : cur);
+  }, [])
+}
+
+```
+
+### 什么是事件代理？
+
+利用事件流的冒泡特性，将子节点的事件绑定在父节点上，然后在回调里面使用事件对象进行区分，优点是节省内存且不需要给子节点销毁事件。
+
+### 你知道的性能优化方式有哪些？
+
+- 文件压缩，减小资源大小
+- 异步组件，按需加载
+- 小图片转base64，减少请求
+- 雪碧图，减少请求
+- 选择合适的图片格式和尺寸
+- 懒加载，按需加载
+- css放最上面，js放在body最下面，渲染优化
+- 事件节流，减少操作
+- 减少Dom操作和避免回流，渲染优化
+- 浏览器缓存，减少请求次数或响应数据
+- 减少cookie的使用，减少请求携带大小
 
 ### doctype的作用是什么？
 
+`DOCTYPE`是`html5`标准网页声明，且必须声明在HTML文档的第一行。来告知浏览器的解析器用什么文档标准解析这个文档。
+
 ### HTML5与HTML4的不同之处
+
+- 文档解析声明和解析顺序 不在基于`SGML`
+- 增加新的元素,媒体标签等等
+- input元素的新类型：date, email, url等等
 
 ### src和href的区别？
 
+- `src`指向的内容会嵌入到标签的位置,会将指定的`src`资源下载并嵌入到文档。**浏览器渲染页面会等待src解析并执行**
+
+- href 一般用于超链接,如果是指向资源文件会下载资源,**浏览器不会因他停止渲染**
+
 ### 有几种前端储存的方式？区别
+
+- cookie : 本地储存的主要方式，优点是兼容性好，请求头自带cookie方便，缺点是大小只有4k
+
+- localStorage: HTML5加入的以键值对(Key-Value)为标准的方式，优点是操作方便，永久性储存（除非手动删除），大小为5M
+
+- sessionStorage:与localStorage基本类似, 但是关闭会话框就会自动清空
+
+- IndexedDB: 操作`NoSql`数据库,存储键值,可以快速完成读取操作。
 
 ### CSS选择器的优先级是怎样的？
 
+内联选择器>id选择器>类选择器>标签选择器
+
 ### link和@import的区别？
 
+- `link` 是XHTML提供的元素而`@import`是CSS提供的
+
+- `link` 和页面一起加载, `@import`需要等待页面加载完成执行
+
+- `link` 方式的样式权重高于@import的权重
+
 ### em\px\rem区别？
+
+-em : 
+
+-px
+
+-rem
 
 ### 伪类和伪元素的区别
 

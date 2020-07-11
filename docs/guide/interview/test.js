@@ -184,5 +184,9 @@ test4()
 // }
 // xhr.send(null)
 
-
+Function.prototype.mycall = function(context,...args){
+  var context = context || window
+  context.fn = this
+  
+}
 
