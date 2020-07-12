@@ -918,23 +918,193 @@ alert("Hello");
 
 ### 实现防抖函数（debounce）
 
-### 实现节流函数
+```js
+export function debounce (func, delay) {
+  let timer
 
+  return function (...args) {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  }
+}
+```
+
+### 数组去重
+
+```js
+function unique(arr) {
+  return [...new Set(arr)];
+}
+```
+### 洗牌算法和随机数
+
+```js
+function getRandomInt (min, max) {
+  // 取min-max的数据
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+export function shuffle (arr) {
+  // 当前数组值与取到的随机数组值交换 从而打乱数据
+  let _arr = arr.slice()
+  for (let i = 0; i < _arr.length; i++) {
+    let j = getRandomInt(0, i)
+    let t = _arr[i]
+    _arr[i] = _arr[j]
+    _arr[j] = t
+  }
+  return _arr
+}
+```
 ### 实现节流函数（throttle）
+
+```js
+// 节流函数
+const throttle = (fn, delay = 500) => {
+  let flag = true;
+  return (...args) => {
+    if (!flag) return;
+    flag = false;
+    setTimeout(() => {
+      fn.apply(this, args);
+      flag = true;
+    }, delay);
+  };
+};
+```
 
 ### 实现instanceOf
 
+```js
+// 模拟 instanceof
+function instance_of(L, R) {
+  //L 表示左表达式，R 表示右表达式
+  var O = R.prototype; // 取 R 的显示原型
+  L = L.__proto__; // 取 L 的隐式原型
+  while (true) {
+    if (L === null) return false;
+    if (O === L)
+      // 这里重点：当 O 严格等于 L 时，返回 true
+      return true;
+    L = L.__proto__;
+  }
+}
+
+```
+
 ### 模拟new
 
-### 实现Promise(简单版)
+```js
+function createNew(Ctor, ...args) {
+  const obj = Object.create(Ctor.prototype);
+  const ret = Ctur.apply(obj, args);
+  return ret instanceof Object ? ret : obj;
+}
+
+1. 将构造函数的原型赋值给新建的obj的隐式原型__proto__。
+2. 在obj下执行构造函数，并传入参数，
+   这个时候构造函数内的this就是obj。
+3. 如果这个'构造函数'没有return对象格式的结果，
+   返回新创建的obj。
+
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+Person.prototype.getName = function() {
+  console.log(this.name);
+}
+
+const xm = createNew(Person, 'xiaoming', 22);
+
+```
 
 ### 解析 URL Params 为对象
 
+```js
+let url = 'http://www.domain.com/?user=anonymous&id=123&id=456&city=%E5%8C%97%E4%BA%AC&enabled';
+parseParam(url)
+/* 结果
+{ user: 'anonymous',
+  id: [ 123, 456 ], // 重复出现的 key 要组装成数组，能被转成数字的就转成数字类型
+  city: '北京', // 中文需解码
+  enabled: true, // 未指定值得 key 约定为 true
+}
+*/
+```
+
+```js
+function parseParam(url) {
+  const paramsStr = /.+\?(.+)$/.exec(url)[1]; // 将 ? 后面的字符串取出来
+  const paramsArr = paramsStr.split('&'); // 将字符串以 & 分割后存到数组中
+  let paramsObj = {};
+  // 将 params 存到对象中
+  paramsArr.forEach(param => {
+    if (/=/.test(param)) { // 处理有 value 的参数
+      let [key, val] = param.split('='); // 分割 key 和 value
+      val = decodeURIComponent(val); // 解码
+      val = /^\d+$/.test(val) ? parseFloat(val) : val; // 判断是否转为数字
+
+      if (paramsObj.hasOwnProperty(key)) { // 如果对象有 key，则添加一个值
+        paramsObj[key] = [].concat(paramsObj[key], val);
+      } else { // 如果对象没有这个 key，创建 key 并设置值
+        paramsObj[key] = val;
+      }
+    } else { // 处理没有 value 的参数
+      paramsObj[param] = true;
+    }
+  })
+
+  return paramsObj;
+}
+```
+
 ### 查找字符串中出现最多的字符和个数
+
+```js
+let str = "abcabcabcbbccccc";
+let num = 0;
+let char = '';
+
+ // 使其按照一定的次序排列
+str = str.split('').sort().join('');
+// "aaabbbbbcccccccc"
+
+// 定义正则表达式
+let re = /(\w)\1+/g;
+str.replace(re,($0,$1) => {
+    if(num < $0.length){
+        num = $0.length;
+        char = $1;        
+    }
+});
+console.log(`字符最多的是${char}，出现了${num}次`);
+
+```
 
 ### 箭头函数和普通函数的区别？
 
+- 箭头函数的`this`是由包裹它的`普通函数的this`来决定；`
+- 不能作为构造函数, `Generator`函数；
+- 参数不能使用arguments访问，需要使用Es6的不定参数访问；
+- 使用`bind`方法无效。
+
+### var、let、const的区别 ？
+
+- `var类型`会有变量提升的情况
+- `let`和`const`没有变量提升的情况，必须要先声明再使用，否则就会出现暂时性死区的情况。
+- `const`和`let`的区别在于一经定义后不得再次改变const定义的值`
+- `const`必须赋值
 ### 谈谈对Promise的理解 ？
+
+- `Promise`主要解决的问题就是``异步回调嵌套过深造成代码难以维护和理解`
+- `Promise`一共有三种状态`pending等待状态`、`resolved已完成状态`、`rejected已拒绝状态`
+- `Promise构造函数`内的代码是同步执行的，而之后`then`或`catch`方法是异步执行的，构造函数接受两个函数参数resolve和reject，它们执行时接受的参数分别会传递给`then`和`catch`表示`成功的回调`以及`失败回调`接受到的值。`
+
 
 ### 将多维数组扁平化？
 
@@ -975,6 +1145,15 @@ function flatten(arr) {
 
 `DOCTYPE`是`html5`标准网页声明，且必须声明在HTML文档的第一行。来告知浏览器的解析器用什么文档标准解析这个文档。
 
+### 你对HTML语义化的理解？
+
+语义化是指使用恰当语义的html标签，让页面具有良好的结构与含义，比如`<p>`标签就代表段落，`<article>`代表正文内容,`<header> <nav> <aside> <footer>`等。
+
+优点: 
+
+1. 增强开发维护可读性
+2. 更适合机器解析，生成目录,搜索引擎爬虫等
+
 ### HTML5与HTML4的不同之处
 
 - 文档解析声明和解析顺序 不在基于`SGML`
@@ -1011,44 +1190,169 @@ function flatten(arr) {
 
 ### em\px\rem区别？
 
--em : 
+- em : 相对单位，基准点为`父节点字体的大小`，如果自身定义了`font-size`按自身来计算（浏览器默认字体是`16px`）
 
--px
+- px : 绝对单位，页面按精确像素展示
 
--rem
+- rem :相对单位，可理解为”root em”, 相对`根节点html的字体大小`来计算
 
 ### 伪类和伪元素的区别
 
+伪类是一个以冒号(:)作为前缀,被添加到一个选择器末尾的关键字,`通过在元素选择器上加入伪类改变元素状态`。`::before`
+
+伪元素: 伪元素用于创建一些不在文档树中的元素,并为其添加样式。用户能够看见但实际不存在文档树中。`p:last-child`
+
 ### 块级元素水平居中,垂直居中,水平垂直居中
+
+**水平居中:** 
+
+1. `text-align`
+2. `margin: 0 auto`但是一定要给宽度 
+3. 绝对定位+margin或`transform` 4. flex布局
+
+**垂直居中:** 
+
+1. `height`和`line-height`相等 
+2. `display:table-cell;vertical-align:middle` 
+3. 绝对定位 + `margin`或`transform` 
+4. flex布局
+
+**水平垂直居中:** 
+
+1. 父级设置`text-align: center`和`line-height`等同高度 
+2. 绝对定位 + `margin`或`transform` 
+3. 父级设置`display: table`，子节点设置`display:table-cell;text-align:center;vertical-align:middle` 
+4. flex布局  
+5. grid布局
 
 ### 除了Flex还可以用什么进行布局
 
+绝对定位,相对定位,浮动,fixed等
+
+
 ### 清除浮动有哪些方法？
+
+- 空div方法：`<div style="clear:both;"></div>`
+- `overflow: auto`或`overflow: hidden`方法，使用BFC
+- 最好的方法
+
+```css
+.parent-box:after{
+    clear: both;
+    content: '';
+    display: block;
+}
+```
 
 ### 盒模型的理解
 
-### 如何实现左侧宽度固定，右侧宽度自适应的布局
+标准盒(content-box): 设置的宽高只是包括内容区，内边距和边框另算。
+
+![](https://xiaomuzhu-image.oss-cn-beijing.aliyuncs.com/232580766e15853d521a4c0bf6a5c794.png)
+
+IE盒(border-box):设置的宽高包含了**内边距和边框**。
+
+![](https://xiaomuzhu-image.oss-cn-beijing.aliyuncs.com/e427c6d19ea6be1359bd0177d7a5b7a3.png)
 
 ### 谈谈对BFC的理解
 
+块级格式上下文，一句话来说就是**让块级元素有块级元素该有的样子，触发BFC可以清除浮动、让margin不重叠**。
+
+触发条件: 
+
+1. `overflow`的值不为`visible`
+2. `display`的值为`table-cell`、`table-caption`和`inline-block`之一。
+3. `position`的值不为`static`或`relative`中的任何一个
+4. `float`不为 `none`
+
 ### GET和POST有什么区别？
 
-### 聊一聊HTTP的状态码有哪些？
+- `get`产生一个`tcp数据包`，`post`会产生`两个tcp包`
+- `get`主要是应用为获取资源，`post`主要是应用于传输或修改资源
+- `get`的请求参数会被拼接到url后面，`post`放在request-body中
+- `get`默认会被浏览器主动缓存，`post`不会
 
 ### HTTPS是如何保证安全的？
 
-### HTTP的缓存的过程是怎样的？
+https并不是直接通过非对称加密传输过程，而是**有握手过程**，握手过程主要是`和服务器做通讯`，`生成私有秘钥`，最后`通过该秘钥对称加密传输数据`。还有`验证证书的正确性`。 证书验证过程保证了对方是合法的，并且中间人无法通过伪造证书方式进行攻击。
 
 ### 请简述TCP\UDP的区别
+TCP:
 
+面向连接
+面向字节流
+有状态
+保证可靠交付
+具备拥塞控制
+点对点传播
+有序
+
+UDP:
+
+无连接
+面向数据报
+无状态
+不保证可靠交付
+不具备拥塞控制
+广播、多播
+无序
+
+### Http与Https的区别：
+
+1. url不同
+2. http不安全,https安全
+3. http标准端口:80,https:443
+4. http无法加密
+5. 在OSI 网络模型中，HTTP工作于应用层，而HTTPS 的安全传输机制工作在传输层
 ### HTTP2和HTTP1有什么区别
 
-### 能说说首屏加载优化有哪些方案么
+- HTTP2支持二进制传送（实现方便且健壮），HTTP1.x是字符串传送
+- HTTP2支持多路复用
+- HTTP2采用HPACK压缩算法压缩头部，减小了传输的体积
+- HTTP2支持服务端推送
+
+### 聊一聊HTTP的状态码有哪些？
+
+2XX 成功
+
+- 200 OK，表示从客户端发来的请求在服务器端被正确处理 ✨
+- 204 No content，表示请求成功，但响应报文不含实体的主体部分
+- 206 Partial Content，进行范围请求 ✨
+
+3XX 重定向
+
+- 301 moved permanently，永久性重定向，表示资源已被分配了新的 URL
+- 302 found，临时性重定向，表示资源临时被分配了新的 URL ✨
+
+4XX 客户端错误
+
+- 401 unauthorized，表示发送的请求需要有通过 HTTP 认证的认证信息 ✨
+- 403 forbidden，表示对请求资源的访问被服务器拒绝 ✨
+- 404 not found，表示在服务器上没有找到请求的资源 ✨
+
+5XX 服务器错误
+
+- 500 internal sever error，表示服务器端在执行请求时发生了错误 ✨
+- 502 Bad Gateway：代理服务器无法获取到合法响应
 
 ### 讲一下三次握手？
 
+1. 客户端主动发起 `SYN`
+
+2. 服务端收到并返回 `SYN` 以及 `ACK` 客户端的 `SYN`
+
+3. 客户端收到服务端的 `SYN` 和 `ACK` 后，发送 `ACK` 的 `ACK` 给服务端，服务端收到后连接建立
+
 ### 讲一下四次握手？
+
+1. 客户端发送 `FIN` 给服务端
+
+2. 服务端收到后发送 `ACK` 给客户端
+
+3. 服务端发送 `FIN` 给客户端
+
+4. 客户端收到后，发送 `ACK` 的 `ACK` 给服务端，服务端关闭，客户端等待 `2MSL` 后关闭
 
 ### Webpack面试题
 
-
+待更新
