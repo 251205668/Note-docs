@@ -703,6 +703,7 @@ context = {
 }
 
 // 这里如果bar()在对象充当属性,this就会指向context,然后再删除方法即可
+// 每个函数都是 构造函数 Function 的实例对象，bar.call 或者 bar.apply 函数中的 this 自然也是指向该实例对象即 bar 的
 ```
 - 取出`bar`函数
 - 判断是否是非函数
@@ -933,12 +934,26 @@ export function debounce (func, delay) {
 }
 ```
 
+适用场景：
+
+- 按钮提交场景：防止多次提交按钮，只执行最后提交的一次
+- 服务端验证场景：表单验证需要服务端配合，只执行一段连续的输入事件的最后一次，还有搜索联想词功能类似
+
+
 ### 数组去重
 
 ```js
 function unique(arr) {
   return [...new Set(arr)];
 }
+
+function unique(arr) {
+  // 当前值 下标 数组
+  return arr.filter((v, i, a) => {
+    return a.indexOf(v) === i;
+  })
+}
+
 ```
 ### 洗牌算法和随机数
 
@@ -976,6 +991,12 @@ const throttle = (fn, delay = 500) => {
   };
 };
 ```
+适用场景：
+
+- 拖拽场景：固定时间内只执行一次，防止超高频次触发位置变动
+- 缩放场景：监控浏览器resize
+- 动画场景：避免短时间内多次触发动画引起性能问题
+
 
 ### 实现instanceOf
 
@@ -1198,9 +1219,9 @@ function flatten(arr) {
 
 ### 伪类和伪元素的区别
 
-伪类是一个以冒号(:)作为前缀,被添加到一个选择器末尾的关键字,`通过在元素选择器上加入伪类改变元素状态`。`::before`
+伪类是一个以冒号(:)作为前缀,被添加到一个选择器末尾的关键字,`通过在元素选择器上加入伪类改变元素状态`。`p:last-child`
 
-伪元素: 伪元素用于创建一些不在文档树中的元素,并为其添加样式。用户能够看见但实际不存在文档树中。`p:last-child`
+伪元素: 伪元素用于创建一些不在文档树中的元素,并为其添加样式。用户能够看见但实际不存在文档树中。`::before`
 
 ### 块级元素水平居中,垂直居中,水平垂直居中
 
@@ -1356,3 +1377,98 @@ UDP:
 ### Webpack面试题
 
 待更新
+
+
+### 原生实现无线滚动加载图片
+
+
+### 网络安全相关
+
+- 跨站脚本 (Cross-Site Scripting, XSS): 一种代码注入方式, 为了与 CSS 区分所以被称作 XSS. 早期常见于网络论坛, 起因是网站没有对用户的输入进行严格的限制, 使得攻击者可以将脚本上传到帖子让其他人浏览到有恶意脚本的页面, 其注入方式很简单包括但不限于 JavaScript / VBScript / CSS / Flash 等
+
+- 跨站点请求伪造（Cross-Site Request Forgeries，CSRF）: 指攻击者通过设置好的陷阱，强制对已完成认证的用户进行非预期的个人信息或设定信息等某些状态更新，属于被动攻击
+
+### 事件循环机制
+
+JavaScript的执行机制简单来说就`先执行同步代码，然后执行异步代码`，而`异步的代码`里面又分为`宏任务代码`和`微任务代码`，先执行微任务，然后执行宏任务。首先会将所有JavaScript作为一个宏任务执行，遇到同步的代码就执行，然后开始分配任务，遇到宏任务就将它的回调分配到宏任务的队列里，遇到微任务的回调就分配到微任务的队列里，然后开始执行所有的微任务。执行微任务的过程还是遵循先同步然后分配异步任务的顺序，微任务执行完毕之后，一次Event-Loop的Tick就算完成了。接着挨个去执行分配好的宏任务，在每个宏任务里又先同步后分配异步任务，完成下一次Tick，循环往复直到所有的任务全部执行完成。
+
+
+微任务包括：`process.nextTick` ，`promise` ，`MutationObserver`。
+
+
+宏任务包括：`script` ， `setTimeout` ，`setInterval` ，`setImmediate` ，`I/O` ，`UI rendering`。
+
+
+
+### 移动端1px问题
+
+```css
+box-shadow: 
+  0  -1px 1px -1px #e5e5e5,   //上边线
+  1px  0  1px -1px #e5e5e5,   //右边线
+  0  1px  1px -1px #e5e5e5,   //下边线
+  -1px 0  1px -1px #e5e5e5;   //左边线
+  0 0 0 1px #e5e5e5;   //四条线
+```
+
+### 有没有更好的判断变量类型的方法？
+可以使用`Object.prototype.toString.call(var)`，可以更加准确的判断某个变量的类型。
+
+### 字符串的test、match、search它们之间的区别？
+
+```js
+`test`是检测字符串是否匹配某个正则，返回布尔值；
+/[a-z]/.test(1);  // false
+
+`match`是返回检测字符匹配正则的数组结果集合，没有返回`null`；
+'1AbC2d'.match(/[a-z]/ig);  // ['A', 'b', 'C', 'd']
+
+`search`是返回正则匹配到的下标，没有返回`-1`。
+'1AbC2d'.search(/[a-z]/);  // 2
+```
+
+### 原型继承的方式有哪些？
+
+原型链继承、借用构造函数继承、组合继承、原型式继承、寄生组合继承等等。最优化的继承方式是寄生组合继承：
+
+```js
+function Parent(name) {
+  this.name = name;
+}
+function Child(name, age) {
+  Parent.call(this, name);
+  this.age = age;
+}
+Child.prototype = Object.create(Parent.prototype);
+Child.prototype.constructor = Child
+
+```
+### class理解
+
+JavaScript没有真正的类，一直也是通过函数加原型的形式来模拟，class也不例外，只是语法糖，本质还是函数。需要先声明再使用，内部的方法不会被遍历，且没有函数的prototype属性。
+
+### 对浏览器或元素的各种距离参数你知道哪些？
+
+- document.documentElement.`clientHeight`：当前窗口内容区 + 内边距- 的高度
+- window.innerHeight: 当前窗口内容区 + 内边距 + 边框 + 滚动条高度
+- window.outerHeight：整个浏览器的高度(包括工具栏)
+- `clientHeight`: 当前元素内容区 + 内边距的高度
+- `clientTop`: 当前元素上边框的宽度
+- `offsetHeight`: 当前元素内容区 + 内边距 + 边框 + 滚动条的高度
+- `offsetTop`: 当前元素的边框距离父元素上外边距的距离
+- `scrollHeight`: 当前内部可以滚动区域的高度，如果不能滚动则为自己内容区 + 内边距的高度
+- `scrollTop`: 当前元素滚动离顶部的距离
+
+### 什么是重绘和回流？
+- `重绘`是节点的外观发生改变而不改变布局时，如改变了color这个行为；
+- `回流`是指改变布局或几何属性发生改变时引起的行为，如添加移除Dom，改变尺寸。它们频繁的触发会影响页面性能。
+
+回流一定触发重绘，而重绘不一定引起回流。回流的成本比重绘高很多，而且子节点的回流，可能引起父节点一系列的回流。
+
+减少回流
+
+- 使用transform替代位移，使用translate3d开启GPU加速
+- 尽量使用visibility替代display:none
+- 不要使用tanle布局
+- 不要在循环里读取节点的属性值
+- 动画速度越快，回流次数越少
