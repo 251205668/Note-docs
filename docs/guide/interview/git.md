@@ -145,6 +145,10 @@ git branch branchname  基于当前分支创建分支
 
 # 重命名本地分支
 git branch -m <old-name> <new-name>
+# 修改远程分支名
+git branch -m oldBranch newBranch
+git push origin: oldBranch
+git push --set-upstream origin new_branch
 
 # 删除分支
 git branch -d <name> 
