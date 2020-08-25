@@ -153,7 +153,7 @@ VUE响应式原理核心是使用到了`Object.defineProperty`这个`API`,VUE重
 
 - beforeCreate: new Vue()之后执行的第一个钩子,**这个期间`methods`,`computed`,`data`数据都无法获取**
 
-- created: **实例创建完成**后,完成数据侦测,**虽然可以获取数据但是不能更新数据,无法完成`dom`交互**
+- created: **实例创建完成**后,完成数据侦测,**虽然可以获取数据,但是无法完成`dom`交互**
 
 - beforeMount: 发生在挂载之前,**当前阶段虚拟`dom`已经创建完成**,如果更改数据**不会触发`updated`**
 
@@ -167,6 +167,16 @@ VUE响应式原理核心是使用到了`Object.defineProperty`这个`API`,VUE重
 
 - destoryed: 发生在实例销毁之后，**这个时候只剩下了dom空壳**。组件已被拆解，数据绑定被卸除，监听被移出，子实例也统统被销毁
 
+### 谈一下$nextTick
+
+nextTick: 数据更新,dom渲染后执行的回调函数
+
+原理: 有待学习
+
+使用场景:
+1. created中操作dom
+2. 对更新的dom进行一系列操作时
+3. 使用插件时,希望dom重新应用插件(比如数据变化后，使用的better-scroll插件需要在nextTick中调用better-scroll的刷新api)
 
 ### 谈一下computed和watch
 

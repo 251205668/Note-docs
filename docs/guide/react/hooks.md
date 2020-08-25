@@ -254,7 +254,7 @@ return props.defaultCount || 0
 
 ### useEffect的使用
 
-useEffect实质上可以发生在`componentDidMount`之后 ,`componentDidUpdate`之后,`componentWillUnMount`之前。用于处理异步操作(请求或者其他)
+useEffect实质上可以发生在`componentDidMount`之后 ,`componentDidUpdate`之后,`componentWillUnMount`之前。用于处理异步操作(请求或者其他),你可以把它当成componentDidMount, componentDidUpdate, and componentWillUnmount 的集合。
 
 `useEffect`默认需要穿入一个函数,函数会有一个回调函数生成。第二个参数(数组)默认不传,代表每次渲染后都会触发`useEffect`,传入的话则代表**当数组的值发生改变时调用**，如果传入空数组则代表只调用一次。
 
@@ -362,3 +362,13 @@ constructor(props){
 ....
 <counter ref={this.countRef} />
 ```
+
+### Hooks函数的优点
+
+1. 函数组件无this问题
+2. 副作用(使用useEffect)的关注点分离
+3. 方便复用状态逻辑
+
+编写一个自定义的hooks函数，很类似于函数组件的写法
+
+![](https://image.yangxiansheng.top/img/20200817114653.png?imagelist)
