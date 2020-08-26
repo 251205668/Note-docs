@@ -9,9 +9,9 @@
 **前端知识图谱:**
 ![https://lsqimg-1257917459.cos.ap-beijing.myqcloud.com/blog/%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB.png](https://lsqimg-1257917459.cos.ap-beijing.myqcloud.com/blog/%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB.png)
 
-:::tip
-完整知识体系,参考[前端完整知识体系](https://www.processon.com/view/link/5c64d495e4b025fe7c964ca0#map)
-:::
+
+> 完整知识体系,参考[前端完整知识体系](https://www.processon.com/view/link/5c64d495e4b025fe7c964ca0#map)
+
 
 ## 知识点目录
 
