@@ -3,6 +3,8 @@
 
 前端知识杂而碎，如果这些知识不进行有效数理，就无法相互串联，形成以西。因此利用空闲时间整理，并将所学进行梳理，形成这份清单。
 
+[线上地址](https://blog.yangxiansheng.top)
+
 
 **前端知识图谱:**
 ![https://lsqimg-1257917459.cos.ap-beijing.myqcloud.com/blog/%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB.png](https://lsqimg-1257917459.cos.ap-beijing.myqcloud.com/blog/%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB.png)
