@@ -31,6 +31,10 @@ module.exports = {
               {
                 text:"大型电商",
                 link:"/project/shop/"
+              },
+              {
+                text:"vue实现音乐app",
+                link:"/project/music/"
               }
             ]
           }
@@ -56,6 +60,9 @@ module.exports = {
             '优惠券',
             "订单",
             "其他技巧"
+          ),
+          '/project/music/': getMusicSlideBar(
+            'Music Webapp',
           )
       }
     },
@@ -133,6 +140,18 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
     }
   ]
 }
+function getMusicSlideBar(group) {
+  return [
+    {
+      title: group,
+      collapsable: false,
+      children: [
+        '',
+      ]
+    }
+  ]
+}
+
 
 function getPShopSlideBar(group,groupA, groupB, groupC,groupD,groupE,groupF) {
   return [

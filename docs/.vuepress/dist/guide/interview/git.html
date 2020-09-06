@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Git总结 | 前端面试知识总结</title>
+    <meta name="description" content="自家使用,暂不外传">
+    <meta name="generator" content="VuePress 1.3.1">
+    <link rel="icon" href="/favicon.ico">
+    
+    <link rel="preload" href="/assets/css/0.styles.6a4803ab.css" as="style"><link rel="preload" href="/assets/js/app.81dd3622.js" as="script"><link rel="preload" href="/assets/js/2.d1b1e148.js" as="script"><link rel="preload" href="/assets/js/18.13ed30af.js" as="script"><link rel="preload" href="/assets/js/4.a3faee54.js" as="script"><link rel="prefetch" href="/assets/js/10.42124fbe.js"><link rel="prefetch" href="/assets/js/11.bdef2e64.js"><link rel="prefetch" href="/assets/js/12.9c5e83ed.js"><link rel="prefetch" href="/assets/js/13.3db43aaf.js"><link rel="prefetch" href="/assets/js/14.8f2ec86d.js"><link rel="prefetch" href="/assets/js/15.c6286125.js"><link rel="prefetch" href="/assets/js/16.5da2b31d.js"><link rel="prefetch" href="/assets/js/17.c9deef07.js"><link rel="prefetch" href="/assets/js/19.f1a01180.js"><link rel="prefetch" href="/assets/js/20.30f7288c.js"><link rel="prefetch" href="/assets/js/21.477730e4.js"><link rel="prefetch" href="/assets/js/22.ab119ff1.js"><link rel="prefetch" href="/assets/js/23.9bbc22fc.js"><link rel="prefetch" href="/assets/js/24.cb1899b8.js"><link rel="prefetch" href="/assets/js/25.64669f1d.js"><link rel="prefetch" href="/assets/js/26.f3040183.js"><link rel="prefetch" href="/assets/js/27.2938dd4c.js"><link rel="prefetch" href="/assets/js/28.cd87026d.js"><link rel="prefetch" href="/assets/js/29.b92287f4.js"><link rel="prefetch" href="/assets/js/3.103e70cb.js"><link rel="prefetch" href="/assets/js/30.af43d48f.js"><link rel="prefetch" href="/assets/js/31.8c7148f5.js"><link rel="prefetch" href="/assets/js/32.d42beb3f.js"><link rel="prefetch" href="/assets/js/33.223bba8e.js"><link rel="prefetch" href="/assets/js/34.04b12083.js"><link rel="prefetch" href="/assets/js/35.19c65fa0.js"><link rel="prefetch" href="/assets/js/36.a1a664b9.js"><link rel="prefetch" href="/assets/js/37.d2e7a2dd.js"><link rel="prefetch" href="/assets/js/38.4f737159.js"><link rel="prefetch" href="/assets/js/39.fcdeadea.js"><link rel="prefetch" href="/assets/js/40.40a9daf9.js"><link rel="prefetch" href="/assets/js/5.2f32d917.js"><link rel="prefetch" href="/assets/js/6.d92ecc16.js"><link rel="prefetch" href="/assets/js/7.a09f8ef2.js"><link rel="prefetch" href="/assets/js/8.5b00daa2.js"><link rel="prefetch" href="/assets/js/9.9d06f44a.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.6a4803ab.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">前端面试知识总结</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><a href="/guide/" class="nav-link router-link-active">
+  指南
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="项目" class="dropdown-title"><span class="title">项目</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/project/shop/" class="nav-link">
+  大型电商
+</a></li><li class="dropdown-item"><!----> <a href="/project/music/" class="nav-link">
+  vue实现音乐app
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><a href="/guide/" class="nav-link router-link-active">
+  指南
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="项目" class="dropdown-title"><span class="title">项目</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/project/shop/" class="nav-link">
+  大型电商
+</a></li><li class="dropdown-item"><!----> <a href="/project/music/" class="nav-link">
+  vue实现音乐app
+</a></li></ul></div></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>目录</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/" class="sidebar-link">项目介绍</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>css基础到进阶</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/css/test.html" class="sidebar-link">移动端问题</a></li><li><a href="/guide/css/layout.html" class="sidebar-link">前端常见布局</a></li><li><a href="/guide/css/alwaysCode.html" class="sidebar-link">常用css片段</a></li><li><a href="/guide/css/iconfont.html" class="sidebar-link">全局stylus配置及使用iconfont</a></li><li><a href="/guide/css/css-skill.html" class="sidebar-link">灵活使用css技巧</a></li><li><a href="/guide/css/code.html" class="sidebar-link">code pratice</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>js基础</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/js/base.html" class="sidebar-link">基础</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>js进阶</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/js/higher.html" class="sidebar-link">js??</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>MVVM分析</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/vue/vue.html" class="sidebar-link">vue 基础部分</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Webpack实战分析</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Node.js基础到进阶</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>面试题总结</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/interview/test.html" class="sidebar-link">JS基础</a></li><li><a href="/guide/interview/web-api.html" class="sidebar-link">JS-Web-API</a></li><li><a href="/guide/interview/git.html" class="active sidebar-link">Git总结</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/guide/interview/git.html#图例概览" class="sidebar-link">图例概览</a></li><li class="sidebar-sub-header"><a href="/guide/interview/git.html#git安装及配置" class="sidebar-link">git安装及配置</a></li><li class="sidebar-sub-header"><a href="/guide/interview/git.html#git一般的使用命令" class="sidebar-link">git一般的使用命令</a></li><li class="sidebar-sub-header"><a href="/guide/interview/git.html#git命令合集" class="sidebar-link">git命令合集</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/guide/interview/git.html#文件操作" class="sidebar-link">文件操作</a></li><li class="sidebar-sub-header"><a href="/guide/interview/git.html#git状态显示" class="sidebar-link">git状态显示</a></li><li class="sidebar-sub-header"><a href="/guide/interview/git.html#分支操作" class="sidebar-link">分支操作</a></li></ul></li><li class="sidebar-sub-header"><a href="/guide/interview/git.html#多人协作" class="sidebar-link">多人协作</a></li></ul></li><li><a href="/guide/interview/broswer.html" class="sidebar-link">浏览器</a></li><li><a href="/guide/interview/miniprogrammer.html" class="sidebar-link">小程序</a></li><li><a href="/guide/interview/Vue.html" class="sidebar-link">Vue</a></li><li><a href="/guide/interview/project.html" class="sidebar-link">项目总结</a></li><li><a href="/guide/interview/always.html" class="sidebar-link">面试通用回答</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="git总结"><a href="#git总结" class="header-anchor">#</a> Git总结</h1> <h2 id="图例概览"><a href="#图例概览" class="header-anchor">#</a> 图例概览</h2> <p><a href="https://image.yangxiansheng.top/img/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8.jpg?imagelist" target="_blank" rel="noopener noreferrer">原图<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> <img src="https://image.yangxiansheng.top/img/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8.jpg?imagelist" alt=""></p> <p><a href="https://image.yangxiansheng.top/img/linux%E5%91%BD%E4%BB%A4.jfif?imagelist" target="_blank" rel="noopener noreferrer">原图<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> <img src="https://image.yangxiansheng.top/img/linux%E5%91%BD%E4%BB%A4.jfif?imagelist" alt=""></p> <h2 id="git安装及配置"><a href="#git安装及配置" class="header-anchor">#</a> git安装及配置</h2> <ol><li>设置git仓库的用户名，email</li></ol> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">git</span> config  -- global user.name <span class="token string">'yourname'</span>
+<span class="token function">git</span> config  -- global user.email <span class="token string">'youremail'</span>
+</code></pre></div><p>还可以配置本地的用户名，email ，<strong>本地的用户名密码权重比全局要高</strong>，当初始化完成，本项目的用户名邮箱会做本更</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">git</span> config --local user.name <span class="token string">''</span>
+<span class="token function">git</span> config --local user.email <span class="token string">''</span>
+</code></pre></div><p>查看当前用户的配置信息</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">git</span> config --list --local or --lobal
+</code></pre></div><p>打印结果:</p> <p><img src="https://image.yangxiansheng.top/img/git1.png?imagelist" alt="">
+2. 初始化一个git仓库的命令</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token builtin class-name">cd</span> project
+<span class="token function">git</span> init
+
+or 
+
+<span class="token function">git</span> init myproject
+</code></pre></div><ol start="3"><li>配置免密ssh</li></ol> <div class="custom-block tip"><p class="custom-block-title">TIP</p> <p>配置公私钥，如果已经配置过ssh key需要备份</p></div> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token builtin class-name">cd</span> ~/.ssh
+<span class="token function">mkdir</span> key_backup
+<span class="token function">cp</span> id_rs a*key_backup
+</code></pre></div><p>:::</p> <p><strong>生成sshkey</strong></p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ ssh-keygen -t rsa C <span class="token string">&quot;251205668@qq.com&quot;</span>  需要输入密码 生成的公钥私钥会放在.ssh文件下
+
+公钥.pub文件粘贴进github网站key
+</code></pre></div><p>连接github</p> <div class="language- extra-class"><pre class="language-text"><code>$ ssh git@github.com   --连接成功后显示
+</code></pre></div><p><img src="https://image.yangxiansheng.top/img/QQ%E6%88%AA%E5%9B%BE20200228140352.png?imagelist" alt="">
+4. .git文件目录</p> <div class="language-bash extra-class"><pre class="language-bash"><code>---HEAD   告诉我们git当前所处分支
+---config 记录user信息
+---refs   记录分支信息和标签信息
+
+</code></pre></div><h2 id="git一般的使用命令"><a href="#git一般的使用命令" class="header-anchor">#</a> git一般的使用命令</h2> <ul><li>首次提交</li></ul> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">git</span> init 
+<span class="token function">git</span> <span class="token function">add</span> <span class="token builtin class-name">.</span>
+<span class="token function">git</span> commit -a -m <span class="token string">'deploy'</span>
+<span class="token function">git</span> remote <span class="token function">add</span> origin <span class="token string">'responity path'</span>
+<span class="token function">git</span> pull
+<span class="token function">git</span> push -u origin master
+</code></pre></div><ul><li>最简单的提交方式</li></ul> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">git</span> pull
+<span class="token function">git</span> <span class="token function">add</span> <span class="token builtin class-name">.</span> <span class="token punctuation">(</span>. -u -A 都是处理全部的变更 +filename是对单文件或多文件的变更处理<span class="token punctuation">)</span>
+<span class="token function">git</span> commit -m <span class="token string">'deploy'</span> <span class="token punctuation">(</span>此处不能出现变更文件名<span class="token punctuation">)</span>
+<span class="token function">git</span> push origin master 当前分支推送远程仓库master
+</code></pre></div><ul><li>更换分支常规的提交</li></ul> <div class="language-bash extra-class"><pre class="language-bash"><code>远程仓库新建分支
+
+<span class="token function">git</span> pull
+<span class="token function">git</span> checkout <span class="token builtin class-name">test</span>
+<span class="token function">git</span> <span class="token function">add</span> -A
+<span class="token function">git</span> commit -m <span class="token string">'deploy'</span>
+<span class="token function">git</span> checkout master 
+<span class="token function">git</span> merge origin/test
+<span class="token function">git</span> push -u origin master -u第一次推送，后面省去
+
+推送分支进远程分支不是主分支的话 要合并起来 不然会警告
+
+</code></pre></div><h2 id="git命令合集"><a href="#git命令合集" class="header-anchor">#</a> git命令合集</h2> <h3 id="文件操作"><a href="#文件操作" class="header-anchor">#</a> 文件操作</h3> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">git</span> <span class="token function">mv</span> file1 flie2 --重命名文件file1，git自动add
+
+<span class="token function">git</span> <span class="token function">rm</span> fileName    --删除文件,自动add进暂存
+
+</code></pre></div><h3 id="git状态显示"><a href="#git状态显示" class="header-anchor">#</a> git状态显示</h3> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">git</span> status  查看当前分支信息和变更情况
+<span class="token function">git</span> log     查看当前分支的版本commit情况
+<span class="token function">git</span> log -1  查看第一条commit的情况
+<span class="token function">git</span> reflog  显示当前分支的最近几次提交
+<span class="token function">git</span> show <span class="token operator">&lt;</span>commit<span class="token operator">&gt;</span>:<span class="token operator">&lt;</span>filename<span class="token operator">&gt;</span>  显示某次提交时，某个文件的内容
+<span class="token function">git</span> show <span class="token operator">&lt;</span>commit<span class="token operator">&gt;</span>  显示某次提交的元数据和内容变化
+<span class="token function">git</span> show --name-only <span class="token operator">&lt;</span>commit<span class="token operator">&gt;</span>  显示某次提交发生变化的文件
+
+</code></pre></div><h3 id="分支操作"><a href="#分支操作" class="header-anchor">#</a> 分支操作</h3> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token comment"># 显示</span>
+<span class="token function">git</span> branch -av 列出所有分支有具体commit信息
+<span class="token function">git</span> branch -r 列出远程分支名
+<span class="token function">git</span> branch branchname  基于当前分支创建分支
+
+<span class="token comment"># 重命名本地分支</span>
+<span class="token function">git</span> branch -m <span class="token operator">&lt;</span>old-name<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>new-name<span class="token operator">&gt;</span>
+<span class="token comment"># 修改远程分支名</span>
+<span class="token function">git</span> branch -m oldBranch newBranch
+<span class="token function">git</span> push origin: oldBranch
+<span class="token function">git</span> push --set-upstream origin new_branch
+
+<span class="token comment"># 删除分支</span>
+<span class="token function">git</span> branch -d <span class="token operator">&lt;</span>name<span class="token operator">&gt;</span> 
+<span class="token function">git</span> branch -D <span class="token operator">&lt;</span>name<span class="token operator">&gt;</span> <span class="token comment"># 强制删除分支</span>
+<span class="token comment"># 删除远程分支(先在本地删除该分支)，原理是把一个空分支push到server上，相当于删除该分支。</span>
+<span class="token function">git</span> push origin :<span class="token operator">&lt;</span>name<span class="token operator">&gt;</span>
+
+<span class="token comment"># !!!切分支</span>
+<span class="token function">git</span> checkout branchName  切换到该分支
+<span class="token function">git</span> checkout -b branchName master 基于master分支创建分支，并切换到该分支
+
+<span class="token comment"># 本地工作区,并未commit的回滚</span>
+<span class="token function">git</span> checkout <span class="token function">head</span> filename 撤销工作区的修改
+<span class="token function">git</span> checkout <span class="token function">head</span> 撤销所有文件的修改
+
+<span class="token comment"># 撤销某个文件提交</span>
+
+<span class="token function">git</span> reset HEAD --fileName 撤销暂存区内容 撤销暂存区内容
+然后再 <span class="token function">git</span> commit
+
+<span class="token function">git</span> reset --hard HEAD 将工作区和暂存区恢复成头指针状态 全部撤销
+<span class="token function">git</span> reset --hard head^^ 复位到head之前的版本
+<span class="token function">git</span> reset head~1 撤销一条记录 编辑commit编辑
+<span class="token function">git</span> push
+
+<span class="token comment"># 回滚代码</span>
+<span class="token function">git</span> log 查看提交历史
+<span class="token function">git</span> resset --hard log里面的哈希值 -回滚代码
+<span class="token function">git</span> reflog 查看本地所有的操作历史
+
+<span class="token function">git</span> reset --hard head^ 回滚到上一次提交
+
+
+<span class="token comment"># 暂时存放修改的文件 一般用于没写完代码但是要工作另一部分的代码</span>
+<span class="token function">git</span> stash 将工作区暂存进堆栈
+<span class="token function">git</span> statsh apply 暂存空间取出来 并不删除堆栈记录
+<span class="token function">git</span> stash pop 删除堆栈记录
+
+
+<span class="token comment"># 比较差异</span>
+<span class="token function">git</span> <span class="token function">diff</span> HEAD HEAD^ 对比当前commit和父级commit区别
+<span class="token function">git</span> <span class="token function">diff</span> 比较工作区和暂存区差异
+<span class="token function">git</span> <span class="token function">diff</span> --fileName 文件工作区和暂存区差异
+<span class="token function">git</span> <span class="token function">diff</span> branch1 branch2 比较分支差异
+<span class="token function">git</span> <span class="token function">diff</span> branch1 branch2 --flieName 比较文件
+
+<span class="token comment"># 修改commit信息</span>
+<span class="token function">git</span> commit -amend 对最近提交的coomit的message变更
+<span class="token function">git</span> commit -a -m <span class="token string">'message'</span>  添加所有修改文件到暂存区，并提交版本库<span class="token punctuation">(</span>不包括新增文件<span class="token punctuation">)</span>
+
+
+
+<span class="token comment"># 推送</span>
+<span class="token function">git</span> push -u origin master 第一次推送
+<span class="token function">git</span> push -f origin master 强制推送
+<span class="token function">git</span> push -all origin master
+<span class="token function">git</span> push  <span class="token string">'仓库地址'</span> master
+
+</code></pre></div><blockquote><p>.gitignore常见用法</p></blockquote> <div class="language-bash extra-class"><pre class="language-bash"><code>.DS_Store  .DS_Store结尾文件或目录忽略管理
+
+node_modules/
+
+dist/       dist文件夹下面的文件忽略关理,但是文件夹会管理
+
+* .idea     所有结尾是.idea文件忽略管理
+.vscode
+
+</code></pre></div><h2 id="多人协作"><a href="#多人协作" class="header-anchor">#</a> 多人协作</h2> <p><strong>git flow工作流</strong></p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">git</span> branch 查看本地分支
+
+在公司无权限推送master分支
+<span class="token function">git</span> checkout -b dev master -master 分支创建分支
+
+<span class="token function">git</span> status 查看文件记录
+
+一位成员修改一份文件,然后推送,另一位同学同时修改这份文件,提交会被拒绝
+
+<span class="token function">git</span> pull origin dev 拉取远程的dev分支,但是此时会有冲突，因为双方都修改了文件
+
+解决冲突
+
+推送
+<span class="token function">git</span> push origin dev
+
+选择性拉取远程分支内容<span class="token punctuation">(</span>常用场景,不想合并全部分支<span class="token punctuation">)</span>
+
+<span class="token function">git</span> fetch origin dev
+<span class="token function">git</span> merge FETCH-HEAD 上面拉取的后面的变量
+
+<span class="token function">git</span> push origin feature:feature 前面是本地分支 后面是远程的分支,自定义命名
+
+<span class="token function">git</span> fetch
+
+拉取远程分支 然后把内容输入到dev分支
+<span class="token function">git</span> fetch origin feature:dev
+
+
+</code></pre></div><p>两种工作流
+预定三个分支:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>dev    预发布分支
+fetaure 开发分支
+master  发布分支
+
+
+首先切换到dev分支
+
+<span class="token function">git</span> checkout dev
+
+合并开发
+
+<span class="token function">git</span> merge feature
+
+发布
+
+<span class="token function">git</span> checkout master
+<span class="token function">git</span> merge dev
+
+打上版本标签推送
+
+<span class="token function">git</span> tag v1.0.0
+
+<span class="token function">git</span> push origin master --tags
+
+删除tag
+<span class="token function">git</span> tag -d v1.0.0
+
+列出tag
+<span class="token function">git</span> tag --list
+
+
+删除远程分支或者tag
+<span class="token function">git</span> push origin :refs/tags/v1.0.0
+
+<span class="token function">git</span> push origin :远程分支
+
+删除本地分支
+<span class="token function">git</span> branch -D 分支
+
+</code></pre></div></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last update:</span> <span class="time">8/14/2020, 2:01:14 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/guide/interview/web-api.html" class="prev">
+        JS-Web-API
+      </a></span> <span class="next"><a href="/guide/interview/broswer.html">
+        浏览器
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/assets/js/app.81dd3622.js" defer></script><script src="/assets/js/2.d1b1e148.js" defer></script><script src="/assets/js/18.13ed30af.js" defer></script><script src="/assets/js/4.a3faee54.js" defer></script>
+  </body>
+</html>
