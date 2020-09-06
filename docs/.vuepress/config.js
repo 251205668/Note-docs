@@ -106,7 +106,7 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
         '/guide/css/alwaysCode.md',
         '/guide/css/iconfont.md',
         '/guide/css/css-skill.md',
-        '/guide/css/code.md'
+        '/guide/css/code.md',
       ]
     },
     {
@@ -141,7 +141,7 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
     {
       title: groupG,
       collapsable: true,
-      children: ['/guide/interview/test.md','/guide/interview/web-api.md','/guide/interview/git.md','/guide/interview/broswer.md','/guide/interview/miniprogrammer.md','/guide/interview/Vue.md','/guide/interview/project.md','/guide/interview/always.md']
+      children: ['/guide/interview/test.md','/guide/interview/web-api.md','/guide/interview/git.md','/guide/interview/broswer.md','/guide/interview/miniprogrammer.md','/guide/interview/Vue.md','/guide/interview/suanfa.md','/guide/interview/project.md','/guide/interview/always.md']
     }
   ]
 }
@@ -220,7 +220,7 @@ function getBlogSlideBar(groupA) {
         '/blog/pratice/log.md',
         '/blog/pratice/beautify.md',
         '/blog/pratice/knowledge.md',
-        '/blog/pratice/codeReview.md'
+        '/blog/pratice/codeReview.md',
       ]
     }
   ]

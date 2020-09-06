@@ -1130,6 +1130,7 @@ Function.prototype.myapply = function(content){
   delete content[caller]
   return res
 }
+```
 
 apply
 
@@ -1213,6 +1214,22 @@ Promise.all([
 
 ```
 
+### 手写Promise Pormise.all Promise.race
+
+### js实现一个日历
+
+### 手写repeat
+
+### 讲一下浏览器缓存
+
+### 前端性能优化 vue性能优化
+
+### 移动端布局有那些
+
+### a元素有子元素b，点击a触发console.log 点击b不会触发实现
+
+### webpack的优化相关 能不能说一下
+
 ### 异步使用场景
 
 - 网络请求
@@ -1253,6 +1270,7 @@ a= 1
 
 **加载过程**
 
+- 浏览器查找当前URL是否存在缓存，并比较缓存是否过期
 - DNS解析域名,域名->IP地址
 - 浏览器与服务器建立tcp链接（三次握手）
 - 浏览器根据IP地址发送http请求
@@ -1265,6 +1283,10 @@ a= 1
 - 根据`RenderTree`渲染页面
 - 页面遇到`<script></script>`标签停止渲染,执行完`js`代码后再继续渲染
 - 直至渲染完成
+
+详细解答版本
+
+
 
 ### 什么是浏览器同源策略？和如何实现跨域
 
@@ -1284,9 +1306,13 @@ a= 1
 
 原理: 利用`<script></script>`不受同源策略限制,进行跨域操作。
 
+手写jsonp实现
+
 - CORS跨域:
 
 原理: 使用额外的 `HTTP 头`来告诉浏览器 让运行在一个 `origin` (domain) 上的Web应用被准许访问来自不同源服务器上的指定的资源。
+
+跨域相关知识点补充
 
 - nginx反向代理:
 
@@ -1937,3 +1963,18 @@ JavaScript没有真正的类，一直也是通过函数加原型的形式来模�
 ### setTimeout和setInterval的机制
 
 因为js是单线程的。浏览器遇到`setTimeout和setInterval`会先执行完`当前的代码块`，在此之前会把定时器`推入浏览器的待执行时间队列`里面，等到浏览器执行完当前代码之后会看下`事件队列`里有没有任务，有的话才执行定时器里的代码
+
+
+### webpack loader和plugin的区别
+
+### 有没有写过loader
+
+### ssr的原理是什么
+
+### react在应用初始化，更新的时候触发了那些生命周期
+
+### react hooks的优点
+
+### react和vue比较
+
+### lodash的once方法实现
