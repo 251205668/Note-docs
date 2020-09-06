@@ -82,6 +82,26 @@ module.exports = {
 
 ![20200722170005](https://raw.githubusercontent.com/imageList/imglist/master/20200722170005.png)
 
+**配置 entry 和 output**
+
+如果需要打包多个文件,只需要设置`entry`对象即可
+
+```js
+entry:{
+  main: './src/index.js',
+  sub: './src/index.js'
+}
+```
+
+最终生成的打包文件还配置一下`output`,否则会冲突
+
+```js
+output:{
+  filename:'[name].js',
+  path:path.resolve(__dirname,'dist')
+}
+```
+
 **运行`webpack`打包有几种方式**
 
 前提条件需要安装`webpack-cli`,他的作用是识别`webpack`命令。
@@ -158,34 +178,33 @@ module.exports = {
 
 ### 打包图片
 
-
 1. 使用`file-loader`打包图片到指定目录
 
 ```js
 module.exports = {
-  mode:'production',
-  extry:{
-    main:'./src/index.js'
+  mode: 'production',
+  extry: {
+    main: './src/index.js',
   },
-  module:{
-    rules:[
+  module: {
+    rules: [
       {
-        test:/\.(jpg|png|gif)$/,
-        use:{
-          loader:'file-loader',
+        test: /\.(jpg|png|gif)$/,
+        use: {
+          loader: 'file-loader',
           // 打包到 dist/images下
-          options:{
-            name:'[name].[etc]',
-            outputPath:'images/'
-          }
-        }
-      }
-    ]
+          options: {
+            name: '[name].[etc]',
+            outputPath: 'images/',
+          },
+        },
+      },
+    ],
   },
-  output:{
-    filename:'bundle.js',
-    path:path.resolve(__dirname,'dist')
-  }
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
 }
 ```
 
@@ -220,7 +239,7 @@ module.exports = {
 
 打包`css`文件的原理是先通过 `css-loader` 打包`css`文件到指定目录,然后通过 `style-loader` 将样式挂载到`header`。其他的模块化的`sass`、`less`、`stylus`则需要先转译成`css`文件然后同样的挂载。
 
-1. 打包普通`css`文件
+1. **打包普通`css`文件**
 
 ```js
 module.exports = {
@@ -234,9 +253,10 @@ module.exports = {
   }
 }
 ```
-打包后`css`先通过loader打包成css代码,然后挂载到header上
 
-2. 打包`Sass`文件,并且配置浏览器兼容性前缀
+打包后`css`先通过 loader 打包成 css 代码,然后挂载到 header 上
+
+2. **打包`Sass`文件,并且配置浏览器兼容性前缀**
 
 打包`Sass`文件需要使用到的`loader`为: `Sass-loader`,首先先安装
 
@@ -250,27 +270,271 @@ $ npm install sass-loader node-sass  --save-dev
 $ npm i -D postcss-loader
 $ npm i -D autoprefixer
 ```
+
 安装之后创建`postcss.config.js`
 
 ```js
 module.exports = {
-  plugins:[
-    require('autoprefixer')
-  ]
+  plugins: [require('autoprefixer')],
 }
 ```
+
 最后就是配置`webpack.config.js`了
 
 ```js
-... 
+...
 module:{
     rules:[{
-      test:/\.css$/,
+      test:/\.scss$/,
       // loader执行顺序是从下到上 从右到左
       use:['style-loader','css-loader','sass-loader','postcss-loader']
     }]
   }
 ```
 
+改进打包 Scss 文件中的`css-loader`,这里设置`module:true`的作用是避免耦合性,(style.avatar) 打包成`模块化的css`,如果直接引入的话,页面上的其他`js`模块也使用到了该样式会造成污染。`importLoaders:2`保证`sass`文件里面引入的`sass`文件也能正常打包。
 
+```js
+module.exports = {
+  ...
+  module:{
+    rules:[
+      {
+        test:/\.scss$/,
+        use:[
+          'style-loader',
+          {
+            loader:'css-loader',
+            options:{
+              module:true,//开启css模块化,
+              importLoaders:2 //保证前两个loader一定执行
+            }
+          },
+          'sass-loader',
+          'postcss-loader'
+        ]
+      }
+    ]
+  }
+}
+```
 
+3. **打包图标字体文件**
+
+配置选项:
+
+```js
+module.exports = {
+  entry: {
+    main: './src/index.js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(evt|svg|ttf)$/,
+        use: 'file-loader',
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
+            },
+          },
+          'scss-loader',
+          'postcss-loader',
+        ],
+      },
+    ],
+  },
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+}
+```
+
+然后直接在页面上正常引入字体文件`class`即可显示图片
+
+### Webpack 常用插件使用
+
+插件是帮助我们在`webpack`打包的节点上做事情的,类似于生命周期钩子。
+
+- [html-webpack-plugin](https://www.webpackjs.com/plugins/html-webpack-plugin/) 帮助在打包过程中自动生成一个`html`文件,并且将打包生成的`js`填入
+
+- [clean-webpack-plugin](https://github.com/johnagan/clean-webpack-plugin) 帮助在打包之前删除之前打包的文件夹
+
+使用案例:
+
+```js
+const {CleanWebpackPlugin} = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+  ...
+  plugins:[
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      // 指定html模板
+      template:'src/index.html'
+    })
+  ]
+}
+```
+
+打包后效果:
+
+![20200723160824](https://raw.githubusercontent.com/imageList/imglist/master/20200723160824.png)
+
+### 其他(重要配置插件)
+
+**开启 source-map 模式**
+
+`source-map`的作用一个映射关系。比如源代码的第二行出错,普通情况下打包后在控制台报的错误是打包后的文件中报错代码行,很难去排查源代码错误,这个时候`source-map`就起作用了,通过配置`source-map`就可以将打包文件映射到源代码,实现监听源代码的效果。
+
+开启`source-map`很简单,只需要将`devtool`设置为`source-map`
+
+```js
+module.exports = {
+  entry:{
+    main:'./src/index.js'
+  },
+  // none则代表关闭
+  devtool:'source-map'
+  ...
+}
+
+```
+
+**使用 webpack-dev-server**
+
+如果使用`webpack --watch`这个命令去监听`打包更新`的话不是很好,首先每次都需要手动打开入口`html文件`,而且打开的协议都是`file协议`不能支持`ajax请求`,所以这个时候需要配置`devServer`去开启一个服务,监听更新。
+
+[官网配置](https://www.webpackjs.com/configuration/dev-server/)
+
+```bash
+$ cnpm i webpack-dev-server -D
+```
+
+```js
+module.exports = {
+  devServer: {
+    // 提供bundle的目录
+    contentBase: './dist',
+    port: 8080,
+    open: true,
+    // 配置跨域
+    proxy: {
+      '/api': 'http://localhost:3000',
+    },
+  },
+}
+```
+
+**热模块更新** :apple:
+
+在`webpack`中开启热模块更新,首先需要引入`webpack`,然后配置`devServer`，之后需要使用到`HotModuleReplacement`进行热更新模块加载
+
+```js
+const webpack = require('webpack')
+module.exports = {
+  devServer: {
+    port: 8080,
+    contentBase: './dist',
+    // 开启热更新
+    hot: true,
+    // 每次更新,浏览器不会重复刷新
+    hotOnly: true,
+  },
+  plugins: [new webpack.HotModuleReplcaement()],
+}
+```
+
+例子: 当你只需要改变一个模块代码时,不想影响另一个模块的代码,并且不希望浏览器自动刷新，这时就需要配置`HotModuleReplcaement`
+
+::: tip
+`css`模块的更新就不需要这样处理,因为他们的`loader`内置了对模块的监控更新操作
+:::
+
+index.js
+
+```js
+import './number'
+import './test'
+
+// 我只希望更新test,然后监听test模块更新去执行新的业务逻辑
+```
+
+首先配置热模块更新
+
+```js
+const webpack = require('webpack')
+module.exports = {
+  devServer:{
+    port:8080,
+    contentBase:'./dist',
+    hot:true,
+    hotOnly:true,
+    open:true
+  },
+  ...
+  plugins:[
+    new webpack.HotModuleReplacement()
+  ]
+}
+```
+
+然后配置完成之后在`index.js`上挂上一个钩子监听
+
+```js
+if(module.hot){
+  // 监听模块更新触发钩子函数 第一个参数是指定模块的路径 第二个是func
+  module.hot.accept('./number',()=>{
+    ...
+  })
+}
+```
+
+热更新的原理(**重点**):
+
+**使用 Babel 处理 ES6**
+
+首先需要安装`babel-loader`搭建`babel`和`webpack`之间的桥梁,然后配置`babel-presset`进行语法翻译，追后需要使用`babel-polyfill`进行低版本兼容性处理
+
+首先安装相关包 @babel-
+
+```bash
+npm install --save-dev babel-loader @babel/core  @babel/preset-env @babel-polyfill
+```
+
+```js
+module.exports = {
+  ...
+  module:{
+    rules:[
+      {
+        test: /\.js$/,
+        // 配置不需要使用babel转译的路径
+        exclude: /node_modules/,
+        loader: "babel-loader",
+        options:{
+          // 翻译规则 然后按需加载polyfill
+          presets: [['@babel/preset-env',{
+            useBuiltIns:'usage'
+          }]]
+        }
+
+      }
+    ]
+  }
+}
+
+```
+然后需要在入口文件中引入`@babel/polyfill`即可实现`ES6`转为`ES5`
+
+Babel 原理(**重点**):
+
+**TreeShaking**
