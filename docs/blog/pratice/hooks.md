@@ -1,17 +1,26 @@
-## React hooks学习
+
+
+# React hooks学习
+
+<p>
+<img width="100%" height="400px" src="https://user-gold-cdn.xitu.io/2019/7/24/16c24b21d59234c9?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1" />
+<p>
+
 
 react-scripts插件集成了类似于webpack的一系列命令的js文件，相当于vue2.x的webpack的配置文件
 
-### 使用eject来配置webapck
+## 使用eject来配置webapck
 
 ```js
 npm run eject
 ```
-输入后就会生成左侧目录结构
+输入后就会生成左侧目录结构，用于配置`webpack`
+
+
 ![](https://image.yangxiansheng.top/img/20200816111317.png?imagelist)
 
 
-### Context的使用
+## Context的使用
 新特性加入了`Context`,这个API相当于一个全局变量。`react`中如果出现`跨组件传值`的情况，就可以在父组件下使用`Context`,方便跨组件传值。
 
 基本使用: `Provider`和 `consumer`
@@ -128,7 +137,7 @@ class Leaf extends Component{
 }
 ```
 
-### 使用lazy和suspense进行组件懒加载
+## 使用lazy和suspense进行组件懒加载
 
 `react`使用`lazy`进行懒加载的原理是利用webpack的`codesplit`能力，利用`import`可以动态导入的特性，当`import`导入的代码被加载时，`webpack`就会自动将这个包打到一个分割的包。
 
@@ -167,7 +176,7 @@ render(){
 }
 ```
 
-### 使用PureComponent和memo减少组件渲染
+## 使用PureComponent和memo减少组件渲染
 
 react中当`state`里面的数据发生改变,就会导致`render()`函数重新执行,有的时候我们的无状态组件并不需要重新渲染。这个时候就会使用到`PureComponent`和`memo`
 
@@ -217,7 +226,7 @@ const Foo = memo((props)=>{
 })
 ```
 
-### Hooks: stateHooks
+## Hooks: stateHooks
 
 当我们在无状态函数组件中要使用到`state`或者修改数据的话就需要引入`useState`去支持
 
@@ -252,7 +261,7 @@ return props.defaultCount || 0
 )
 ```
 
-### useEffect的使用
+## useEffect的使用
 
 useEffect实质上可以发生在`componentDidMount`之后 ,`componentDidUpdate`之后,`componentWillUnMount`之前。用于处理异步操作(请求或者其他),你可以把它当成componentDidMount, componentDidUpdate, and componentWillUnmount 的集合。
 
@@ -290,7 +299,7 @@ function App() {
 }
 ```
 
-### 使用useContext简化context的消费者写法
+## 使用useContext简化context的消费者写法
 
 使用`useContext`的写法简化很多，无需在类组件中写`context.Consumer`或者使用`contextType`
 
@@ -338,7 +347,7 @@ function Foohooks() {
 }
 ```
 
-### RefHook在函数组件中使用
+## RefHook在函数组件中使用
 
 获取`dom`可以使用`useRef`这个hook
 ```js
@@ -364,7 +373,7 @@ constructor(props){
 
 ```
 
-### 自定义Hook
+## 自定义Hook
 
 ```js
 import React,{ useState,useEffect } from 'react'
@@ -402,7 +411,7 @@ function App() {
 ```
 
 
-### Hooks函数的优点
+## Hooks函数的优点
 
 1. 函数组件无this问题
 2. 副作用(使用useEffect)的关注点分离

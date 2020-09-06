@@ -161,6 +161,7 @@ console.log(10 || 0) // 0
 - 每个`class`都有一个显式原型`prototype`,这里存储方法或属性。
 - 每个实例都有一个隐式原型`__proto__`
 - 实例的隐式原型指向`class`的显式原型,实例就有用了属性和方法
+- 每个函数都有一个显示原型，下面的构造函数指向函数本身
 
 这里**Student**是定义的类,然后传入属性`name`,`number`,再定义一个函数,**根据关系类`Student`具有显式原型`prototype`存放方法，然后实例化的时候隐式原型指向这个原型,从而调用方法**。
 
@@ -171,11 +172,14 @@ console.log(10 || 0) // 0
 console.log(Student.prototype) // 打印出student:{constructor:{},sayHi:}
 console.log(xialuo.__proto__) // 同样打印出刚刚的结果
 console.log(Student.prototype === xialuo.__proto__) // true
+console.log(Student.prototype.constructor === Student)
 ```
 
 **原型链**
 
 每个显式原型下也有一个隐式原型，指向规则和上面一样。**在每一层首先寻找自身的属性或方法,如果没有通过隐式原型去找上一层的显示原型的方法,依次形成一个链**
+
+当读取实例的属性时，如果找不到，就会查找与对象关联的原型中的属性，如果还查不到，就去找原型的原型，一直找到最顶层为止。
 
 `Student`的显式原型下有一个`__proto__`，指向`People`的显式原型`prtotype`
 
@@ -238,13 +242,97 @@ Jquery.prototype.newfun =  function(q){
 
 ![20200702185331.png](https://raw.githubusercontent.com/imageList/imglist/master/20200702185331.png)
 
+作用域的定义: [[scope]]: javascript函数都可以视为一个对象，对象都会有属性,但是有些属性是隐示的的，只提供给js引擎使用的。这里的scope就是其中的一个。
+scope:存储执行上下文的集合，简称作用域。
+
+**自由变量查找永远都是作用域链顶部向下查找**
+
+```js
+function a(){
+  function b(){
+    var b = 234
+    console.log(b)
+  }
+  var a = 123
+  b()
+}
+var glob = 333
+a()
+```
+已作用域和作用域链结合执行上下文的角度分析:
+
+::: tip
+首先,定义a函数时,产生全局上下文对象简称-GO。GO中存放了this,window,document,a函数，glob变量。
+
+![](https://image.yangxiansheng.top/img/20200831212213.png?imagelist)
+
+此时，a的作用域链只有一个，那就是全局对象。
+接着a函数执行，产生一个执行上下文对象。AO，AO存放this,window,document,b函数,a变量。
+此时，a的作用域链顶部就添加了一个AO。
+
+![](https://image.yangxiansheng.top/img/20200831212614.png?imagelist)
+
+接下来就是b定义，a的执行就导致了b的定义，所以b的作用域是基于a的作用域链的基础上的。
+
+![](https://image.yangxiansheng.top/img/20200831213050.png?imagelist)
+
+然后就是b执行，b执行产生的执行期上下文对象是放置顶端的。
+
+![](https://image.yangxiansheng.top/img/20200831213216.png?imagelist)
+
+接下来就是销毁阶段，当a执行完之后，销毁执行上下文，AO。回到被定义状态，b的作用域也相继被销毁。再次执行就会再次生成全新的AO-形成全新的作用域链。
+:::
+
+**引出闭包的概念**
+
+还有一种情况就是，a在执行完成之后返回b函数。说明这一步并未直接砍断b的作用域链和执行上下文对象的联系。
+
+内部函数被保存到了外部都会产生闭包，这里`return`出去b函数，及时保存在了外部
+
+![](https://image.yangxiansheng.top/img/20200831221442.png?imagelist)
+
+
+::: tip
+
+首选a定义，产生`GO`，a执行，产生`aAO`保存在作用域链的0位，然后导致b的定义，b在a的作用域链基础上再加入自己的`AO`，但是这里为定义`num`，所以b寻找num变量是通过寻找`aAO`的num变量的。接下来就是a执行完成，砍断作用域链和执行上下全文集合联系，但是此时没有砍断b的作用域链和执行上下文对象的联系(即b并未执行完，所以b作用域链和执行上下文联系依然存在，只是a的销毁了)。执行demo(),`num+1`,`aAO`里`num`加一之后同理。所以输出102。 销毁顺序：a-b 执行shu'x
+:::
+
+所以这就是闭包导致作用域链不释放的缺点的原因 内存泄漏： 剩下内存变小，原有空间不变，但是闭包的作用域链未释放
+
+![](https://image.yangxiansheng.top/img/20200831223947.png?imagelist)
+
+作用大体上分为: 静态作用域和动态作用域。js采用的是静态作用域 ,而静态作用域在定义的时候就已经决定了。
+
+```js
+var value = 1;
+
+function foo() {
+    console.log(value);
+}
+
+function bar() {
+    var value = 2;
+    foo();
+}
+
+bar(); // 1   执行顺序显示函数内部，然后向上寻找上层作用域的自由变量，这一步是在函数定义的部分决定的。
+
+// bar定义 --global value:1
+// bar执行  --- 0 bAO(value:2) 1Go(value:1)
+// foo定义  --- 0 GO(value:1)
+// 执行     --- 0 fAO(value:undefined) 1GO(value:1)
+
+// 所以输出 1
+
+```
+
 **作用域**
 
 变量在函数体内部具有一个作用区域，超出区域就不能进行调用。
 
 ![20200702185846.png](https://raw.githubusercontent.com/imageList/imglist/master/20200702185846.png)
 
-作用域分为: `全局作用域`，`函数作用域`和`块级作用域`。
+词法作用域分为: `全局作用域`，`函数作用域`和`块级作用域`。
 
 全局作用域和函数作用域在上面就有使用到,然后块级作用域主要使用到的场景为判断语句中定义的变量,不能超出大括号区域使用,否则报错。
 
@@ -371,6 +459,25 @@ class student{
 }
 
 ```
+
+
+```js
+var a = 2
+var b = {
+  a:3,
+  c:function(){
+    console.log(this.a)
+  }
+  d:()=>{
+    console.log(this.a)
+  }
+}
+
+var aa = b.c
+aa() // 调用方决定this指向-window  2
+b.c() // 3
+b.d() // 2  箭头函数作用域由向上寻找拥有作用域的函数决定 -window
+```
 **经典问题**
 
 每个函数都是`Function`构造函数的实例对象,所以用`Function.prototype.fn`函数中`this`一定指向实例对象的。
@@ -427,6 +534,254 @@ function test1 (a,b,c){
 const test2 = test1.bin1({age:11},10,20,30)
 test2() // {age:11} 10 20 30
 ```
+
+## 执行上下文
+
+`js`代码当遇到一个函数执行时，就会进入准备工作，生成执行上下文。
+
+> 函数在每次执行的时都会产生一个执行上下文对象-AO,一个执行上下文对象定义一个执行环境，执行过程中每个执行上下文对象都是独一无二的，所以每次调用都会产生不同的执行上下文对象，当函数执行完成，就会被销毁。
+
+执行代码分为: 全局代码，函数代码，eval代码。当函数遇到函数执行代码时，就会创建一个执行上下文，过程是先把代码亚入`可执行上下文栈`,然后等待函数执行完出栈。
+
+之前的例子
+
+```js
+var scope = "global scope";
+function checkscope(){
+    var scope = "local scope";
+    function f(){
+        return scope;
+    }
+    return f();
+}
+checkscope();
+
+var scope = "global scope";
+function checkscope(){
+    var scope = "local scope";
+    function f(){
+        return scope;
+    }
+    return f;
+}
+checkscope()();
+```
+执行过程
+```js
+
+// 伪代码
+ECStack.push(checkScope,checkContext)
+ECStack.push(f,fContext)
+ECStack.pop()
+ECStack.pop()
+
+
+// checkscope()() 就相当于
+// var f = checkscope(); 函数执行完成之后返回一个函数名
+// f();  
+ECStack.push(<checkscope> functionContext);
+ECStack.pop();
+ECStack.push(<f> functionContext);
+ECStack.pop();
+
+//栈底部会有全局执行上下文
+```
+
+**执行上下文和变量对象的结合**
+
+每个执行上下文拥有三个重要的属性:
+
+- 变量对象
+- 作用域链
+- this
+
+变量对象: **变量对象是与执行上下文相关的数据作用域，存储了在上下文中定义的变量和函数声明**
+
+全局上下文: 全局上下文中的变量对象就是全局对象呐
+
+函数上下文: 只有到当进入一个执行上下文中，这个执行上下文的变量对象才会被激活。
+
+![](https://image.yangxiansheng.top/img/20200831160746.png?imagelist)
+
+```js
+function foo(a) {
+  var b = 2;
+  function c() {}
+  var d = function() {};
+
+  b = 3;
+
+}
+
+foo(1);
+```
+**重点**: 代码执行分为两个阶段。执行过程中会生成执行上下文，所以分为进入`执行上下文`和`代码执行`两个阶段。
+
+进入执行上下文之后，AO
+
+```js
+AO = {
+  arguments:{
+    0:1,
+    length:1
+  },
+  b:undefined,
+  c:函数渲染,
+  d:undefined
+}
+```
+
+接下来就是代码执行阶段:,AO会被修改
+
+```js
+AO = {
+  arguments:{
+    0:1,
+    length:1
+  },
+  b:3,
+  c:函数渲染,
+  d:函数渲染
+}
+```
+**变量提升和函数提升**
+
+当变量提升和函数提升同名并且同时存在，此时函数提升就不会被影响
+
+活动对象和变量对象其实是一个东西，只是变量对象是规范上的或者说是引擎实现上的，不可在 JavaScript 环境中访问，只有到当进入一个执行上下文中，这个执行上下文的变量对象才会被激活，所以才叫 activation object 呐，而只有被激活的变量对象，也就是活动对象上的各种属性才能被访问。
+
+未进入执行阶段之前，变量对象(VO)中的属性都不能访问！但是进入执行阶段之后，变量对象(VO)转变为了活动对象(AO)，里面的属性都能被访问了，然后开始进行执行阶段的操作。
+
+它们其实都是同一个对象，只是处于执行上下文的不同生命周期。
+```js
+console.log(foo); // 打印函数
+
+function foo(){
+    console.log("foo");
+}
+
+var foo = 1;
+```
+
+之前的那道例题答案
+```js
+var foo = function () {
+
+    console.log('foo1');
+
+}
+
+foo();  // foo1
+
+var foo = function () {
+
+    console.log('foo2');
+
+}
+
+foo(); // foo2
+
+
+。。。。。。。。
+
+function foo() {
+
+    console.log('foo1');
+
+}
+
+foo();  // foo2
+
+function foo() {
+
+    console.log('foo2');
+
+}
+
+foo(); // foo2
+```
+
+第一个例子是变量提升。第二个是函数提升
+
+```js
+var foo;
+foo = function () {
+    console.log('foo1');
+}
+foo();  // foo1
+
+foo = function () {
+    console.log('foo2');
+}
+foo(); // foo2
+
+
+var foo;
+foo = function () {
+    console.log('foo1');
+}
+foo = function () {
+    console.log('foo2');
+}
+foo();  // foo2
+foo(); // foo2
+
+```
+
+
+**从代码分析执行上下文的三个重要属性**
+
+- 变量对象
+
+`变量对象是与执行上下文相关的数据作用域，存储了在上下文中定义的变量和函数声明`
+
+```js
+console.log(foo);
+
+function foo(){
+    console.log("foo");
+}
+
+var foo = 1;
+```
+
+**执行上下文阶段分为：进入执行上下文和代码执行阶段**
+
+> 准备阶段：
+
+由于函数提升和变量提升代码变成
+
+```js
+function foo(){
+
+}
+var foo 
+console.log(foo)
+foo = 1
+```
+> 开始创建执行上下文
+
+进入执行上下文之前：由于首先会处理函数声明，其次会处理变量声明，如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性。
+
+所以此时VO
+
+```js
+Vo = {
+  agruments:{
+    length:0
+  },
+  foo:reference to function foo(){}
+}
+```
+
+
+然后执行代码`console.log`,查找到VO，输出foo
+
+接着执行，改变`VO`
+
+- 作用域链
+- this
+
 
 ## 异步和Promise
 
@@ -535,6 +890,10 @@ if(data.a == null){
 // 等效于
 if(data.a === 'undefined' || data.a === null)
 ```
+实现NAN (如果转为Number之后，然后用字符串拼接 == NaN则成立)
+
+![](https://image.yangxiansheng.top/img/20200831230215.png?imagelist)
+
 ### 值类型和引用类型区别
 
 一般的值类型,他是可以用`typeof`鉴定类型的,并且对应的是一个栈类型,变量名为`key`,值为`value`。
@@ -677,6 +1036,30 @@ class student{
 }
 ```
 
+例题:
+
+```js
+var a = 5
+function test(){
+  a = 0
+  console.log(a) // 0
+  console.log(this.a) //5
+  var a
+  console.log(a)  //0
+}
+```
+执行test() 打印0，5，0。执行new test() 打印0 undefined 0，因为new的时候讲this添加了显示原型属性
+
+```js
+this = {
+  __proto__ :test.prototype
+}
+```
+
+![](https://image.yangxiansheng.top/img/20200831233916.png?imagelist)
+
+打印结果: a,b
+
 ### 实现一个call,bind,apply
 
 手写`bind`: 在`Function`原型扩展插件方法,第一步拆解参数,转为数组,提取第一项为`this`,剩余参数。返回一个`call`方法
@@ -684,6 +1067,7 @@ class student{
 ```js
 Function.prototype.bind1 = function(){
   const args = Array.prototype.slice.call(arguments)
+  // 获取调用方
   const self = this
   const t = args.shift()
   return function(){
@@ -710,17 +1094,43 @@ context = {
 - 定义函数`context[simbol实例] = fun`,一定要取`simbol`,因为`fun`可能是原有的函数
 - 执行然后删除对象函数,返回结果
 
+一句话总结，把调用方需要绑定的值看成一个对象，然后把调用方放到这个对象里面充当属性，然后执行，最后删除掉。
+
 ```js
+/**
+ * 实现call
+ * @param {Object} context 
+ * @param  {Object} args 
+ */
 Function.prototype.mycall = function(context,...args){
-  const context = context || window
-  let func = this // this指向bar 函数实例
-  if(typeof func !== 'function'){new TypeError('is not a function')}
-  let caller = new Simbol()
-  context[caller] = func // 定义函数
-  let res = context[caller](...args) //执行 
-  delete context[caller] // 删除函数属性
-  return res 
+  context =  context || window
+  let caller = Symbol('caller')
+  // 获取调用call的函数
+  context[caller] = this
+  let res = context[caller](...args)
+  delete context[caller]
+  return res
 }
+```
+
+实现apply
+
+```js
+/**
+ * 实现apply
+ * @param {*} content 
+ */
+Function.prototype.myapply = function(content){
+  let arg = Array.prototype.slice.call(arguments).slice(1)
+  if(!arg instanceof Array){throw new TypeError()}
+  content = content || window
+  let caller = Symbol('caller')
+  content[caller] = this
+  let res = content[caller](arg)
+  delete content[caller]
+  return res
+}
+
 ```
 
 ### 闭包和闭包作用
@@ -1398,7 +1808,35 @@ JavaScript的执行机制简单来说就`先执行同步代码，然后执行异
 
 宏任务包括：`script` ， `setTimeout` ，`setInterval` ，`setImmediate` ，`I/O` ，`UI rendering`。
 
+![](https://image.yangxiansheng.top/img/20200905105642.png?imagelist)
 
+首先js遇到同步代码，会将同步代码放入主进程，异步代码会丢给webAPI去执行，webAPI执行异步任务结束会有回调函数，然后丢进回调栈中，webapi会将异步任务分为宏任务和微任务，分别划分到不同的队列。
+
+先执行微任务，会先检查执行栈和微任务队列，如果没有，就执行宏任务，如果有，就一次性执行完所有微任务
+
+然后执行宏任务，会先检查微任务队列是否为空，不为空就全部执行完全部的微任务，之后设置微任务队列为null，后执行宏任务
+
+最后将执行栈清空
+
+```js
+console.log('script start');
+
+setTimeout(function() {
+  console.log('setTimeout');
+}, 0);
+
+Promise.resolve().then(function() {
+  console.log('promise1');
+}).then(function() {
+  console.log('promise2');
+});
+console.log('script end');
+
+
+执行栈: script start script end
+微任务队列: promise1 promise2
+宏任务队列: setTimeout 
+```
 
 ### 移动端1px问题
 

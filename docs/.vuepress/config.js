@@ -26,6 +26,10 @@ module.exports = {
             link: '/guide/'
           },
           {
+            text:'博客点滴',
+            link:'/blog/pratice/'
+          },
+          {
             text: '项目',
             items:[
               {
@@ -56,7 +60,8 @@ module.exports = {
             '优惠券',
             "订单",
             "其他技巧"
-          )
+          ),
+          '/blog/pratice/':getBlogSlideBar('实习点滴')
       }
     },
     repo: '251205668',
@@ -181,5 +186,26 @@ function getPShopSlideBar(group,groupA, groupB, groupC,groupD,groupE,groupF) {
     }
   ]
 }
+function getBlogSlideBar(groupA) {
+  return [
+    {
+      title: groupA,
+      collapsable: false,
+      children: [
+        '/blog/pratice/react.md',
+        '/blog/pratice/redux.md',
+        '/blog/pratice/hooks.md',
+        '/blog/pratice/dva.md',
+        '/blog/pratice/start.md',
+        '/blog/pratice/demand.md',
+        '/blog/pratice/log.md',
+        '/blog/pratice/beautify.md',
+        '/blog/pratice/knowledge.md',
+        '/blog/pratice/codeReview.md'
+      ]
+    }
+  ]
+}
+
 
 
