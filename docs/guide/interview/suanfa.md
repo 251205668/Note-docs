@@ -429,4 +429,15 @@ let bfs = (root)=>{
 
 
 
+## 算法题库
+
+### [牛客公司常问题](https://www.nowcoder.com/ta/job-code-high-week)
+
+### [个人笔记](https://leetcode-cn.com/notes/)
+
+### [笔试题练习](https://juejin.im/post/6844903936189530120#heading-39)
+
+###  [真他妈全的题库](https://juejin.im/post/6844904175562653710#heading-0)
+
+
 

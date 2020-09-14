@@ -292,7 +292,7 @@ a()
 ![](https://image.yangxiansheng.top/img/20200831221442.png?imagelist)
 
 
-::: tip
+::: tip 产生闭包原因和缺点
 
 首选a定义，产生`GO`，a执行，产生`aAO`保存在作用域链的0位，然后导致b的定义，b在a的作用域链基础上再加入自己的`AO`，但是这里为定义`num`，所以b寻找num变量是通过寻找`aAO`的num变量的。接下来就是a执行完成，砍断作用域链和执行上下全文集合联系，但是此时没有砍断b的作用域链和执行上下文对象的联系(即b并未执行完，所以b作用域链和执行上下文联系依然存在，只是a的销毁了)。执行demo(),`num+1`,`aAO`里`num`加一之后同理。所以输出102。 销毁顺序：a-b 执行shu'x
 :::
@@ -873,57 +873,16 @@ Promise.all([
 
 包含`js`基础,`js`进阶,`HTML`,`CSS`,`HTTP`,`浏览器`等面试题汇总
 
-### typeof作用
 
-- 判断值类型变量的类型
-- 判断是否是引用类型,但是无法具体判断类型
-- 可以判断`function` 
+### 手写题
 
-### 何时使用 === 和 ==
+#### 手写代码专题
 
-在判断对象属性是否为空时使用`==`,其他一律使用`===`，因为`==`会引起类型转换。
+[专题系列目录](https://github.com/mqyqingfeng/Blog)
 
-```js
-if(data.a == null){
+[https://juejin.im/post/6844903856489365518#heading-12](https://juejin.im/post/6844903856489365518#heading-12)
 
-}
-// 等效于
-if(data.a === 'undefined' || data.a === null)
-```
-实现NAN (如果转为Number之后，然后用字符串拼接 == NaN则成立)
-
-![](https://image.yangxiansheng.top/img/20200831230215.png?imagelist)
-
-### 值类型和引用类型区别
-
-一般的值类型,他是可以用`typeof`鉴定类型的,并且对应的是一个栈类型,变量名为`key`,值为`value`。
-
-```js
-const a = 1 // Number
-const a = 'a' // String
-const a = new Symbol() // symbol
-const a = !!a // boolean
-let a // undefined
-```
-
-引用类型,一般指的就是对象,他可以用`typeof`判断是否是引用类型,但是无法判断具体类型,对应的是一个堆栈模型,栈中`key`是对象名,`value`对应内存地址,然后堆模型中一个内存地址对应一个`value`。
-
-这也就是会出现这种情况的原因
-
-```js
-const a = 100
-let b 
-b = a
-b = 300
-console.log(a) // 100
-
-const x = {a:10}
-let y 
-y = x
-y = {a:20}
-console.log(x) // {a:20}
-```
-### 手写深拷贝
+#### 手写深拷贝
 
 ```js
 function deepclone(target = {}){
@@ -944,18 +903,8 @@ function deepclone(target = {}){
   }
 }
 ```
-### 解释原型和原型链,并解释instanceof原理
 
-使用到原型方法`instanceof`
-
-原型: 以一个`student`,`people`这个两个类来说,假设`student`是继承于`people`这个类的。现在有一个`student`的原型`stu1`,那么`stu1`就有一个隐式原型`__proto__`指向`student`类的显式原型`prototype`。等同于
-`stu1.__proto__ === Student.prototype`,那么stu1就可以调用`Student`的方法和属性。
-
-原型链:**每个对象都有 __proto__ 属性，此属性指向该对象的构造函数的原型。** 现在`stu1`的隐式原型指向了`Student`的显式原型,然后`Student`的显式原型也有一个隐式原型,他指向`People`的显式原型。所有`Student`类包括实例可以使用`People`的方法,最后`People`的显示原型的隐式原型指向最高层`Object`的显示原型,他的隐式原型指向`null`。
-
-`instanceof`原理就迎刃而解,首先如果判断`Array`,`a`如果是数组，`a`的隐式原型顺着原型链向上找,找到`Array`这个`class`即为数组。
-
-### 利用原型链手写Jquery简单实现，考虑插件和扩展性
+#### 利用原型链手写Jquery简单实现，考虑插件和扩展性
 
 获取`dom`,遍历赋值给`this`,最后书写方法
 ```js
@@ -990,77 +939,7 @@ Jquery.prototype.f1 = function(){
 }
 ```
 
-### this使用场景,如何取值
-
-`this`取值原则: this去向有执行函数的的地方决定。
-
-大致可以分为六种:
-```js
-function test(){
-  console.log(this)
-}
-
-// one
-test() //window
-
-// two
-test.call({age:11}) // call改变this指向直接执行 {age:11}
-
-// three
-const test2 = test.bind({age:12}) //bind改变this指向后需要接收后再执行
-test2() // {age:12}
-
-// four
-class student{
-  fun1(){
-    setTimeout(()=>{
-      console.log(this) //箭头函数this指向父级作用域 -当前对象
-    })
-  }
-}
-
-// five
-class student{
-  fun1(){
-    setTimeout(function(){
-      console.log(this)  // window 执行阶段已跳出student管控
-    })
-  }
-}
-
-// six
-class student{
-  fun1(){
-    console.log(this) // student对象
-  }
-}
-```
-
-例题:
-
-```js
-var a = 5
-function test(){
-  a = 0
-  console.log(a) // 0
-  console.log(this.a) //5
-  var a
-  console.log(a)  //0
-}
-```
-执行test() 打印0，5，0。执行new test() 打印0 undefined 0，因为new的时候讲this添加了显示原型属性
-
-```js
-this = {
-  __proto__ :test.prototype
-}
-```
-
-![](https://image.yangxiansheng.top/img/20200831233916.png?imagelist)
-
-打印结果: a,b
-
-### 实现一个call,bind,apply
+#### 实现一个call,bind,apply
 
 手写`bind`: 在`Function`原型扩展插件方法,第一步拆解参数,转为数组,提取第一项为`this`,剩余参数。返回一个`call`方法
 
@@ -1132,57 +1011,7 @@ Function.prototype.myapply = function(content){
 }
 ```
 
-apply
-
-### 闭包和闭包作用
-
-闭包: 闭包是`函数`和`声明该函数词法环境`的组合。函数内自由变量的查找总是在定义函数的地方的上级作用域进行查找。
-
-举例
-
-```js
-function create(){
-  const a= 200
-  return function(){
-    console.log(a)
-  }
-}
-
-const x = create()
-const a = 100
-x() // 打印 200
-```
-
-闭包的作用: 闭包最大的作用就是`隐藏变量`，**闭包的一大特性就是内部函数总是可以访问其所在的外部函数中声明的参数和变量**,只提供API访问数据。
-
-```js
-function createCache(){
-  const data = {} //外界无法访问这个数据,只能调用get函数获取值
-  return {
-    get: function(key){
-      return data[key]
-    },
-    set:function(key,value){
-      data[key] = value
-    }
-  }
-}
-```
-
-### 谈谈你对作用域和作用域链的理解
-
-**作用域分为**: `全局作用域`,`函数作用域`,`块级作用域`。全局作用定义在外部,函数作用域定义在函数内部,块级作用域一般定义在判断语句或者循环语句当中。
-
-**作用域链**: `js`执行过程中会创造`可执行上下文`,可执行上下文的内部有外部词法环境的引用,通过引用获取外部变量和参数然后一起串联指向全局词法环境,形成作用域链。
-
-
-### 异步和同步区别
-
-异步: `js`是单线程语言,一次只能做一件事，所以就有了异步的存在,异步不会阻塞其他线程,不会影响其他的代码执行。
-
-同步: 按一定的顺序执行
-
-### 手写Promise加载请求和多张图片
+#### 手写Promise加载请求和多张图片
 
 ```js
 function loadImg(src){
@@ -1214,148 +1043,32 @@ Promise.all([
 
 ```
 
-### 手写Promise Pormise.all Promise.race
+#### 手写Promise Pormise.all Promise.race
 
-### js实现一个日历
+#### js实现一个日历
 
-### 手写repeat
+#### 手写repeat
 
-### 讲一下浏览器缓存
+#### 手写JSONP
 
-### 前端性能优化 vue性能优化
-
-### 移动端布局有那些
-
-### a元素有子元素b，点击a触发console.log 点击b不会触发实现
-
-### webpack的优化相关 能不能说一下
-
-### 异步使用场景
-
-- 网络请求
-- 定时任务
-
-### 解释下变量提升？
-
-`js`引擎执行代码的时候会将`声明变量`代码放置顶部,然后再依次执行。所以所有的声明变量的语句都会在顶部最先执行,这就是变量提升。
+#### 将多维数组扁平化？
 
 ```js
-var a = 1
-//等同于
-
-var a
-a= 1
-```
-
-### ES6模块与CommonJS模块有什么区别？
-
-- CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用
-- CommonJS 模块是运行时加载，ES6 模块是编译时输出接口
-
-### null与undefined的区别是什么？
-
-`null`表示空值,一个对象可以是`null`,代表空对象,他是存在的但是值为空
-
-`undefined`代表不存在,除了有存在值为空,也存在`根本不存在的成员`。
-
-### async/await是什么？
-
-**async**: 1. 声明一个异步函数，并且返回值一定是个`Promise`对象 2. 异步操作执行完才会调用`then()`方法的回调函数
-
-**await**: 1. 求值,既可以求出Proimise值,也可以求出表达式的值  2.阻塞线程 3.只能搭配`async`使用
-
-### 浏览器是如何渲染的(输入url的渲染全过程)
-
-包含两个过程:
-
-**加载过程**
-
-- 浏览器查找当前URL是否存在缓存，并比较缓存是否过期
-- DNS解析域名,域名->IP地址
-- 浏览器与服务器建立tcp链接（三次握手）
-- 浏览器根据IP地址发送http请求
-- 服务器接收请求,返回数据给浏览器
-
-**渲染过程**
-
-- 根据`HTML`、`Css`代码生成相应的`DOMTree`,`CSSOM`
-- 结合`DOMTree`和`CSSOM`生成`RenderTree`，然后将`css`挂载在`DOM`上
-- 根据`RenderTree`渲染页面
-- 页面遇到`<script></script>`标签停止渲染,执行完`js`代码后再继续渲染
-- 直至渲染完成
-
-详细解答版本
-
-
-
-### 什么是浏览器同源策略？和如何实现跨域
-
-**同源策略**: 浏览器发送`ajax`请求要求浏览器和服务器必须同源。所谓同源就是`协议,端口,域名`都必须保持一致。
-
-**不受同源限制的三个标签**:
-
-`<script></script>`
-
-`<link />`
-
-`<img />`
-
-**实现跨域方法**:
-
-- JSONP实现: 
-
-原理: 利用`<script></script>`不受同源策略限制,进行跨域操作。
-
-手写jsonp实现
-
-- CORS跨域:
-
-原理: 使用额外的 `HTTP 头`来告诉浏览器 让运行在一个 `origin` (domain) 上的Web应用被准许访问来自不同源服务器上的指定的资源。
-
-跨域相关知识点补充
-
-- nginx反向代理:
-
-原理:所有客户端的请求都必须先经过nginx的处理，nginx作为代理服务器再讲请求转发给node或者java服务，这样就规避了同源策略。
-
-[具体实现](https://juejin.im/post/5c23993de51d457b8c1f4ee1)
-
-### DOM的事件模型是什么
-
-- 脚本模型
-- 内联模型
-- 动态绑定
-
-```js
-<body>
-<!--行内绑定：脚本模型-->
-<button onclick="javascrpt:alert('Hello')">Hello1</button>
-<!--内联模型-->
-<button onclick="showHello()">Hello2</button>
-<!--动态绑定-->
-<button id="btn3">Hello3</button>
-</body>
-<script>
-/*DOM0：同一个元素，同类事件只能添加一个，如果添加多个，
-* 后面添加的会覆盖之前添加的*/
-function shoeHello() {
-alert("Hello");
+function flatten(arr) {
+  return [].concat(...arr.map(v => {
+    return Array.isArray(v) ? flatten(v) : v;
+  }))
 }
-var btn3 = document.getElementById("btn3");
-btn3.onclick = function () {
-alert("Hello");
+
+function flatten(arr) {
+  return arr.reduce((pre, cur) => {
+    return pre.concat(Array.isArray(cur) ? flatten(cur) : cur);
+  }, [])
 }
-</script>
 
 ```
 
-### 说说DOM事件流
-
-- 事件捕获阶段
-- 目标接收事件
-- 事件冒泡阶段
-
-### 实现防抖函数（debounce）
+#### 实现防抖函数（debounce）待优化
 
 ```js
 export function debounce (func, delay) {
@@ -1378,6 +1091,7 @@ export function debounce (func, delay) {
 - 服务端验证场景：表单验证需要服务端配合，只执行一段连续的输入事件的最后一次，还有搜索联想词功能类似
 
 
+
 ### 数组去重
 
 ```js
@@ -1393,7 +1107,7 @@ function unique(arr) {
 }
 
 ```
-### 洗牌算法和随机数
+#### 洗牌算法和随机数
 
 ```js
 function getRandomInt (min, max) {
@@ -1413,7 +1127,7 @@ export function shuffle (arr) {
   return _arr
 }
 ```
-### 实现节流函数（throttle）
+#### 实现节流函数（throttle）
 
 ```js
 // 节流函数
@@ -1436,7 +1150,7 @@ const throttle = (fn, delay = 500) => {
 - 动画场景：避免短时间内多次触发动画引起性能问题
 
 
-### 实现instanceOf
+#### 实现instanceOf
 
 ```js
 // 模拟 instanceof
@@ -1455,7 +1169,7 @@ function instance_of(L, R) {
 
 ```
 
-### 模拟new
+#### 模拟new
 
 ```js
 function createNew(Ctor, ...args) {
@@ -1482,7 +1196,7 @@ const xm = createNew(Person, 'xiaoming', 22);
 
 ```
 
-### 解析 URL Params 为对象
+#### 解析 URL Params 为对象(待优化)
 
 ```js
 let url = 'http://www.domain.com/?user=anonymous&id=123&id=456&city=%E5%8C%97%E4%BA%AC&enabled';
@@ -1522,7 +1236,7 @@ function parseParam(url) {
 }
 ```
 
-### 查找字符串中出现最多的字符和个数
+#### 查找字符串中出现最多的字符和个数
 
 ```js
 let str = "abcabcabcbbccccc";
@@ -1545,48 +1259,529 @@ console.log(`字符最多的是${char}，出现了${num}次`);
 
 ```
 
-### 箭头函数和普通函数的区别？
+####  给了一个具体的需求让写html+css，需求大概是模块水平垂直居中对齐+不定高，按文字自适应+带灰色遮罩+弹出动画
+
+#### 给一个ul下面插入100个li应该怎么插入，如何优化dom操作
+
+#### 有一个有一百万个url的数组，如何从这一百万个url里获得资源(promise.all)
+
+
+#### 手写sleep函数
+
+
+#### 实现发布订阅模式，具有以下公开方法。
+
+```js
+class EventEmit {
+  constructor(elem, props) {
+    // your code
+  }
+
+  // 注册事件的回调函数
+  on(event, callback) {
+    // your code
+  }
+
+  // 注册事件的回调函数，只执行一次
+  once(event, callback) {
+    // your code
+  }
+
+  // 触发注册的事件回调函数执行
+  emit(event, ...args) {
+    // your code
+  }
+
+  // 删除一个回调函数
+  remove(event, callback) {
+    // your code
+  }
+}
+```
+
+### 积攒的小题目
+
+#### 字符串类型转换
+
+![](https://image.yangxiansheng.top/img/20200908124556.png)
+
+#### opacity visibility display:none区别
+
+![](https://image.yangxiansheng.top/img/20200908125157.png)
+
+#### 笔试收集的题
+
+![](https://image.yangxiansheng.top/img/20200908170624.png)
+
+![](https://image.yangxiansheng.top/img/20200908170757.png)
+
+![](https://image.yangxiansheng.top/img/20200908170902.png)
+
+![](https://image.yangxiansheng.top/img/20200908171017.png)
+
+![](https://image.yangxiansheng.top/img/20200908213923.png)
+
+![](https://image.yangxiansheng.top/img/20200913100416.png)
+
+![](https://image.yangxiansheng.top/img/20200913100507.png)
+
+![](https://image.yangxiansheng.top/img/20200913191825.png)
+
+![](https://image.yangxiansheng.top/img/20200913191845.png)
+
+
+### 理论题(背诵理解)
+
+#### 题是真的多
+
+[https://q.shanyue.tech/fe/](https://q.shanyue.tech/fe/)
+
+
+#### typeof作用
+
+- 判断值类型变量的类型
+- 判断是否是引用类型,但是无法具体判断类型
+- 可以判断`function` 
+
+
+#### 谈一谈js隐式转换
+
+[https://github.com/mqyqingfeng/Blog/issues/159](https://github.com/mqyqingfeng/Blog/issues/159)
+
+#### instanceof能否判断基本数据类型？
+
+可以，需要自定义
+
+```js
+class PrimitiveNumber {
+  static [Symbol.hasInstance](x) {
+    return typeof x === 'number'
+  }
+}
+console.log(111 instanceof PrimitiveNumber) // true
+```
+
+#### Object.is和===的区别？
+
+Object在严格等于的基础上修复了一些特殊情况下的失误，具体来说就是+0和-0，NaN和NaN。
+
+```js
+
+function is(x, y) {
+  if (x === y) {
+    //运行到1/x === 1/y的时候x和y都为0，但是1/+0 = +Infinity， 1/-0 = -Infinity, 是不一样的
+    return x !== 0 || y !== 0 || 1 / x === 1 / y;
+  } else {
+    //NaN===NaN是false,这是不对的，我们在这里做一个拦截，x !== x，那么一定是 NaN, y 同理
+    //两个都是NaN的时候返回true
+    return x !== x && y !== y;
+  }
+```
+
+#### 何时使用 === 和 ==, == 和 ===有什么区别？
+
+![](https://image.yangxiansheng.top/img/20200914224342.png?imglist)
+
+在判断对象属性是否为空时使用`==`,其他一律使用`===`，因为`==`会引起类型转换。
+
+```js
+if(data.a == null){
+
+}
+// 等效于
+if(data.a === 'undefined' || data.a === null)
+```
+实现NAN (如果转为Number之后，然后用字符串拼接 == NaN则成立)
+
+![](https://image.yangxiansheng.top/img/20200831230215.png?imagelist)
+
+#### 值类型和引用类型区别
+
+一般的值类型,他是可以用`typeof`鉴定类型的,并且对应的是一个栈类型,变量名为`key`,值为`value`。
+
+```js
+const a = 1 // Number
+const a = 'a' // String
+const a = new Symbol() // symbol
+const a = !!a // boolean
+let a // undefined
+```
+
+引用类型,一般指的就是对象,他可以用`typeof`判断是否是引用类型,但是无法判断具体类型,对应的是一个堆栈模型,栈中`key`是对象名,`value`对应内存地址,然后堆模型中一个内存地址对应一个`value`。
+
+这也就是会出现这种情况的原因
+
+```js
+const a = 100
+let b 
+b = a
+b = 300
+console.log(a) // 100
+
+const x = {a:10}
+let y 
+y = x
+y = {a:20}
+console.log(x) // {a:20}
+```
+
+#### 原型对象和构造函数有何关系？
+
+在JavaScript中，每当定义一个函数数据类型(普通函数、类)时候，都会天生自带一个prototype属性，这个属性指向函数的原型对象。
+
+当函数经过new调用时，这个函数就成为了构造函数，返回一个全新的实例对象，这个实例对象有一个__proto__属性，指向构造函数的原型对象。
+
+
+
+#### 解释原型和原型链,并解释instanceof原理
+
+使用到原型方法`instanceof`
+
+原型: 以一个`student`,`people`这个两个类来说,假设`student`是继承于`people`这个类的。现在有一个`student`的原型`stu1`,那么`stu1`就有一个隐式原型`__proto__`指向`student`类的显式原型`prototype`。等同于
+`stu1.__proto__ === Student.prototype`,那么stu1就可以调用`Student`的方法和属性。
+
+原型链:**每个对象都有 __proto__ 属性，此属性指向该对象的构造函数的原型。** 现在`stu1`的隐式原型指向了`Student`的显式原型,然后`Student`的显式原型也有一个隐式原型,他指向`People`的显式原型。所有`Student`类包括实例可以使用`People`的方法,最后`People`的显示原型的隐式原型指向最高层`Object`的显示原型,他的隐式原型指向`null`。
+
+`instanceof`原理就迎刃而解,首先如果判断`Array`,`a`如果是数组，`a`的隐式原型顺着原型链向上找,找到`Array`这个`class`即为数组。
+
+
+#### this使用场景,如何取值(待补充学习)
+`this`取值原则: this去向有执行函数的的地方决定。
+
+大致可以分为六种:
+```js
+function test(){
+  console.log(this)
+}
+
+// one
+test() //window
+
+// two
+test.call({age:11}) // call改变this指向直接执行 {age:11}
+
+// three
+const test2 = test.bind({age:12}) //bind改变this指向后需要接收后再执行
+test2() // {age:12}
+
+// four
+class student{
+  fun1(){
+    setTimeout(()=>{
+      console.log(this) //箭头函数this指向父级作用域 -当前对象
+    })
+  }
+}
+
+// five
+class student{
+  fun1(){
+    setTimeout(function(){
+      console.log(this)  // window 执行阶段已跳出student管控
+    })
+  }
+}
+
+// six
+class student{
+  fun1(){
+    console.log(this) // student对象
+  }
+}
+```
+
+例题:
+
+```js
+var a = 5
+function test(){
+  a = 0
+  console.log(a) // 0
+  console.log(this.a) //5
+  var a
+  console.log(a)  //0
+}
+```
+执行test() 打印0，5，0。执行new test() 打印0 undefined 0，因为new的时候讲this添加了显示原型属性
+
+```js
+this = {
+  __proto__ :test.prototype
+}
+```
+
+![](https://image.yangxiansheng.top/img/20200831233916.png?imagelist)
+
+打印结果: a,b
+
+
+
+#### 闭包和闭包作用
+
+闭包: 闭包是指有权访问另外一个函数作用域中的变量的函数，
+
+举例
+
+```js
+function create(){
+  const a= 200
+  return function(){
+    console.log(a)
+  }
+}
+
+const x = create()
+const a = 100
+x() // 打印 200
+```
+
+闭包的作用: 闭包最大的作用就是`隐藏变量`，**闭包的一大特性就是内部函数总是可以访问其所在的外部函数中声明的参数和变量**,只提供API访问数据。
+
+```js
+function createCache(){
+  const data = {} //外界无法访问这个数据,只能调用get函数获取值
+  return {
+    get: function(key){
+      return data[key]
+    },
+    set:function(key,value){
+      data[key] = value
+    }
+  }
+}
+```
+
+#### 闭包有哪些表现形式?
+
+- 返回一个函数
+- 作为函数参数传递
+
+```js
+var a = 1;
+function foo(){
+  var a = 2;
+  function baz(){
+    console.log(a);
+  }
+  bar(baz);
+}
+function bar(fn){
+  // 这就是闭包
+  fn();
+}
+// 输出2，而不是1
+foo();
+```
+- 在定时器、事件监听、Ajax请求、跨窗口通信、Web Workers或者任何异步中，只要使用了回调函数，实际上就是在使用闭包。
+
+- IIFE(立即执行函数表达式)创建闭包, 保存了全局作用域window和当前函数的作用域，因此可以全局的变量。
+
+```js
+var a = 2;
+(function IIFE(){
+  // 输出2
+  console.log(a);
+})();
+
+```
+
+
+
+
+#### 谈谈你对作用域和作用域链的理解
+
+**作用域分为**: `全局作用域`,`函数作用域`,`块级作用域`。全局作用定义在外部,函数作用域定义在函数内部,块级作用域一般定义在判断语句或者循环语句当中。
+
+**作用域链**: 当访问一个变量时，解释器会首先在当前作用域查找标示符，如果没有找到，就去父作用域找，直到找到该变量的标示符或者不在父作用域中，这就是作用域链
+
+
+#### 异步和同步区别
+
+异步: `js`是单线程语言,一次只能做一件事，所以就有了异步的存在,异步不会阻塞其他线程,不会影响其他的代码执行。
+
+同步: 按一定的顺序执行
+
+
+#### js实现继承方式和优缺点
+
+[https://github.com/mqyqingfeng/Blog/issues/16](https://github.com/mqyqingfeng/Blog/issues/16)
+
+#### 讲一下浏览器缓存
+
+#### 前端性能优化 vue性能优化
+
+#### 移动端布局有那些
+
+#### a元素有子元素b，点击a触发console.log 点击b不会触发实现
+
+#### webpack的优化相关 能不能说一下
+
+####  CommonJS 为什么不能做 Tree-Shaking 
+
+#### 函数的arguments为什么不是数组？如何转化成数组？
+
+因为arguments本身并不能调用数组方法，它是一个另外一种对象类型，只不过属性从0开始排，依次为0，1，2...最后还有callee和length属性。我们也把这样的对象称为类数组。
+常见的类数组还有：
+
+- 用getElementsByTagName/ClassName()获得的HTMLCollection
+- 用querySelector获得的nodeList
+
+![](https://image.yangxiansheng.top/img/20200914225642.png?imglist)
+
+#### 异步使用场景
+
+- 网络请求
+- 定时任务
+
+#### 解释下变量提升？
+
+`js`引擎执行代码的时候会将`声明变量`代码放置顶部,然后再依次执行。所以所有的声明变量的语句都会在顶部最先执行,这就是变量提升。
+
+```js
+var a = 1
+//等同于
+
+var a
+a= 1
+```
+
+#### ES6模块与CommonJS模块有什么区别？
+
+- CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用
+- CommonJS 模块是运行时加载，ES6 模块是编译时输出接口
+
+#### null与undefined的区别是什么？
+
+`null`表示空值,一个对象可以是`null`,代表空对象,他是存在的但是值为空
+
+`undefined`代表不存在,除了有存在值为空,也存在`根本不存在的成员`。
+
+#### async/await是什么？
+
+**async**: 1. 声明一个异步函数，并且返回值一定是个`Promise`对象 2. 异步操作执行完才会调用`then()`方法的回调函数
+
+**await**: 1. 求值,既可以求出Proimise值,也可以求出表达式的值  2.阻塞线程 3.只能搭配`async`使用
+
+#### 浏览器是如何渲染的(输入url的渲染全过程)
+
+包含两个过程:
+
+**加载过程**
+
+- 浏览器查找当前URL是否存在缓存，并比较缓存是否过期
+- DNS解析域名,域名->IP地址
+- 浏览器与服务器建立tcp链接（三次握手）
+- 浏览器根据IP地址发送http请求
+- 服务器接收请求,返回数据给浏览器
+
+**渲染过程**
+
+- 根据`HTML`、`Css`代码生成相应的`DOMTree`,`CSSOM`
+- 结合`DOMTree`和`CSSOM`生成`RenderTree`，然后将`css`挂载在`DOM`上
+- 根据`RenderTree`渲染页面
+- 页面遇到`<script></script>`标签停止渲染,执行完`js`代码后再继续渲染
+- 直至渲染完成
+
+详细解答版本
+
+
+
+#### 什么是浏览器同源策略？和如何实现跨域
+
+**同源策略**: 浏览器发送`ajax`请求要求浏览器和服务器必须同源。所谓同源就是`协议,端口,域名`都必须保持一致。
+
+**不受同源限制的三个标签**:
+
+`<script></script>`
+
+`<link />`
+
+`<img />`
+
+**实现跨域方法**:
+
+- JSONP实现: 
+
+原理: 利用`<script></script>`不受同源策略限制,进行跨域操作。
+
+手写jsonp实现
+
+- CORS跨域:
+
+原理: 使用额外的 `HTTP 头`来告诉浏览器 让运行在一个 `origin` (domain) 上的Web应用被准许访问来自不同源服务器上的指定的资源。
+
+跨域相关知识点补充
+
+- nginx反向代理:
+
+原理:所有客户端的请求都必须先经过nginx的处理，nginx作为代理服务器再讲请求转发给node或者java服务，这样就规避了同源策略。
+
+[具体实现](https://juejin.im/post/5c23993de51d457b8c1f4ee1)
+
+#### DOM的事件模型是什么
+
+- 脚本模型
+- 内联模型
+- 动态绑定
+
+```js
+<body>
+<!--行内绑定：脚本模型-->
+<button onclick="javascrpt:alert('Hello')">Hello1</button>
+<!--内联模型-->
+<button onclick="showHello()">Hello2</button>
+<!--动态绑定-->
+<button id="btn3">Hello3</button>
+</body>
+<script>
+/*DOM0：同一个元素，同类事件只能添加一个，如果添加多个，
+* 后面添加的会覆盖之前添加的*/
+function shoeHello() {
+alert("Hello");
+}
+var btn3 = document.getElementById("btn3");
+btn3.onclick = function () {
+alert("Hello");
+}
+</script>
+
+```
+
+#### 说说DOM事件流
+
+- 事件捕获阶段
+- 目标接收事件
+- 事件冒泡阶段
+
+
+
+#### 箭头函数和普通函数的区别？
 
 - 箭头函数的`this`是由包裹它的`普通函数的this`来决定；`
 - 不能作为构造函数, `Generator`函数；
 - 参数不能使用arguments访问，需要使用Es6的不定参数访问；
 - 使用`bind`方法无效。
 
-### var、let、const的区别 ？
+#### var、let、const的区别 ？
 
 - `var类型`会有变量提升的情况
 - `let`和`const`没有变量提升的情况，必须要先声明再使用，否则就会出现暂时性死区的情况。
 - `const`和`let`的区别在于一经定义后不得再次改变const定义的值`
 - `const`必须赋值
-### 谈谈对Promise的理解 ？
+#### 谈谈对Promise的理解 ？
 
 - `Promise`主要解决的问题就是``异步回调嵌套过深造成代码难以维护和理解`
 - `Promise`一共有三种状态`pending等待状态`、`resolved已完成状态`、`rejected已拒绝状态`
 - `Promise构造函数`内的代码是同步执行的，而之后`then`或`catch`方法是异步执行的，构造函数接受两个函数参数resolve和reject，它们执行时接受的参数分别会传递给`then`和`catch`表示`成功的回调`以及`失败回调`接受到的值。`
 
 
-### 将多维数组扁平化？
 
-```js
-function flatten(arr) {
-  return [].concat(...arr.map(v => {
-    return Array.isArray(v) ? flatten(v) : v;
-  }))
-}
 
-function flatten(arr) {
-  return arr.reduce((pre, cur) => {
-    return pre.concat(Array.isArray(cur) ? flatten(cur) : cur);
-  }, [])
-}
-
-```
-
-### 什么是事件代理？
+#### 什么是事件代理？
 
 利用事件流的冒泡特性，将子节点的事件绑定在父节点上，然后在回调里面使用事件对象进行区分，优点是节省内存且不需要给子节点销毁事件。
 
-### 你知道的性能优化方式有哪些？
+#### 你知道的性能优化方式有哪些？
 
 - 文件压缩，减小资源大小
 - 异步组件，按需加载
@@ -1600,11 +1795,11 @@ function flatten(arr) {
 - 浏览器缓存，减少请求次数或响应数据
 - 减少cookie的使用，减少请求携带大小
 
-### doctype的作用是什么？
+#### doctype的作用是什么？
 
 `DOCTYPE`是`html5`标准网页声明，且必须声明在HTML文档的第一行。来告知浏览器的解析器用什么文档标准解析这个文档。
 
-### 你对HTML语义化的理解？
+#### 你对HTML语义化的理解？
 
 语义化是指使用恰当语义的html标签，让页面具有良好的结构与含义，比如`<p>`标签就代表段落，`<article>`代表正文内容,`<header> <nav> <aside> <footer>`等。
 
@@ -1613,19 +1808,19 @@ function flatten(arr) {
 1. 增强开发维护可读性
 2. 更适合机器解析，生成目录,搜索引擎爬虫等
 
-### HTML5与HTML4的不同之处
+#### HTML5与HTML4的不同之处
 
 - 文档解析声明和解析顺序 不在基于`SGML`
 - 增加新的元素,媒体标签等等
 - input元素的新类型：date, email, url等等
 
-### src和href的区别？
+#### src和href的区别？
 
 - `src`指向的内容会嵌入到标签的位置,会将指定的`src`资源下载并嵌入到文档。**浏览器渲染页面会等待src解析并执行**
 
 - href 一般用于超链接,如果是指向资源文件会下载资源,**浏览器不会因他停止渲染**
 
-### 有几种前端储存的方式？区别
+#### 有几种前端储存的方式？区别
 
 - cookie : 本地储存的主要方式，优点是兼容性好，请求头自带cookie方便，缺点是大小只有4k
 
@@ -1635,11 +1830,11 @@ function flatten(arr) {
 
 - IndexedDB: 操作`NoSql`数据库,存储键值,可以快速完成读取操作。
 
-### CSS选择器的优先级是怎样的？
+#### CSS选择器的优先级是怎样的？
 
 内联选择器>id选择器>类选择器>标签选择器
 
-### link和@import的区别？
+#### link和@import的区别？
 
 - `link` 是XHTML提供的元素而`@import`是CSS提供的
 
@@ -1647,7 +1842,7 @@ function flatten(arr) {
 
 - `link` 方式的样式权重高于@import的权重
 
-### em\px\rem区别？
+#### em\px\rem区别？
 
 - em : 相对单位，基准点为`父节点字体的大小`，如果自身定义了`font-size`按自身来计算（浏览器默认字体是`16px`）
 
@@ -1655,13 +1850,13 @@ function flatten(arr) {
 
 - rem :相对单位，可理解为”root em”, 相对`根节点html的字体大小`来计算
 
-### 伪类和伪元素的区别
+#### 伪类和伪元素的区别
 
 伪类是一个以冒号(:)作为前缀,被添加到一个选择器末尾的关键字,`通过在元素选择器上加入伪类改变元素状态`。`p:last-child`
 
 伪元素: 伪元素用于创建一些不在文档树中的元素,并为其添加样式。用户能够看见但实际不存在文档树中。`::before`
 
-### 块级元素水平居中,垂直居中,水平垂直居中
+#### 块级元素水平居中,垂直居中,水平垂直居中
 
 **水平居中:** 
 
@@ -1703,7 +1898,7 @@ function flatten(arr) {
 }
 ```
 
-### 盒模型的理解
+#### 盒模型的理解
 
 标准盒(content-box): 设置的宽高只是包括内容区，内边距和边框另算。
 
@@ -1713,7 +1908,7 @@ IE盒(border-box):设置的宽高包含了**内边距和边框**。
 
 ![](https://xiaomuzhu-image.oss-cn-beijing.aliyuncs.com/e427c6d19ea6be1359bd0177d7a5b7a3.png)
 
-### 谈谈对BFC的理解
+#### 谈谈对BFC的理解
 
 块级格式上下文，一句话来说就是**让块级元素有块级元素该有的样子，触发BFC可以清除浮动、让margin不重叠**。
 
@@ -1724,102 +1919,24 @@ IE盒(border-box):设置的宽高包含了**内边距和边框**。
 3. `position`的值不为`static`或`relative`中的任何一个
 4. `float`不为 `none`
 
-### GET和POST有什么区别？
 
-- `get`产生一个`tcp数据包`，`post`会产生`两个tcp包`
-- `get`主要是应用为获取资源，`post`主要是应用于传输或修改资源
-- `get`的请求参数会被拼接到url后面，`post`放在request-body中
-- `get`默认会被浏览器主动缓存，`post`不会
-
-### HTTPS是如何保证安全的？
-
-https并不是直接通过非对称加密传输过程，而是**有握手过程**，握手过程主要是`和服务器做通讯`，`生成私有秘钥`，最后`通过该秘钥对称加密传输数据`。还有`验证证书的正确性`。 证书验证过程保证了对方是合法的，并且中间人无法通过伪造证书方式进行攻击。
-
-### 请简述TCP\UDP的区别
-TCP:
-
-面向连接
-面向字节流
-有状态
-保证可靠交付
-具备拥塞控制
-点对点传播
-有序
-
-UDP:
-
-无连接
-面向数据报
-无状态
-不保证可靠交付
-不具备拥塞控制
-广播、多播
-无序
-
-### Http与Https的区别：
-
-1. url不同
-2. http不安全,https安全
-3. http标准端口:80,https:443
-4. http无法加密
-5. 在OSI 网络模型中，HTTP工作于应用层，而HTTPS 的安全传输机制工作在传输层
-
-### HTTP2和HTTP1有什么区别
-
-- HTTP2支持二进制传送（实现方便且健壮），HTTP1.x是字符串传送
-- HTTP2支持多路复用
-- HTTP2采用HPACK压缩算法压缩头部，减小了传输的体积
-- HTTP2支持服务端推送
-
-### 聊一聊HTTP的状态码有哪些？
-
-2XX 成功
-
-- 200 OK，表示从客户端发来的请求在服务器端被正确处理 ✨
-- 204 No content，表示请求成功，但响应报文不含实体的主体部分
-- 206 Partial Content，进行范围请求 ✨
-
-3XX 重定向
-
-- 301 moved permanently，永久性重定向，表示资源已被分配了新的 URL
-- 302 found，临时性重定向，表示资源临时被分配了新的 URL ✨
-
-4XX 客户端错误
-
-- 401 unauthorized，表示发送的请求需要有通过 HTTP 认证的认证信息 ✨
-- 403 forbidden，表示对请求资源的访问被服务器拒绝 ✨
-- 404 not found，表示在服务器上没有找到请求的资源 ✨
-
-5XX 服务器错误
-
-- 500 internal sever error，表示服务器端在执行请求时发生了错误 ✨
-- 502 Bad Gateway：代理服务器无法获取到合法响应
-
-### 讲一下三次握手？
-
-- 第一次握手：客服端发送一个请求连接，服务器端只能确认自己可以接受客服端发送的报文段
-- 第二次握手： 服务端向客服端发送一个链接，确认客服端收到自己发送的报文段
-- 第三次握手： 服务器端确认客服端收到了自己发送的报文段
-
-### 讲一下四次握手？
-
-1. 客户端发送 `FIN` 给服务端
-
-2. 服务端收到后发送 `ACK` 给客户端
-
-3. 服务端发送 `FIN` 给客户端
-
-4. 客户端收到后，发送 `ACK` 的 `ACK` 给服务端，服务端关闭，客户端等待 `2MSL` 后关闭
-
-### Webpack面试题
-
-待更新
+#### [浏览器一系列问题](https://juejin.im/post/6844904021308735502)
 
 
-### 原生实现无线滚动加载图片
+#### 实现懒加载方案
+
+#### UTF-8 UTF-16 和 Unicode 什么关系
+
+#### markdown渲染原理
+
+#### CommonJS和ES6模块化有什么区别，设计一个方法，让CommonJS导出的模块也能改变其内部变量
+
+#### webpack treeShaking原理
+
+#### 
 
 
-### 网络安全相关
+#### 网络安全相关
 
 1. sql注入原理：通郭sql命令插入到web表单递交或者输入活命，达到欺骗服务器执行的恶意sql命令
 防范：1.对用户输入进行校验
@@ -1836,7 +1953,7 @@ UDP:
 2.CSRF代替用户完成指定的动作，需要知道其他页面的代码和数据包
 
 
-### 事件循环机制
+#### 事件循环机制(浏览器和Nodejs)
 
 JavaScript的执行机制简单来说就`先执行同步代码，然后执行异步代码`，而`异步的代码`里面又分为`宏任务代码`和`微任务代码`，先执行微任务，然后执行宏任务。首先会将所有JavaScript作为一个宏任务执行，遇到同步的代码就执行，然后开始分配任务，遇到宏任务就将它的回调分配到宏任务的队列里，遇到微任务的回调就分配到微任务的队列里，然后开始执行所有的微任务。执行微任务的过程还是遵循先同步然后分配异步任务的顺序，微任务执行完毕之后，一次Event-Loop的Tick就算完成了。接着挨个去执行分配好的宏任务，在每个宏任务里又先同步后分配异步任务，完成下一次Tick，循环往复直到所有的任务全部执行完成。
 
@@ -1883,7 +2000,7 @@ console.log('script end');
 宏任务队列: setTimeout 
 ```
 
-### 移动端1px问题
+#### 移动端1px问题
 
 ```css
 box-shadow: 
@@ -1894,10 +2011,10 @@ box-shadow:
   0 0 0 1px #e5e5e5;   //四条线
 ```
 
-### 有没有更好的判断变量类型的方法？
+#### 有没有更好的判断变量类型的方法？
 可以使用`Object.prototype.toString.call(var)`，可以更加准确的判断某个变量的类型。
 
-### 字符串的test、match、search它们之间的区别？
+#### 字符串的test、match、search它们之间的区别？
 
 ```js
 `test`是检测字符串是否匹配某个正则，返回布尔值；
@@ -1910,7 +2027,7 @@ box-shadow:
 '1AbC2d'.search(/[a-z]/);  // 2
 ```
 
-### 原型继承的方式有哪些？
+#### 原型继承的方式有哪些？
 
 原型链继承、借用构造函数继承、组合继承、原型式继承、寄生组合继承等等。最优化的继承方式是寄生组合继承：
 
@@ -1926,11 +2043,11 @@ Child.prototype = Object.create(Parent.prototype);
 Child.prototype.constructor = Child
 
 ```
-### class理解
+#### class理解
 
 JavaScript没有真正的类，一直也是通过函数加原型的形式来模拟，class也不例外，只是语法糖，本质还是函数。需要先声明再使用，内部的方法不会被遍历，且没有函数的prototype属性。
 
-### 对浏览器或元素的各种距离参数你知道哪些？
+#### 对浏览器或元素的各种距离参数你知道哪些？
 
 - document.documentElement.`clientHeight`：当前窗口内容区 + 内边距- 的高度
 - window.innerHeight: 当前窗口内容区 + 内边距 + 边框 + 滚动条高度
@@ -1942,7 +2059,7 @@ JavaScript没有真正的类，一直也是通过函数加原型的形式来模�
 - `scrollHeight`: 当前内部可以滚动区域的高度，如果不能滚动则为自己内容区 + 内边距的高度
 - `scrollTop`: 当前元素滚动离顶部的距离
 
-### 什么是重绘和回流？
+#### 什么是重绘和回流？
 - `重绘`是节点的外观发生改变而不改变布局时，如改变了color这个行为；
 - `回流`是指改变布局或几何属性发生改变时引起的行为，如添加移除Dom，改变尺寸。它们频繁的触发会影响页面性能。
 
@@ -1956,25 +2073,98 @@ JavaScript没有真正的类，一直也是通过函数加原型的形式来模�
 - 不要在循环里读取节点的属性值
 - 动画速度越快，回流次数越少
 
-### 懒加载（lazyload）原理
+#### 懒加载（lazyload）原理
 
 首先将页面上的图片的`src属性`设置为空字符串，而图片的真实路经则设置带`data-original属性`中，当页面滚动的时候需要去监听scroll事件，在`scroll事件`的回调中，判断我们的懒加载的图片是否进入到可视区域，如果图片在可视区域将图片的`src`属性设置为`data-original`的值，这样就可以实现延迟加载。
 
-### setTimeout和setInterval的机制
+#### setTimeout和setInterval的机制
 
 因为js是单线程的。浏览器遇到`setTimeout和setInterval`会先执行完`当前的代码块`，在此之前会把定时器`推入浏览器的待执行时间队列`里面，等到浏览器执行完当前代码之后会看下`事件队列`里有没有任务，有的话才执行定时器里的代码
 
 
-### webpack loader和plugin的区别
+#### webpack loader和plugin的区别
 
-### 有没有写过loader
+#### 有没有写过loader
 
-### ssr的原理是什么
+#### ssr的原理是什么
 
-### react在应用初始化，更新的时候触发了那些生命周期
+#### react在应用初始化，更新的时候触发了那些生命周期
 
-### react hooks的优点
+#### react hooks的优点
 
-### react和vue比较
+#### 你觉得 React 和 Vue 有什么共通之处？
 
-### lodash的once方法实现
+#### lodash的once方法实现
+
+#### 讲一讲 HTTPS 加密(对称加密有AES + CHACHA20, 分组模式以前有 CBC、CTR，TLS1.3 中只剩下 GCM，非对称加密 RSA、ECDHE)
+
+#### 能不能说说浏览器的缓存
+
+#### 能不能说说 Cookie 有哪些字段？
+
+#### 说一下对于前端技术的发展过程和微前端
+
+#### 你觉得前端除了完成页面交互稿之外，还能做其他的什么事情？
+
+首先是性能优化，其次是处理数据，然后是工程化
+
+#### DOM API 掌握怎么样？
+
+#### fetch 和 xhr 有什么区别？(fetch 不熟)
+
+#### WeakMap 和 Map 的性能有什么差别?
+
+#### async await 原理
+
+#### 假如我在一个for循环中改变当前组件依赖的数据，改变一万次，会有什么效果
+
+#### 假如让你设计一个适配 PC、手机和平板的项目，你有哪些布局方案
+
+首先是vh、vw，然后用淘宝出品的 lib-flexible 库进行 rem 适配，还有一种 flex + px 的适配方式
+
+#### React 受控组件和非受控组件的区别
+
+#### V8 引擎如何进行垃圾内存的回收？
+
+[https://juejin.im/post/6844904004007247880#heading-1](https://juejin.im/post/6844904004007247880#heading-1)
+
+#### 如何让Promise.all在抛出异常后依然有效 
+
+#### 如何实现SEO优化
+
+#### 列举几个css中可继承和不可继承的元素 
+
+#### 什么情况下css会使用gpu加速
+
+#### 什么是sass和less
+
+#### svg和canvas的概念和区别 
+
+#### dom渲染的性能损耗在哪里 
+
+#### 如何高效地从1000个div中删除10个div
+
+#### 浏览器里除了js还能运行什么
+
+#### 进程和线程的区别
+
+#### WebSocket是基于什么协议连接 
+
+#### promise如何满足多个异步进程的同步顺序
+
+#### 如何实现移动端响应式布局 
+
+#### 如何实现一个swiper 
+
+#### js当中对于不同环境的变量什么时候释放 
+
+#### js当中如何实现某一个数的阶乘 ？
+
+#### 视差屏原理
+
+#### 小程序原理，小程序的分包原理是什么
+
+#### 你的微信OAuth登陆怎么做的
+
+#### 你的微信OAuth登陆怎么做的
+
