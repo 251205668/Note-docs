@@ -667,11 +667,11 @@ export function pushState (url?: string, replace?: boolean) {
 
 #### 总结
 
-`vue-router` 支持三种路由模式，`hash`、`history` 和 `abstract` 。默认为 `hash` ,如果当前浏览器不支持 `history` 则会做降级处理，然后完成 `history`的初始化。[源码地址](https://github.com/vuejs/vue-router/tree/dev/src/components)
+`vue-router` 支持三种路由模式，`hash`、`history` 和 `abstract` 。默认为 `hash` ,如果当前浏览器不支持 `history` 则会做降级处理，然后完成 `history`的初始化。
 
 ### router-view & router-link
 
-`vue-router` 在 `install` 时全局注册了两个组件一个是 `router-view` 一个是 `router-link` ，这俩个组件都是典型的函数式组件。
+`vue-router` 在 `install` 时全局注册了两个组件一个是 `router-view` 一个是 `router-link` ，这俩个组件都是典型的函数式组件。[源码地址](https://github.com/vuejs/vue-router/tree/dev/src/components)
 
 #### router-view
 
