@@ -175,7 +175,7 @@ new Vue({
 
 那么 `Vue.use(Router)` 又在做什么事情呢
 
-问题定位到 `Vue` 源码中的 `src/core/global-api/use.js`
+问题定位到 `Vue` 源码中的 `src/core/global-api/use.js` [源码地址](https://github.com/vuejs/vue/blob/dev/src/core/global-api/use.js)
 
 ```js
 export function initUse (Vue: GlobalAPI) {
@@ -207,7 +207,7 @@ export function initUse (Vue: GlobalAPI) {
 
 #### install
 
-了解清楚 `Vue.use` 的结构之后，可以得出 `Vue` 注册插件其实就是在执行插件的 `install` 方法，参数的第一项就是`Vue`,所以我们将代码定位到 `vue-router` 源码中的 `src/install.js`
+了解清楚 `Vue.use` 的结构之后，可以得出 `Vue` 注册插件其实就是在执行插件的 `install` 方法，参数的第一项就是`Vue`,所以我们将代码定位到 `vue-router` 源码中的 `src/install.js` [源码地址](https://github.com/vuejs/vue-router/blob/dev/src/install.js)
 
 ```js
 // 保存Vue的局部变量
@@ -373,9 +373,9 @@ init (app: any) {
 初始化路由需要传入 `vueRouter` 实例对象，然后在组件初始化阶段执行 `beforeCreate` 钩子，调用 `init` 方法，接着拿到 `this.history` 去调用 `transitionTo` 进行路由过渡。
  
 
-### matcher
+### matcher 
 
-之前在 `vueRouter` 的构造函数中初始化了 `macther` ,本节将详细分析下面这句代码到底在做什么事情,以及 `match` 方法在做什么
+之前在 `vueRouter` 的构造函数中初始化了 `macther` ,本节将详细分析下面这句代码到底在做什么事情,以及 `match` 方法在做什么 [源码地址](https://github.com/vuejs/vue-router/blob/dev/src/create-matcher.js)
 
 ```js
  this.matcher = createMatcher(options.routes || [], this)
@@ -427,7 +427,7 @@ export function createMatcher (
 
 #### create-route-map
 
-下面这句代码是在创建一张 `path-record`,`name-record` 的映射表，我们将代码定位到 `create-route-map.js`
+下面这句代码是在创建一张 `path-record`,`name-record` 的映射表，我们将代码定位到 `create-route-map.js` [源码地址](https://github.com/vuejs/vue-router/blob/dev/src/create-route-map.js)
 
 ```js
 export function createRouteMap (
@@ -565,9 +565,9 @@ function match (
 
 ### url 切换
 
-下文主要分析在哈希模式下 `push` 方法切换路由的实现原理
+下文主要分析在哈希模式下 `push` 方法切换路由的实现原理 [源码地址](https://github.com/vuejs/vue-router/blob/dev/src/history/hash.js)
 
-首先在 `src/index.js` 下找到 `vueRouter` 定义的 `push` 方法
+首先在 `src/index.js` 下找到 `vueRouter` 定义的 `push` 方法 
 
 ```js
   push (location: RawLocation, onComplete?: Function, onAbort?: Function) {
@@ -629,7 +629,7 @@ export function pushState (url?: string, replace?: boolean) {
 
 ### 路由模式
 
-`vue-router` 支持三种路由模式(mode)：`hash`、`history`、`abstract`，其中 `abstract` 是在非浏览器环境下使用的路由模式
+`vue-router` 支持三种路由模式(mode)：`hash`、`history`、`abstract`，其中 `abstract` 是在非浏览器环境下使用的路由模式 [源码地址](https://github.com/vuejs/vue-router/blob/dev/src/index.js)
 
 这一部分在前面初始化 `vueRouter` 对象时提到过,首先会拿配置项的模式 ，然后根据当前传入的配置判断当前浏览器是否支持这种模式，默认`ie9` 以下会降级为 `hash`。 然后根据不同的模式去初始化不同的 `history` 实例。
 
@@ -667,7 +667,7 @@ export function pushState (url?: string, replace?: boolean) {
 
 #### 总结
 
-`vue-router` 支持三种路由模式，`hash`、`history` 和 `abstract` 。默认为 `hash` ,如果当前浏览器不支持 `history` 则会做降级处理，然后完成 `history`的初始化。
+`vue-router` 支持三种路由模式，`hash`、`history` 和 `abstract` 。默认为 `hash` ,如果当前浏览器不支持 `history` 则会做降级处理，然后完成 `history`的初始化。[源码地址](https://github.com/vuejs/vue-router/tree/dev/src/components)
 
 ### router-view & router-link
 
@@ -847,7 +847,7 @@ const handler = e => {
 
 #### 路由访问逻辑分析
 
-首先可以定位到和入口文件 `main.js` 同级的 `permission.js` , 全局路由守卫处理就在此
+首先可以定位到和入口文件 `main.js` 同级的 `permission.js` , 全局路由守卫处理就在此。[源码地址](https://github.com/251205668/student-admin-template/blob/master/src/permission.js)
 
 ```js
 const whiteList = ['/login', '/register'] // 路由白名单，不会重定向
@@ -901,7 +901,7 @@ router.beforeEach(async(to, from, next) => {
 
 #### 结合Vuex生成动态路由
 
-下面就是分析这一步 `const accessRoutes = await store.dispatch('permission/generateRoutes', roles)` 是怎么把路由生成出来的。
+下面就是分析这一步 `const accessRoutes = await store.dispatch('permission/generateRoutes', roles)` 是怎么把路由生成出来的。[源码地址](https://github.com/251205668/student-admin-template/blob/master/src/store/modules/permission.js)
 
 首选 `vue-element-admin` 中路由是分为两种的:
 - constantRoutes: 不需要权限判断的路由
