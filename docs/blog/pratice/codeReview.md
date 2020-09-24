@@ -1,6 +1,6 @@
 # 记一次codereview
 
-![](https://user-gold-cdn.xitu.io/2017/10/17/a834bab8990fe27aad7b9b211ab8b5c6?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://image.yangxiansheng.top/img/20200924103648.png?imglist)
 
 就在昨天晚上，交易平台前端为我准备了一个特别的礼物-作为实习生进行一次code-review。过程中十分深刻，自那以后我从内心深处对团队成员发自肺腑的佩服。此记作为记录，或作笔记。
 

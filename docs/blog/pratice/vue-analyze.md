@@ -1,6 +1,6 @@
 # 浅析 vue-router 源码和动态路由权限分配
 
-![](https://image.yangxiansheng.top/img/20200922203125.png?imglist)
+![](https://image.yangxiansheng.top/img/20200923162802.png?imglist)
 
 ## 背景
 
@@ -130,7 +130,7 @@ function acceptNumberOrString(value: string | number){
  }
 ```
 
-另外还支持自定义类型等等，具体用法还需要参考 [flow官网](https://flow.org/en/docs/types/primitives/)
+另外还支持自定义类型等等，具体用法还需要参考 [flow官网](https://flow.org/en/docs/types/primitives/),另外这种语法是类似于 [TypeScript](https://www.typescriptlang.org/) 的。
 
 ### 注册
 
@@ -553,7 +553,7 @@ function match (
 
 接下来就是 `match` 方法，它接收 3 个参数，其中 `raw` 是 `RawLocation` 类型，它可以是一个 `url` 字符串，也可以是一个 `Location` 对象；`currentRoute` 是 `Route` 类型，它表示当前的路径；`redirectedFrom` 和重定向相关。
 
-`match` 方法返回的是一个路径，它的作用是根据传入的 `raw` 和当前的路径 `currentRoute` 计算出一个新的路径并返回。至于他是如何计算出这条路径的可以详细看一下如何计算出 `location` 的 `normalizeLocation` 方法和 `match` 方法后面的逻辑。
+`match` 方法返回的是一个路径，它的作用是根据传入的 `raw` 和当前的路径 `currentRoute` 计算出一个新的路径并返回。至于他是如何计算出这条路径的,可以详细看一下如何计算出 `location` 的 `normalizeLocation` 方法和 `match` 方法后面的逻辑。
 
 #### 总结
 
@@ -562,6 +562,70 @@ function match (
 - `addRoutes`: 动态添加路由配置
 
 - `match`: 根据传入的 `raw` 和当前的路径 `currentRoute` 计算出一个新的路径并返回。
+
+### url 切换
+
+下文主要分析在哈希模式下 `push` 方法切换路由的实现原理
+
+首先在 `src/index.js` 下找到 `vueRouter` 定义的 `push` 方法
+
+```js
+  push (location: RawLocation, onComplete?: Function, onAbort?: Function) {
+    // $flow-disable-line
+    if (!onComplete && !onAbort && typeof Promise !== 'undefined') {
+      return new Promise((resolve, reject) => {
+        this.history.push(location, resolve, reject)
+      })
+    } else {
+      this.history.push(location, onComplete, onAbort)
+    }
+  }
+```
+接着我们需要定位到 `history/hash,js` 因为是子类中实现的 `push`。这里首先获取到当前路径然后调用了 `transitionTo` 做路径切换，在回调函数当中执行 `pushHash` 这个核心方法。
+
+```js
+  push (location: RawLocation, onComplete?: Function, onAbort?: Function) {
+    const { current: fromRoute } = this
+    // 路径切换的回调函数中调用 pushHash
+    this.transitionTo(
+      location,
+      route => {
+        pushHash(route.fullPath)
+        handleScroll(this.router, route, fromRoute, false)
+        onComplete && onComplete(route)
+      },
+      onAbort
+    )
+  }
+
+```
+
+而 `pushState` 在做完浏览器兼容判断后调用的 `pushState` 方法，将 `url` 传入
+
+```js
+export function pushState (url?: string, replace?: boolean) {
+  saveScrollPosition()
+  // try...catch the pushState call to get around Safari
+  // DOM Exception 18 where it limits to 100 pushState calls
+  const history = window.history
+  try {
+   // 调用浏览器原生的 history 的 pushState 接口或者 replaceState 接口,并将url入栈
+    if (replace) {
+      history.replaceState({ key: _key }, '', url)
+    } else {
+      _key = genKey()
+      history.pushState({ key: _key }, '', url)
+    }
+  } catch (e) {
+    window.location[replace ? 'replace' : 'assign'](url)
+  }
+}
+```
+可以发现，`push` 底层调用了浏览器原生的 `history` 的 `pushState`和 `replaceState` 方法，然后将 `url` 推历史栈当中。
+
+#### 总结
+
+`hash` 模式的 `push` 方法会调用路径切换方法 `transitionTo`,接着在回调函数中调用 `pushState` 方法，这个方法底层是调用了浏览器原生 `history` 的方法。`push` 和 `replace` 的区别就在于一个将 `url` 推入了历史栈，一个没有。
 
 ### 路由模式
 
@@ -676,7 +740,7 @@ function match (
   }
 ```
 
-触发更新也就是 `setter` 的调用，位于 `src/index.js`
+触发更新也就是 `setter` 的调用，位于 `src/index.js`，当修改 `_route`就会触发更新
 
 ```js
 history.listen(route => {
@@ -940,5 +1004,7 @@ function hasPermission(roles, route) {
 
 
 > 参考文章
+>
 > [带你全面分析vue-router源码 (万字长文)](https://juejin.im/post/6844904064367460366)
+>
 > [vuejs 源码解析](https://github.com/answershuto/learnVue)

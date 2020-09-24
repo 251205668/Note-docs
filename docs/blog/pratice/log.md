@@ -819,14 +819,15 @@ export default class revokePayment extends Component {
 
 ## 下单成功页接入积分组件
 
-带编写
+待编写
 
 
 
 ## 商品详情页商品快照需求
 
-带编写
+待编写
 
 
+## 商家 sass 和优化弹窗
 
-
+待

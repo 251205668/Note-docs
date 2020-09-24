@@ -2,7 +2,7 @@
 
 
 <p>
-<img width="100%" height="400px" src="https://user-gold-cdn.xitu.io/2019/11/13/16e625a03608fd87?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1" />
+<img width="100%" height="400px" src="https://image.yangxiansheng.top/img/20200924103849.png?imglist" />
 <p>
 由于之前一直都是vuer，然后并未开始了解`react`，所以以下均作为学习笔记日后回顾。
 

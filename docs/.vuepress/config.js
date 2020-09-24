@@ -221,6 +221,7 @@ function getBlogSlideBar(groupA) {
         '/blog/pratice/beautify.md',
         '/blog/pratice/knowledge.md',
         '/blog/pratice/codeReview.md',
+        '/blog/pratice/vue-analyze.md'
       ]
     }
   ]

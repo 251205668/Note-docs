@@ -1,6 +1,6 @@
 # 入门dva
 
-![](https://user-gold-cdn.xitu.io/2018/6/26/1643a3b7f03fdca4?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1)
+![](https://image.yangxiansheng.top/img/20200924103720.png?imglist)
 
 [dva](https://github.com/dvajs/dva)是国内蚂蚁大佬在react基础上做的一层封装的轻量框架，深受大家喜欢，而且我司react项目也是基于dva上写的，所以本文记录学习框架的笔记
 
