@@ -221,6 +221,11 @@ dist/       dist文件夹下面的文件忽略关理,但是文件夹会管理
 * .idea     所有结尾是.idea文件忽略管理
 .vscode
 
+
+# 如果发现无效的情况 需要先清除缓存
+git rm -r --cached .
+git add .
+git commit -m 'update .gitignore'
 ```
 
 ## 多人协作

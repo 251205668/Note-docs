@@ -4,11 +4,13 @@
 
 ## 背景
 
-上月立过一个 flag，看完 vue-router 的源码，可到后面发现 vue-router 的源码并不是很多总结的文章那么容易理解，阅读过你就会发现里面的很多地方都会有多层的函数调用关系，还有大量的this指向，而且会有很多辅助函数需要去理解。但是还是坚持啃下来了(当然还没看完，内容是真的多)，下面是我在政采云(实习)工作闲暇时间阅读源码的一些感悟和总结，并带分析了大三时期使用的 [vue-element-admin](https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/#%E5%8A%9F%E8%83%BD) 这个 `vuer` 无所不知的后台框架动态路由权限控制原理。顺便附带本文实践 demo 地址: 基于后台框架开发的[学生管理系统](https://github.com/251205668/student-admin-template)
+上月立过一个 flag，看完 vue-router 的源码，可到后面发现 vue-router 的源码并不是很多总结的文章那么容易理解，阅读过你就会发现里面的很多地方都会有多层的函数调用关系，还有大量的this指向，而且会有很多辅助函数需要去理解。但是还是坚持啃下来了(当然还没看完，内容是真的多)，下面是我在政采云(实习)工作闲暇时间阅读源码的一些感悟和总结，并带分析了大三时期使用的 [vue-element-admin](https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/#%E5%8A%9F%E8%83%BD) 这个 `vuer` 无所不知的后台框架的动态路由权限控制原理。顺便附带本文实践 demo 地址: 基于后台框架开发的[学生管理系统](https://github.com/251205668/student-admin-template)
 
 ## vue-router 源码分析
 
-首先阅读源码之前最好是将 `Vue` 和 `vue-router` 的源码下载下来，然后第一遍阅读建议先跟着[官方文档](https://router.vuejs.org/zh/)先走一遍基础用法。然后第二遍开始阅读源码，首先理清楚各层级目录的作用和抽出一些核心的文件出来，过一遍代码的同时写个小的 `demo` 边看边打断点调试，看不懂没关系，可以边看边参考一些总结的比较好的文章，最后将整个注册到 `init`到生成 `matcher` 等等过程根据自己的理解整理出来，然后画一画相关的知识脑图加深印象。
+首先阅读源码之前最好是将 `Vue` 和 `vue-router` 的源码下载下来，然后第一遍阅读建议先跟着[官方文档](https://router.vuejs.org/zh/)先走一遍基础用法。然后第二遍开始阅读源码，首先理清楚各层级目录的作用和抽出一些核心的文件出来，过一遍代码的同时写个小的 `demo` 边看边打断点调试，看不懂没关系，可以边看边参考一些总结的比较好的文章，最后将整个注册到 `init`到组件渲染 等等过程根据自己的理解整理出来，然后画一画相关的知识脑图加深印象。
+
+[本位知识点脑图](https://www.processon.com/view/link/5f6c42857d9c08039fb73769#map)
 
 ### 前置知识: flow 语法
 
@@ -16,21 +18,15 @@
 
 `Vue` 、`Vue-router` 等大型项目往往需要这种工具去做静态类型检查以保证代码的可维护性和可靠性。
 
-
-**使用 Flow**
-
 首先在 `index.js` 文件中输入以下代码
 
 ```js
-// @flow
-function foo(x: ?number): string {
-  if (x) {
-    return x;
-  }
-  return "default string";
+/*@flow*/
+function add(x: string, y: number): number {
+  return x + y
 }
 
-foo("hello")
+add(2, 11)
 
 ```
 然后安装 `flow`,并初始化 `.flowconfig`
@@ -46,121 +42,44 @@ flow
 ```
 这个时候不出意外就会抛出异常提示，这就是简单的 `flow` 使用方法。
 
-**定义不同类型的类型声明**
-
-字符串:
-
-```js
-// @flow
-function concat(a: string, b: string) {
-  return a + b;
-}
-
-concat("A", "B"); // Works!
-concat(1, 2); // Error!
-```
-
-boolean:
-
-```js
-// @flow
-function acceptsBoolean(value: boolean) {
-  // ...
-}
-
-acceptsBoolean(true);  // Works!
-acceptsBoolean(false); // Works!
-acceptsBoolean("foo"); // Error!
-```
-
-number + 设置默认值 :
-
-```js
-// @flow
-function concat(a: number = 1, b: number) {
-  return a + b;
-}
-
-concat("A", "B"); // Error!
-concat(1, 2); // Works!
-```
-
-null 或者 undefined(void处理):
-
-```js
-// @flow
-function acceptsNull(value: null) {
-  /* ... */
-}
-
-function acceptsUndefined(value: void) {
-  /* ... */
-}
-```
-
-动态类型:
-
-```js
-// @flow
-function acceptsMaybeString(value: ?string) {
-  // value可能为值类型的某一个
-}
-
-// @flow
-function acceptNumberOrString(value: string | number){
-
-}
-```
-
-数组:
-
-```js
- // @flow
- function acceptArray(value: Array<number>) {
-
- }
-```
-
-对象:
-
-```js
- // @flow
- function acceptObject(value: obj){
-
- }
-```
-
-另外还支持自定义类型等等，具体用法还需要参考 [flow官网](https://flow.org/en/docs/types/primitives/),另外这种语法是类似于 [TypeScript](https://www.typescriptlang.org/) 的。
+具体用法还需要参考 [flow官网](https://flow.org/en/docs/types/primitives/),另外这种语法是类似于 [TypeScript](https://www.typescriptlang.org/) 的。
 
 ### 注册
 
 我们平时在使用 `Vue-Router` 的时候通常需要在 `main.js` 中初始化 `Vue` 实例时将 `vue-router` 实例对象当做参数传入
 
+例如:
 ```js
 import Router from 'vue-router'
 Vue.use(Router)
 
 const routes = [
-  {
-    path: "/",
-    component: goods
-  },
-  {
-    path: "/comment",
-    name: "comment",
-    component: comment
-  },
-  {
-    path: "/seller",
-    name: "seller",
-    component: seller
+   {
+    path: '/student',
+    name: 'student',
+    component: Layout,
+    meta: { title: '学生信息查询', icon: 'documentation', roles: ['student'] },
+    children: [
+      {
+        path: 'info',
+        component: () => import('@/views/student/info'),
+        name: 'studentInfo',
+        meta: { title: '信息查询', icon: 'form' }
+      },
+      {
+        path: 'score',
+        component: () => import('@/views/student/score'),
+        name: 'studentScore',
+        meta: { title: '成绩查询', icon: 'score' }
+      }
+    ]
   }
+  ...
 ];
 
 const router = new Router({
   mode: "history",
   linkActiveClass: "active",
-  //   指定点击后的样式名
   base: process.env.BASE_URL,
   routes
 });
@@ -186,7 +105,6 @@ export function initUse (Vue: GlobalAPI) {
     if (installedPlugins.indexOf(plugin) > -1) {
       return this
     }
-
     // 获取第一个参数plugins意外的参数
     const args = toArray(arguments, 1)
     // 将Vue实例添加到参数
@@ -251,7 +169,7 @@ export function install (Vue) {
     }
   })
 
-  // 通过get方法 原型加入$router 和 $route
+  // 原型加入$router 和 $route
   Object.defineProperty(Vue.prototype, '$router', {
     get () { return this._routerRoot._router }
   })
@@ -269,9 +187,9 @@ export function install (Vue) {
 }
 ```
 
-可以看到这段代码核心部分就是在执行 `install` 方法时使用 `mixin` 的方式将每个组件都混入 `beforeCreate`, `destroyed` 这两个生命周期钩子。在 `beforeCreate` 函数中会去判断当前传入的 `router` 实例是否是跟组件，如果是，则将 `_routerRoot` 赋值为当前组件实例、`_router` 赋值为传入的`VueRouter` 实例对象，接着执行 `init` 方法初始化 `router`,然后将 `this_route` 响应式化。非根组件的话 `_routerRoot`  就指向 `$parent` 父实例。
+可以看到这段代码核心部分就是在执行 `install` 方法时使用 `mixin` 的方式将每个组件都混入 `beforeCreate`, `destroyed` 这两个生命周期钩子。在 `beforeCreate` 函数中会去判断当前传入的 `router` 实例是否是跟组件，如果是，则将 `_routerRoot` 赋值为当前组件实例、`_router` 赋值为传入的`VueRouter` 实例对象，接着执行 `init` 方法初始化 `router`,然后将 `this_route` 响应式化。非根组件的话 `_routerRoot`  指向 `$parent` 父实例。
 
-然后执行 `registerInstance(this,this)` 方法，该方法后文会分析。原型加入 `$router` 和 `$route` ，最后注册 `ROuterView` 和 `RouterLink`，这就是整个 `install`的过程。
+然后执行 `registerInstance(this,this)` 方法，该方法后会,原型加入 `$router` 和 `$route` ，最后注册 `RouterView` 和 `RouterLink`，这就是整个 `install`的过程。
 
 #### 总结
 
@@ -287,6 +205,7 @@ export function install (Vue) {
   constructor (options: RouterOptions = {}) {
     this.app = null
     this.apps = []
+    // 传入的配置项
     this.options = options
     this.beforeHooks = []
     this.resolveHooks = []
@@ -333,17 +252,12 @@ export function install (Vue) {
 
 ```js
 init (app: any) {
-  process.env.NODE_ENV !== 'production' && assert(
-    install.installed,
-    `not installed. Make sure to call \`Vue.use(VueRouter)\` ` +
-    `before creating root instance.`
-  )
+  ...
   this.apps.push(app)
   // 确保后面的逻辑只走一次
   if (this.app) {
     return
   }
-
   this.app = app
   const history = this.history
   if (history instanceof HTML5History) {
@@ -358,15 +272,10 @@ init (app: any) {
       setupHashListener
     )
   }
-  history.listen(route => {
-    this.apps.forEach((app) => {
-      app._route = route
-    })
-  })
 }
 
 ```
-`init` 方法传入 `Vue` 实例，保存到 `this.apps` 当中。`Vue实例` 会取出当前的 `this.history`，如果是哈希路由，先走 `setupHashListener` 函数，然后调一个关键的函数 `transitionTo` ,这个函数其实调用了 `this.matcher.match` 去匹配。
+`init` 方法传入 `Vue` 实例，保存到 `this.apps` 当中。`Vue实例` 会取出当前的 `this.history`，如果是哈希路由，先走 `setupHashListener` 函数，然后调一个关键的函数 `transitionTo`路由过渡,这个函数其实调用了 `this.matcher.match` 去匹配。
 
 #### 总结
 
@@ -389,37 +298,14 @@ export function createMatcher (
 ): Matcher {
   // 创建映射表
   const { pathList, pathMap, nameMap } = createRouteMap(routes)
-
+  // 添加动态路由
   function addRoutes(routes){...}
-
+  // 计算新路径
   function match (
     raw: RawLocation,
     currentRoute?: Route,
     redirectedFrom?: Location
   ): Route {...}
-
-  function redirect (
-    record: RouteRecord,
-    location: Location
-  ): Route {...}
-
-  function alias (
-    record: RouteRecord,
-    location: Location,
-    matchAs: string
-  ): Route {...}
-
-  function _createRoute (
-    record: ?RouteRecord,
-    location: Location,
-    redirectedFrom?: Location
-  ): Route {...}
-
-  function matchRoute (
-    regex: RouteRegExp,
-    path: string,
-    params: Object
-  ): boolean {...}
 }
 ```
 
@@ -440,7 +326,6 @@ export function createRouteMap (
   pathMap: Dictionary<RouteRecord>,
   nameMap: Dictionary<RouteRecord>
 } {
-  // debugger
   // 记录所有的 path
   const pathList: Array<string> = oldPathList || []
   // 记录 path-RouteRecord 的 Map
@@ -459,7 +344,6 @@ export function createRouteMap (
       i--
     }
   }
-
   return {
     pathList,
     pathMap,
@@ -472,11 +356,11 @@ export function createRouteMap (
 这一块代码太多了，列举几个重要的步骤
 
 ```js
+// 解析路径
 const pathToRegexpOptions: PathToRegexpOptions =
     route.pathToRegexpOptions || {}
-    
+// 拼接路径
 const normalizedPath = normalizePath(path, parent, pathToRegexpOptions.strict)
-
 const record: RouteRecord = {
   path: normalizedPath,
   regex: compileRouteRegex(normalizedPath, pathToRegexpOptions),
@@ -497,7 +381,7 @@ const record: RouteRecord = {
       : { default: route.props }
 }
 ```
-使用 `recod` 记录路由配置有利于后续路径切换时计算出新路径，这里的 `path` 其实是通过 `path` 和 `parent` 拼接处的路径。然后 `regex` 使用一个库将 `path` 解析为正则表达式。
+使用 `recod` 对象 记录路由配置有利于后续路径切换时计算出新路径，这里的 `path` 其实是通过 `path` 和 `parent` 拼接处的路径。然后 `regex` 使用一个库将 `path` 解析为正则表达式。
 
 如果 `route` 有子节点就递归调用 `addRouteRecord`
 ```js
@@ -510,7 +394,7 @@ const record: RouteRecord = {
     })
 ```
 
-最后映射一张表,并将 `record·path` 保存进 `pathList`, `nameMap` 逻辑相似就不列举了
+最后映射两张表,并将 `record·path` 保存进 `pathList`, `nameMap` 逻辑相似就不列举了
 
 ```js
   if (!pathMap[record.path]) {
@@ -519,11 +403,13 @@ const record: RouteRecord = {
   }
 ```
 
-废了这么大劲将 `pathList` 和 `pathMap` 和 `nameMap` 抽出来是为啥呢，首先 `pathList` 是记录路由配置所有的 `path`，然后 `pathMap` 和 `nameMap` 方便我们传入 `path` 或者 `name` 快速定位到一个 `record` ,然后辅助后续路径切换计算路由滴。
+废了这么大劲将 `pathList` 和 `pathMap` 和 `nameMap` 抽出来是为啥呢?
+
+首先 `pathList` 是记录路由配置所有的 `path`，然后 `pathMap` 和 `nameMap` 方便我们传入 `path` 或者 `name` 快速定位到一个 `record` ,然后辅助后续路径切换计算路由的。
 
 #### addRoutes
 
-这是在 `vue2.2.0` 之后新添加的 `api` ,或许很多情况路由并不是写死的，需要动态添加路由。有了前面的 `createRouteMap` 的基础上我们只需要传入 `routes` 、`pathList`、 `pathMap` 和 `nameMap` 即可，他就能在原基础上修改
+这是在 `vue2.2.0` 之后新添加的 `api` ,或许很多情况路由并不是写死的，需要动态添加路由。有了前面的 `createRouteMap` 的基础上我们只需要传入 `routes`  即可，他就能在原基础上修改
 
 ```js
 function addRoutes (routes) {
@@ -604,9 +490,6 @@ function match (
 
 ```js
 export function pushState (url?: string, replace?: boolean) {
-  saveScrollPosition()
-  // try...catch the pushState call to get around Safari
-  // DOM Exception 18 where it limits to 100 pushState calls
   const history = window.history
   try {
    // 调用浏览器原生的 history 的 pushState 接口或者 replaceState 接口,并将url入栈
@@ -623,6 +506,66 @@ export function pushState (url?: string, replace?: boolean) {
 ```
 可以发现，`push` 底层调用了浏览器原生的 `history` 的 `pushState`和 `replaceState` 方法，然后将 `url` 推历史栈当中。
 
+**另外提一嘴拼接哈希的原理**
+
+[源码位置](https://github.com/vuejs/vue-router/blob/dev/src/history/hash.js)
+
+初始化 `HashHistory` 时，构造函数会执行 `ensureSlash` 这个方法
+
+```js
+export class HashHistory extends History {
+  constructor (router: Router, base: ?string, fallback: boolean) {
+    ...
+    ensureSlash()
+  }
+  ...
+  }
+```
+
+这个方法首先调用 `getHash` ,然后执行 `replaceHash()`
+
+```js
+function ensureSlash (): boolean {
+  const path = getHash()
+  if (path.charAt(0) === '/') {
+    return true
+  }
+  replaceHash('/' + path)
+  return false
+}
+```
+
+下面是这几个方法
+
+```js
+export function getHash (): string {
+  const href = window.location.href
+  const index = href.indexOf('#')
+  return index === -1 ? '' : href.slice(index + 1)
+}
+
+function getUrl (path) {
+  const href = window.location.href
+  const i = href.indexOf('#')
+  const base = i >= 0 ? href.slice(0, i) : href
+  return `${base}#${path}`
+}
+
+function replaceHash (path) {
+  if (supportsPushState) {
+    replaceState(getUrl(path))
+  } else {
+    window.location.replace(getUrl(path))
+  }
+}
+
+export function replaceState (url?: string) {
+  pushState(url, true)
+}
+```
+
+举个例子来说: 假设当前URL是 `http://localhost:8080` ,`path` 为空，所以执行 `replcaeHash('/' + path)` ,然后内部执行 `getUrl` 计算出 `url` 为 `http://localhost:8080/#/` ,最后执行 `pushState(url,true)` ，就大功告成了！
+
 #### 总结
 
 `hash` 模式的 `push` 方法会调用路径切换方法 `transitionTo`,接着在回调函数中调用 `pushState` 方法，这个方法底层是调用了浏览器原生 `history` 的方法。`push` 和 `replace` 的区别就在于一个将 `url` 推入了历史栈，一个没有。
@@ -634,7 +577,7 @@ export function pushState (url?: string, replace?: boolean) {
 这一部分在前面初始化 `vueRouter` 对象时提到过,首先会拿配置项的模式 ，然后根据当前传入的配置判断当前浏览器是否支持这种模式，默认`ie9` 以下会降级为 `hash`。 然后根据不同的模式去初始化不同的 `history` 实例。
 
 ```js
-// 一般分两种模式 hash和history路由 第三种是抽象模式
+// 一般分两种模式 hash和history路由 第三种是抽象模式不常用
     let mode = options.mode || 'hash'
     // 判断当前传入的配置是否能使用history模式
     this.fallback = mode === 'history' && !supportsPushState && options.fallback !== false
@@ -646,7 +589,6 @@ export function pushState (url?: string, replace?: boolean) {
       mode = 'abstract'
     }
     this.mode = mode
-
     // 根据模式实例化不同的history history对象会对路由进行管理 继承于history class
     switch (mode) {
       case 'history':
@@ -687,16 +629,7 @@ export function pushState (url?: string, replace?: boolean) {
 
 ```js
   render (_, { props, children, parent, data }) {
-    // 标志
-    data.routerView = true
-    // 获取跟 dom
-    const h = parent.$createElement
-    const name = props.name
-    // 注册时定义的原型 $route 可以理解成当前路径
-    const route = parent.$route
-    // 缓存相关
-    const cache = parent._routerViewCache || (parent._routerViewCache = {})
-    
+    ...
     // 通过 depth 由router-view组件向上遍历直到跟组件，遇到其他的router-view组件则路由深度+1
     let depth = 0
     let inactive = false
@@ -724,7 +657,7 @@ export function pushState (url?: string, replace?: boolean) {
     }
  // 通过 RouteRecord 找到 component
     const component = cache[name] = matched.components[name]
-   
+
    // 往父组件注册registerRouteInstance方法
     data.registerRouteInstance = (vm, val) => {     
       const current = matched.instances[name]
@@ -998,7 +931,7 @@ function hasPermission(roles, route) {
 
 **个人感悟**:
 
- 或许阅读源码的作用不能像一些文档一样直接立马对日常开发有所帮助，但是它的影响是长远的，在读源码的过程中都可以学到类似闭包、设计模式、时间循环、回调等等 JS 进阶技能，并稳固并提升了你的 JS 基础。当然这篇文章缺陷的，有几个地方都没有分析到，比如导航守卫实现原理和路由懒加载实现原理，这一部分，我还在摸索当中。
+ 或许阅读源码的作用不能像一篇开发文档一样直接立马对日常开发有所帮助，但是它的影响是长远的，在读源码的过程中都可以学到众多知识，类似闭包、设计模式、时间循环、回调等等 JS 进阶技能，并稳固并提升了你的 JS 基础。当然这篇文章缺陷的，有几个地方都没有分析到，比如导航守卫实现原理和路由懒加载实现原理，这一部分，我还在摸索当中。
  
  如果一味的死记硬背一些所谓的面经，或者直接死记硬背相关的框架行为或者 API ，你很难在遇到比较复杂的问题下面去快速定位问题，解怎么去解决问题，而且我发现很多人在使用一个新框架之后遇到点问题都会立马去提对应的 `Issues` ,但是许多问题都是因为我们并未按照设计者开发初设定的方向才导致错误的，更多都是些粗心大意造成的问题。
 
