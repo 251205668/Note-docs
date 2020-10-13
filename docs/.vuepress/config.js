@@ -211,16 +211,6 @@ function getBlogSlideBar(groupA) {
       title: groupA,
       collapsable: false,
       children: [
-        '/blog/pratice/react.md',
-        '/blog/pratice/redux.md',
-        '/blog/pratice/hooks.md',
-        '/blog/pratice/dva.md',
-        '/blog/pratice/start.md',
-        '/blog/pratice/demand.md',
-        '/blog/pratice/log.md',
-        '/blog/pratice/beautify.md',
-        '/blog/pratice/knowledge.md',
-        '/blog/pratice/codeReview.md',
         '/blog/pratice/vue-analyze.md'
       ]
     }
