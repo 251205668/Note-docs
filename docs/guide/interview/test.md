@@ -444,6 +444,18 @@ aa() // 调用方决定this指向-window  2
 b.c() // 3
 b.d() // 2  箭头函数作用域由向上寻找拥有作用域的函数决定 -window
 ```
+
+实现一个class无法生成构造函数，new就会报错，就类似于箭头函数无法被new一样的报错
+```js
+class NotConstructor {
+  constructor(){
+    if(this instanceof NotConstructor){
+      throw new Error('cant new constructor')
+    }
+  }
+}
+```
+
 **经典问题**
 
 每个函数都是`Function`构造函数的实例对象,所以用`Function.prototype.fn`函数中`this`一定指向实例对象的。

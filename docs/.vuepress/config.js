@@ -48,12 +48,14 @@ module.exports = {
         sidebar: {
           '/guide/': getGuideSidebar(
             '目录',
-            'css基础到进阶',
-            'js基础',
-            'js进阶',
-            "MVVM分析",
-            "Webpack实战分析",
-            "Node.js基础到进阶",
+            'JS 基础和进阶',
+            'CSS 基础',
+            '框架 (Vue为主)',
+            "浏览器",
+            "前端工程化",
+            "性能优化",
+            "网络",
+            "安全",
             "面试题总结"
           ),
           '/project/shop/': getPShopSlideBar(
