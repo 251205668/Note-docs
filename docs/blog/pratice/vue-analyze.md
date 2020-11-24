@@ -18,7 +18,16 @@
 
 `Vue` 、`Vue-router` 等大型项目往往需要这种工具去做静态类型检查以保证代码的可维护性和可靠性。
 
-首先在 `index.js` 文件中输入以下代码
+首先安装 `flow` 环境，初始化环境
+
+```bash
+npm install flow-bin -g
+
+flow init
+
+```
+
+在 `index.js` 中输入这一段报错的代码
 
 ```js
 /*@flow*/
@@ -29,18 +38,7 @@ function add(x: string, y: number): number {
 add(2, 11)
 
 ```
-然后安装 `flow`,并初始化 `.flowconfig`
-
-```bash
-npm install flow-bin -g
-
-cd test
-
-flow init
-
-flow
-```
-这个时候不出意外就会抛出异常提示，这就是简单的 `flow` 使用方法。
+在控制台输入 `flow` ，这个时候不出意外就会抛出异常提示，这就是简单的 `flow` 使用方法。
 
 具体用法还需要参考 [flow官网](https://flow.org/en/docs/types/primitives/),另外这种语法是类似于 [TypeScript](https://www.typescriptlang.org/) 的。
 
@@ -193,7 +191,11 @@ export function install (Vue) {
 
 #### 总结
 
- `Vue.use(plugin)` 实际上在执行 plugin上的 `install` 方法，`insatll` 方法有个重要的步骤就是使用 `mixin` 在组件中混入 `beforeCreate` , `destory` 这俩个生命周期钩子，然后在 `beforeCreate` 这个钩子进行初始化。
+ `Vue.use(plugin)` 实际上在执行 plugin上的 `install` 方法，`insatll` 方法有个重要的步骤就是:
+
+ - 使用 `mixin` 在组件中混入 `beforeCreate` , `destory` 这俩个生命周期钩子
+ - 在 `beforeCreate` 这个钩子进行初始化。
+ - 全局注册 `router-view`，`router-link` 组件
 
 ### vueRouter
 
@@ -752,11 +754,9 @@ const handler = e => {
 
 目前主流的路由权限控制的方式是:
 
-1. 前端在登录之后获取到 `JWT 令牌` 前端在全局路由拦截,并在 `route.js` 定义一套前端的路由表
+1. 登录时获取 `token` 保存到本地，接着前端会携带 `token` 再调用获取用户信息的接口获取当前用户的角色信息
 
-2. 后端根据登录信息返回给前端对应的身份信息，并且涉及到身份信息操作的接口都需要做身份校验处理。 当然这里也可以在数据库中提前定义好一张 `roles-router` 表,然后在查询用户信息时将对应的路由树状表返给前端
-
-3. 前端根据当前的角色将对应的权限的路由表拼接到常规路由表后面
+3. 前端再根据当前的角色计算出相应的路由表拼接到常规路由表后面
 
 
 ### 登录生成动态路由全过程
@@ -841,7 +841,42 @@ router.beforeEach(async(to, from, next) => {
 
 - asyncRoutes: 需要动态判断权限的路由
 
-![](https://image.yangxiansheng.top/img/20200920212514.png?imglist)
+```js
+// 无需校验身份路由
+export const constantRoutes = [
+  {
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  }
+  ...
+  ],
+ // 需要校验身份路由 
+export const asyncRoutes = [
+  // 学生角色路由 大屏数据和成绩查询
+  {
+    path: '/student',
+    name: 'student',
+    component: Layout,
+    meta: { title: '学生信息查询', icon: 'documentation', roles: ['student'] },
+    children: [
+      {
+        path: 'info',
+        component: () => import('@/views/student/info'),
+        name: 'studentInfo',
+        meta: { title: '信息查询', icon: 'form' }
+      },
+      {
+        path: 'score',
+        component: () => import('@/views/student/score'),
+        name: 'studentScore',
+        meta: { title: '成绩查询', icon: 'score' }
+      }
+    ]
+  }
+  ...
+]
+```
 
 生成动态路由的源码位于 `src/store/modules/permission.js` 中的 `generateRoutes` 方法，源码如下：
 
