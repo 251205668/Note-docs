@@ -1,24 +1,5 @@
 # JS基础
 
-基本试题:
-
-::: tip
-1. `typeof`作用
-2. 何时使用 `===` 和 `==`
-3. 值类型和引用类型区别
-4. 手写深拷贝
-5. 如何判断一个变量是否是数组
-6. 利用原型链手写`Jquery`简单实现，考虑插件和扩展性
-7. `class`原型本质理解,结合原型链
-8. `this`使用场景,如何取值
-9. 手写`bind`函数
-10. 闭包的使用场景
-11. 作用域标签判断题
-12. 异步和同步区别
-13. 手写`Promise`加载请求和多张图片
-14. 异步使用场景
-:::
-
 ## 引用类型和值类型
 
 js中创建的赋值方式分为`引用类型`和`值类型`,引用类型能够保持状态不改变。
@@ -63,7 +44,6 @@ b.age = 200
 `typeof`并不能完全识别引用类型,他只能判断是否是引用类型，不能继续识别
 :::
 
-![20200701144130.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701144130.png)
 
 ## 深拷贝
 
@@ -121,8 +101,6 @@ function deepClone(obj = {}){
 
 通常来说,两个等号会尽量保证类型相同,所以会进行类型转换。
 
-![20200701152908.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701152908.png)
-
 **两个等号的唯一使用场景**: 判断对象属性是否为`null`,其他情况全部使用`===`
 
 ```js
@@ -145,14 +123,10 @@ console.log(10 || 0) // 0
 ```
 ## 原型和原型链
 
-![20200701161415.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701161415.png)
-
 **类型判断-`instanceof`**
 
 1. 判断引用类型
 2. `Object`可以充当任意`class`的父类
-
-![20200701162342.png](https://raw.githubusercontent.com/imageList/imglist/master/20200701162342.png)
 
 **显式原型和隐式原型之间的关系：**
 
@@ -239,8 +213,6 @@ Jquery.prototype.newfun =  function(q){
 ```
 
 ## 作用域与闭包(this,作用域)
-
-![20200702185331.png](https://raw.githubusercontent.com/imageList/imglist/master/20200702185331.png)
 
 作用域的定义: [[scope]]: javascript函数都可以视为一个对象，对象都会有属性,但是有些属性是隐示的的，只提供给js引擎使用的。这里的scope就是其中的一个。
 scope:存储执行上下文的集合，简称作用域。
@@ -330,8 +302,6 @@ bar(); // 1   执行顺序显示函数内部，然后向上寻找上层作用域
 
 变量在函数体内部具有一个作用区域，超出区域就不能进行调用。
 
-![20200702185846.png](https://raw.githubusercontent.com/imageList/imglist/master/20200702185846.png)
-
 词法作用域分为: `全局作用域`，`函数作用域`和`块级作用域`。
 
 全局作用域和函数作用域在上面就有使用到,然后块级作用域主要使用到的场景为判断语句中定义的变量,不能超出大括号区域使用,否则报错。
@@ -346,8 +316,6 @@ console.log(i) // error
 > 自由变量: 当前作用域下未定义,但是向上层级(父级作用域)能够找到并且合法的变量。比如这里的`fn3`中的 `a` `a1` `a2` 都是在本函数作用域下未定义,但是向上层级能够找到,所以他们是自由变量。
 
 例题: 
-
-![20200703112852.png](https://raw.githubusercontent.com/imageList/imglist/master/20200703112852.png)
 
 > 这种情况,点击每个`a`都会弹出对应的`i`，这是因为块级作用域,每次循环都会形成新的块,`i`就会不同,但是如果`i`定义为全局作用域,永远都会弹出`10`，函数没执行但是已经循环完。
 
@@ -385,8 +353,6 @@ print(fn)
 
 这里会发现,**不论函数在哪里执行,自由变量的查找,都是定义函数的地方向上级作用域查找出的变量值**。而不是执行向上级作用域查找。所以都打印出了`200`。这就是闭包的概念。
 :::
-
-![20200702194853.png](https://raw.githubusercontent.com/imageList/imglist/master/20200702194853.png)
 
 **闭包的常见应用场景:**
 
@@ -478,6 +444,18 @@ aa() // 调用方决定this指向-window  2
 b.c() // 3
 b.d() // 2  箭头函数作用域由向上寻找拥有作用域的函数决定 -window
 ```
+
+实现一个class无法生成构造函数，new就会报错，就类似于箭头函数无法被new一样的报错
+```js
+class NotConstructor {
+  constructor(){
+    if(this instanceof NotConstructor){
+      throw new Error('cant new constructor')
+    }
+  }
+}
+```
+
 **经典问题**
 
 每个函数都是`Function`构造函数的实例对象,所以用`Function.prototype.fn`函数中`this`一定指向实例对象的。
