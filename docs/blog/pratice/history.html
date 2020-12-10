@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>history</title>
+  </head>
+  <body>
+    <div class="main">
+      <a href="javascript:;" path="/a">a页面</a>
+      <a href="javascript:;" path="/b">b页面</a>
+      <a href="javascript:;" path="/c">c页面</a>
+      <div id="content"></div>
+    </div>
+
+    <script>
+      class Router {
+        constructor(routers) {
+          this.routers = {};
+          routers.forEach((item) => {
+            this.route(item.path, () => {
+              document.getElementById("content").innerHTML = item.compontent;
+            });
+          });
+          this.bindClick();
+          this.init();
+        }
+        route(path, cb) {
+          this.routers[path] = cb;
+        }
+        bindClick() {
+          // history模式需要手动添加路由 通过 history的pushState事件
+          const links = document.getElementsByTagName("a");
+          // [].forEach.call() => Array.prototype.forEach()
+          [].forEach.call(links, (link) => {
+            link.addEventListener("click", () => {
+              const path = link.getAttribute("path");
+              this.pushRoute(path);
+            });
+          });
+        }
+        pushRoute(path) {
+          window.history.pushState({}, null, path);
+          this.updateView();
+        }
+        init() {
+          window.addEventListener("load", this.updateView.bind(this));
+          // history模式 路由修改 浏览器会触发popstate事件
+          window.addEventListener("popstate", this.updateView.bind(this));
+        }
+        updateView(e) {
+          // console.log("history window.location", window.location);
+          // console.log("history window.history", window.history);
+          const currentUrl = window.location.pathname || "/";
+          this.routers[currentUrl] && this.routers[currentUrl]();
+        }
+      }
+      const routers = [
+        {
+          path: "/a",
+          compontent: `<div>我是a页面</div>`,
+        },
+        {
+          path: "/b",
+          compontent: `<div>我是b页面</div>`,
+        },
+        {
+          path: "/c",
+          compontent: `<div>我是c页面</div>`,
+        },
+      ];
+      new Router(routers);
+    </script>
+  </body>
+</html>

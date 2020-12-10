@@ -69,6 +69,15 @@ function defineRective(data,key,value){
     }
   })
 }
+
+observer({
+  name:'tom',
+  parent:{
+    children:{
+      val:1
+    }
+  }
+})
 ```
 
 **监听数组变化**
