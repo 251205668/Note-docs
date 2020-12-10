@@ -1,3 +1,4 @@
+# 常见面试题
 
 复习完所有的知识点之后，刷一下这篇文章[https://juejin.im/post/6844904100035821575](https://juejin.im/post/6844904100035821575)
 
@@ -353,6 +354,8 @@ ETag 是服务器根据当前文件的内容，对文件生成唯一的标识,�
 ![](https://image.yangxiansheng.top/img/20201204134016.png?imglist)
 
 ![](https://image.yangxiansheng.top/img/20201204134047.png?imglist)
+
+![](https://image.yangxiansheng.top/img/20201210220611.png?imglist)
 
 ## options 方法有什么用？
 

@@ -48,15 +48,17 @@ module.exports = {
         sidebar: {
           '/guide/': getGuideSidebar(
             '目录',
-            'JS 基础和进阶',
-            'CSS 基础',
-            '框架 (Vue为主)',
-            "浏览器",
+            'JS',
+            'CSS',
+            '框架',
+            '小程序',
+            '算法',
             "前端工程化",
             "性能优化",
-            "网络",
+            "浏览器",
+            '网络',
             "安全",
-            "面试题总结"
+            '软技能',
           ),
           '/project/shop/': getPShopSlideBar(
             '介绍',
@@ -90,7 +92,7 @@ module.exports = {
     ]
   ]
 }
-function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,groupG) {
+function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,groupG,groupH,groupI,groupJ,groupK) {
   return [
     {
       title: group,
@@ -103,47 +105,79 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
       title: groupA,
       collapsable: false,
       children: [
-        '/guide/css/test.md',
-        '/guide/css/layout.md',
-        '/guide/css/alwaysCode.md',
-        '/guide/css/iconfont.md',
-        '/guide/css/css-skill.md',
-        '/guide/css/code.md',
+        "/guide/interview/JS/执行上下文-作用域-闭包.md",
+        "/guide/interview/JS/原型和原型链.md",
+        "/guide/interview/JS/this-call-bind-apply.md",
+        "/guide/interview/JS/深浅拷贝.md",
+        "/guide/interview/JS/dom.md",
+        "/guide/interview/JS/事件循环机制.md",
+        "/guide/interview/JS/Promise.md",
+        "/guide/interview/JS/ES6.md",
+        "/guide/interview/JS/正则表达式.md",
+        "/guide/interview/JS/JS高级工程师要会的手写题汇总.md",
+        "/guide/interview/JS/经典面试题.md",
+        "/guide/interview/JS/字节面试题收集.md",
       ]
     },
     {
       title: groupB,
       collapsable: false,
       children: [
-        '/guide/js/base.md'
+        "/guide/interview/CSS/常见属性.md",
+        "/guide/interview/CSS/常见布局问题.md",
+        "/guide/interview/CSS/移动端问题.md",
+        "/guide/interview/CSS/常见面试题.md",
       ]
     },
     {
       title: groupC,
       collapsable: false,
       children: [
-        '/guide/js/higher.md'
+        "/guide/interview/框架/Vue/常用面试题.md",
       ]
     },
     {
       title: groupD,
       collapsable: false,
-      children: ['/guide/vue/vue.md']
+      children: [ "/guide/interview/小程序/常用面试题.md",]
     },
     {
       title: groupE,
       collapsable: true,
-      children: ['/guide/webpack/test.md']
+      children: [
+        "/guide/interview/算法/基础.md",
+        "/guide/interview/算法/刷题汇总.md",
+      ]
     },
     {
       title: groupF,
       collapsable: true,
-      children: ['/guide/node/koa.md',"/guide/node/springboot.md"]
+      children: [ "/guide/interview/前端工程化/常用面试题.md",]
     },
     {
       title: groupG,
       collapsable: true,
-      children: ['/guide/interview/test.md','/guide/interview/web-api.md','/guide/interview/git.md','/guide/interview/broswer.md','/guide/interview/miniprogrammer.md','/guide/interview/Vue.md','/guide/interview/suanfa.md','/guide/interview/project.md','/guide/interview/always.md']
+      children: ['/guide/interview/性能优化/常用面试题.md']
+    },
+    {
+      title: groupH,
+      collapsable: true,
+      children: ['/guide/interview/浏览器/常见面试题.md']
+    },
+    {
+      title: groupI,
+      collapsable: true,
+      children: ['/guide/interview/Http/常见http面试题.md']
+    },
+    {
+      title: groupJ,
+      collapsable: true,
+      children: ['/guide/interview/安全/常用面试题.md']
+    },
+    {
+      title: groupK,
+      collapsable: true,
+      children: ['/guide/interview/软技能/常用面试题.md']
     }
   ]
 }

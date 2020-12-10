@@ -832,7 +832,6 @@ data () {
 模块代码dom.js为
 ```js
 export function hasClass (el, className) {
-  // todo:/(^|\\s)+(className)+(\\s|$)/
   let reg = new RegExp('(^|\\s)' + className + '(\\s|$)')
   // 判断是否有class
   return reg.test(el.className)
@@ -3459,7 +3458,6 @@ handleLyric({lineNum,txt}) {
 ```
 滑动处理
 ```js
-  //  todo:左右滑动效果展示歌词
     midleTouchStart (e) {
       // 设置标志位已经初始化
       this.touch.initiated = true

@@ -65,7 +65,6 @@ module.exports = [
 ]
 ```
 
-todo: // 分析它的路由配置是如何注入到实现的
 
 ## 优雅使用redux 对接api时需要注意的
 

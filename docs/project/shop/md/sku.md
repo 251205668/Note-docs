@@ -270,7 +270,6 @@ split(){
  this.triggerEvent('cellTap',{cell:this.properties.Cell,x:this.properties.x,y:this.properties.y},{bubbles:true,composed:true})
 ```
 
-// TODO: 待确定路径判断 选择联动 细节处理
 
 
 
