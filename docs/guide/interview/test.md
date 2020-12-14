@@ -1986,8 +1986,8 @@ alert("Hello");
 
 ### 箭头函数和普通函数的区别？
 
-- 箭头函数的`this`是由包裹它的`普通函数的this`来决定；`
-- 不能作为构造函数, `Generator`函数；
+- 箭头函数的`this`是由上下文的`普通函数的this`来决定；`
+- 不能作为构造函数, `Generator`函数，不能new
 - 参数不能使用arguments访问，需要使用Es6的不定参数访问；
 - 使用`bind`方法无效。
 
@@ -1997,6 +1997,7 @@ alert("Hello");
 - `let`和`const`没有变量提升的情况，必须要先声明再使用，否则就会出现暂时性死区的情况。
 - `const`和`let`的区别在于一经定义后不得再次改变const定义的值`
 - `const`必须赋值
+
 ### 谈谈对Promise的理解 ？
 
 - `Promise`主要解决的问题就是``异步回调嵌套过深造成代码难以维护和理解`
@@ -2035,7 +2036,7 @@ alert("Hello");
 优点: 
 
 1. 增强开发维护可读性
-2. 更适合机器解析，生成目录,搜索引擎爬虫等
+2. 更适合机器解析SEO，生成目录,搜索引擎爬虫等
 
 ### HTML5与HTML4的不同之处
 
@@ -2081,9 +2082,11 @@ alert("Hello");
 
 ### 伪类和伪元素的区别
 
-伪类是一个以冒号(:)作为前缀,被添加到一个选择器末尾的关键字,`通过在元素选择器上加入伪类改变元素状态`。`p:last-child`
+- 伪类**用于当已有的元素处于某个状态时，为其添加对应的样式**，这个状态是根据用户行为而动态变化的。比如说，当用户悬停在指定的
+元素时，我们可以通过:hover来描述这个元素的状态。
 
-伪元素: 伪元素用于创建一些不在文档树中的元素,并为其添加样式。用户能够看见但实际不存在文档树中。`::before`
+- 伪元素**用于创建一些不在文档树中的元素，并为其添加样式**。它们允许我们为元素的某些部分设置样式。比如说，我们可以通过::be
+fore来在一个元素前增加一些文本，并为这些文本添加样式。**虽然用户可以看到这些文本，但是这些文本实际上不在文档树中**。
 
 ### 块级元素水平居中,垂直居中,水平垂直居中
 
@@ -2115,9 +2118,9 @@ alert("Hello");
 
 ### 清除浮动有哪些方法？
 
-- 空div方法：`<div style="clear:both;"></div>`
-- `overflow: auto`或`overflow: hidden`方法，使用BFC
-- 最好的方法
+- 空div方法：在需要清除浮动的元素后面添加一个空白标签`<div style="clear:both;"></div>`
+- 父级元素添加`overflow: auto`或`overflow: hidden`方法，使用BFC
+- 伪元素清除浮动，最好的方法
 
 ```css
 .parent-box:after{
@@ -2126,6 +2129,7 @@ alert("Hello");
     display: block;
 }
 ```
+- 父元素设置`display: table`
 
 ### 盒模型的理解
 
@@ -2164,7 +2168,6 @@ IE盒(border-box):设置的宽高包含了**内边距和边框**。
 
 ### webpack treeShaking原理
 
-### 
 
 
 ### 网络安全相关
@@ -2497,6 +2500,30 @@ return false;
 
 使用事件代理我们可以不必要为每一个子元素都绑定一个监听事件，这样减少了内存上的消耗。并且使用事件代理我们还可以实现事件的动态绑定，比如说新增了一个子节点，我们并不需要单独地为它添加一个监听事件，它所发生的事件会交给父元素中的监听函数来处理。
 
+```js
+<ul>
+  <li>苹果</li>
+  <li>香蕉</li>
+  <li>凤梨</li>
+</ul>
+
+// good
+document.querySelector('ul').onclick = (event) => {
+  const target = event.target
+  if (target.nodeName === 'LI') {
+    console.log(target.innerHTML)
+  }
+}
+
+// bad
+document.querySelectorAll('li').forEach((e) => {
+  e.onclick = function() {
+    console.log(this.innerHTML)
+  }
+}) 
+
+```
+
 事件委托的优点：
 
 - 减少内存消耗，不必为大量元素绑定事件
@@ -2527,3 +2554,8 @@ https://github.com/lf2021/Front-End-Interview/blob/master/05.JavaScript/js.md#js
 
 https://muyiy.cn/blog/
 
+## js 脚本 defer 和 async 的区别
+
+- defer 属性表示延迟执行引入的 JavaScript，即这段 JavaScript 加载时 HTML 并未停止解析，这两个过程是并行的。当整个 document 解析完毕后再执行脚本文件，在 DOMContentLoaded 事件触发之前完成。多个脚本按顺序执行。
+
+- async 属性表示异步执行引入的 JavaScript，与 defer 的区别在于，如果已经加载好，就会开始执行，也就是说它的执行仍然会阻塞文档的解析，只是它的加载过程不会阻塞。多个脚本的执行顺序无法保证。
