@@ -2559,3 +2559,22 @@ https://muyiy.cn/blog/
 - defer 属性表示延迟执行引入的 JavaScript，即这段 JavaScript 加载时 HTML 并未停止解析，这两个过程是并行的。当整个 document 解析完毕后再执行脚本文件，在 DOMContentLoaded 事件触发之前完成。多个脚本按顺序执行。
 
 - async 属性表示异步执行引入的 JavaScript，与 defer 的区别在于，如果已经加载好，就会开始执行，也就是说它的执行仍然会阻塞文档的解析，只是它的加载过程不会阻塞。多个脚本的执行顺序无法保证。
+
+
+## 在页面插入10000个元素，如何进行优化？
+
+使用 `Fragment` 文档片段
+
+```js
+	var container = document.getElementById('container')
+	var fragment = document.createDocumentFragment()
+	for(let i = 0; i < 10000; i++){
+		let li = document.createElement('li')
+    li.innerHTML = 'hello world'
+    // 所有构造的节点加入文档片段
+	    fragment.appendChild(li)
+  }
+  // 节点构造完成，将文档对象添加到页面中
+	container.appendChild(fragment);
+```
+JavaScript 提供了一个文档片段 `DocumentFragment` 的机制。**把所有要构造的节点都放在文档片段中执行，这样可以不影响文档树，也就不会造成页面渲染**。当节点都构造完成后，再将文档片段对象添加到页面中，**这时所有的节点都会一次性渲染出来，这样就能减少浏览器负担，提高页面渲染速度**。

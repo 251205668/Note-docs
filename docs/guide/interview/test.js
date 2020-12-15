@@ -20,6 +20,7 @@ console.log(Son.prototype) // Grand {lastName:'真的皮'} 这种方式会继承
 
 
 // 借助构造函数实现继承
+
 function Person(name,age){
   this.name = name
   this.age = age
@@ -33,6 +34,7 @@ var student = new Student('1',12)
 
 
 // 公有原型继承  一定要先继承后使用 缺点是无法新增自己的原型属性，会互相影响
+
 Father.prototype.lastName = "李雷"
 function Father(){
 
@@ -44,6 +46,7 @@ var son = new Son()
 var father = new Father()
 
 // 寄生组合继承 解决了公有原型无法增加私有原型属性的缺点 使用了中间层
+
 /**
  * 
  * @param {*} Target Son
