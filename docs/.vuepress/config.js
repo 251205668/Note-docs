@@ -106,6 +106,7 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
       collapsable: false,
       children: [
         "/guide/interview/JS/执行上下文-作用域-闭包.md",
+        "/guide/interview/JS/类型转换.md",
         "/guide/interview/JS/原型和原型链.md",
         "/guide/interview/JS/this-call-bind-apply.md",
         "/guide/interview/JS/深浅拷贝.md",

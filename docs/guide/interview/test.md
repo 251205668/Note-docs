@@ -8,7 +8,7 @@ js中创建的赋值方式分为`引用类型`和`值类型`,引用类型能够�
 
 **值类型**
 ```js
-let a = 100
+let a = 100	
 let b = a
 // b=100
 ```
@@ -1323,6 +1323,8 @@ class EventEmit {
 - 判断是否是引用类型,但是无法具体判断类型
 - 可以判断`function` 
 
+> typeof(undefined) = 'undefined' typeof(NAN) = number typeof(a) = 'undefined' typeof(null) = object
+
 封装`typeof`
 
 ```js
@@ -1360,35 +1362,62 @@ function mytypeof(target){
 （4） ? : 中的条件判断表达式。
 （5） 逻辑运算符 ||（逻辑或）和 &&（逻辑与）左边的操作数（作为条件判断表达式）。
 
-显示类型转换:
+**显示类型转换:**
 
-- Number(mix): 转为数字，非数字输出NAN。 注意 Number(null) ,Numnber(false),Number("")都是输出0，undefined输出 NaN
+- Number(mix): 转为数字，非数字(比如一个字符串abc)输出NAN。
+> 注意 Number(null) ,Numnber(false),Number("")都是输出0，**undefined输出 NaN**
 
-- parseInt(string,raidx) : 转为整形数字 ，非数字输出NAN,第二个参数是基于某个进制转为十进制，比如parseInt('b',16) ,输出11, parseInt('100px')=> 100
+- parseInt(string,raidx) : 转为整形数字 ，非数字输出NAN,第二个参数是基于某个进制转为十进制，比如parseInt('10',16) ,把16进制为基底转为十进制数，输出16, 
+> **即时字符串中有abc还是可以转换，以数字类截断字符串**， parseInt('100px')=> 100 ，parseInt('1000abc')=>1000
 
 - parseFloat(string) 转为浮点
 
-- toString() 转为字符串  `undefined`和`null`不能使用这个方法，因为没有原型，**如果添加参数则代表转为目标进制** ,111.toString(16) 10进制转为16进制，所以如果将一个二进制数转为目标进制，则可以先使用parseInt转为十进制，然后使用`toString()`转为目标进制
+- toString() 转为字符串，**`undefined`和`null`不能使用这个方法**，因为没有原型，如果添加参数则代表转为目标进制 
+> 111.toString(16) 以10进制转为16进制，所以如果将一个二进制数转为目标进制，则可以先使用parseInt转为十进制，然后使用`toString()`转为目标进制
 
 - String(string) 转为字符串,任何类型都会转为字符串
 
 - Boolean  **js种六种值转为`false` (`undefined` ,`null` ,`''` ,`NAN` ,`0`,false)**,其他的都是true
 
-隐示类型转换
+**隐示类型转换**
 
-- isNaN :判断不是数字，其实就是转为Number(s),然后判断是否是数字
-- `+`,`-`,`++`,`--`
+原则，凡是碰到运算符的首先就转换为Number类型，不管他是不是数字，不是数字转为Number就是NaN。
+> 特殊地方： + 两侧如果有字符串就转为string
+
+Number() 有几个特殊的值需要记住: 
+
+- Number(null) = 0
+- Number(NaN) = NaN
+- Number("") = 0
+- Number(false) = 0
+- Number(undefined) = NaN
+
+
+```js
+var num = 1 + '1' //string 11
+var num = 1 - '1' // 0
+var num = 1 * '1' // 1
+
+var str = false + 1 // 0+1 =1
+var demo = false == 1// false
+console.log(typeof(a) && (-true+(+undefined) + "")) //"undefined" && (-1+NaN+"") ==> "undefined" && "NaN" ==> "NaN"
+console.log(11 + "11" * 2 == 33) // true
+console.log(!!" " + !!"" + -!!false || console.log(1)) //true+false-false||1 ===> 1不会打印1
+```
+
+- **isNaN** :判断不是数字，其实就是**转为Number(s),然后判断是否是数字**
+- `+`,`-`,`++`,`--`运算符
 
 ```js
 var a = '233'
 a++ a-- // ++ 首先会调用Number(a)转为数字，然后在++，即使转不成数字也会转为number类型
 
-+a // 都会转换为数字类型,typeof为number
++ a 、- a// 都会转换为数字类型,typeof为number
 
 a = "a" + 2
 // 当加号两侧有一个东西是字符串，就会调用string将两个都变成字符串
 
--,%,*   a = '1'* 1 // a =1
+-,%,*,/   a = '1'* 1  1 * 'a'(Number(1) * Number('a')) = NaN // a =1
 // 也是先转换为number类型
 
 && || !
@@ -1713,6 +1742,7 @@ function foo(){
   }
   bar(baz);
 }
+
 function bar(fn){
   // 这就是闭包
   fn();
@@ -1722,7 +1752,7 @@ foo();
 ```
 - 在定时器、事件监听、Ajax请求、跨窗口通信、Web Workers或者任何异步中，只要使用了回调函数，实际上就是在使用闭包。
 
-- IIFE(立即执行函数表达式)创建闭包, 保存了全局作用域window和当前函数的作用域，因此可以全局的变量。
+- IIFE(立即执行函数表达式)创建闭包, 保存了全局作用域window 和当前函数的作用域，因此可以全局的变量。
 
 ```js
 var a = 2;
@@ -2578,3 +2608,12 @@ https://muyiy.cn/blog/
 	container.appendChild(fragment);
 ```
 JavaScript 提供了一个文档片段 `DocumentFragment` 的机制。**把所有要构造的节点都放在文档片段中执行，这样可以不影响文档树，也就不会造成页面渲染**。当节点都构造完成后，再将文档片段对象添加到页面中，**这时所有的节点都会一次性渲染出来，这样就能减少浏览器负担，提高页面渲染速度**。
+
+
+## 逗号运算符
+
+先看前面的表达式，计算出来结果，再看后面的表达式，如果需要计算，计算出来结果。但是返回的是后面的表达式的结果
+```js
+var a = (2,3) // 3
+var a = (1-1,1+1) // 2
+```
