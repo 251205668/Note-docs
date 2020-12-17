@@ -10,7 +10,7 @@ function Father(){
 }
 var father = new Father()
 
-Son.prototype = father
+Son.prototype = father//将整个father看成 Father构造函数的this (this = {__proto:Father.prototype}) 就能够理解整个过程
 function Son(){
 
 }
@@ -26,14 +26,15 @@ function Person(name,age){
   this.age = age
 }
 
-function Student(name,age){
-  // 执行父级的构造函数 虽然写法上好看了但是实际上和上面没区别
+function Student(name,age,grade){
+  // 执行父级的构造函数 虽然写法上好看了但是实际上和上面没区别,无法借用构造函数的原型
   Person.call(this,name,age)
+  this.grade = grade
 }
-var student = new Student('1',12)
+var student = new Student('1',12,12)
 
 
-// 公有原型继承  一定要先继承后使用 缺点是无法新增自己的原型属性，会互相影响
+// 公有原型继承  缺点是无法新增自己的原型属性，会互相影响
 
 Father.prototype.lastName = "李雷"
 function Father(){
@@ -45,7 +46,8 @@ Son.prototype = Father.prototype
 var son = new Son()
 var father = new Father()
 
-// 寄生组合继承 解决了公有原型无法增加私有原型属性的缺点 使用了中间层
+
+// 圣杯模式继承 解决了公有原型无法增加私有原型属性的缺点 使用了中间层
 
 /**
  * 
@@ -58,28 +60,9 @@ var father = new Father()
 function inherit(Target,Origin){
   function F(){}
   F.prototype = Origin.prototype
+  // 通过原型链继承  只不过经过了中间层F
   Target.prototype = new F()
+  // son.__proto ===> newF().__proto__===>Father.prototype
+  // 这一步是因为原型链将son的__proto指向了Father的prototype 所以要指回去
   Target.prototype.constuctor = Target
 }
-
- a = 100
- function demo(e) {
-   function e() {}
-   arguments[0] = 2
-   console.log(e)
-   if(a) {
-     var b = 123
-     function c() {} // if里面不能声明function c:undefined
-   }
-   var c
-   a =10
-   var a
-   console.log(b)
-   f = 123
-   console.log(c)
-   console.log(a)
- }
- var a
- demo(1)
- console.log(a)
- console.log(f)

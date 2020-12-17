@@ -498,6 +498,7 @@ Function.prototype.mycall = function(context,...args){
 ```js
 Function.prototype.bind1 = function(){
   const args = Array.prototype.slice.call(arguments)
+  // 获取this
   const t = args.shift()
   // Function是个class this指向对象本身
   const self = this
@@ -1049,17 +1050,15 @@ function flatten(arr) {
 
 ### 实现防抖函数（debounce）待优化
 
+核心思想: 每次事件触发则删除原来的定时器，建立新的定时器。跟王者荣耀的回城功能类似，你反复触发回城功能，那么只认最后一次，从最后一次触发开始计时。
 ```js
-export function debounce (func, delay) {
-  let timer
-
+function debounce(fn, delay) {
+  let timer = null;
   return function (...args) {
-    if (timer) {
-      clearTimeout(timer)
-    }
-    timer = setTimeout(() => {
-      func.apply(this, args)
-    }, delay)
+    if(timer) clearTimeout(timer);
+    timer = setTimeout(function() {
+      fn.apply(this, args);
+    }, delay);
   }
 }
 ```
@@ -1108,19 +1107,23 @@ export function shuffle (arr) {
 ```
 ### 实现节流函数（throttle）
 
+[https://juejin.cn/post/6844904021308735502#heading-94](https://juejin.cn/post/6844904021308735502#heading-94)
+
+节流的核心思想: 如果在定时器的时间范围内再次触发，则不予理睬，等当前定时器完成，才能启动下一个定时器任务。这就好比公交车，10 分钟一趟，10 分钟内有多少人在公交站等我不管，10 分钟一到我就要发车走人！
+
 ```js
-// 节流函数
-const throttle = (fn, delay = 500) => {
+function throttle(fn, interval) {
   let flag = true;
-  return (...args) => {
+  return function(...args) {
     if (!flag) return;
     flag = false;
     setTimeout(() => {
       fn.apply(this, args);
       flag = true;
-    }, delay);
+    }, interval);
   };
 };
+
 ```
 适用场景：
 
@@ -2617,3 +2620,24 @@ JavaScript 提供了一个文档片段 `DocumentFragment` 的机制。**把所�
 var a = (2,3) // 3
 var a = (1-1,1+1) // 2
 ```
+
+## 数组的方法中那些会改变原数组呢？
+
+```
+pop()---删除数组的最后一个元素并返回删除的元素。
+push()---向数组的末尾添加一个或更多元素，并返回新的长度。
+shift()---删除并返回数组的第一个元素。
+unshift()---向数组的开头添加一个或更多元素，并返回新的长度。
+reverse()---反转数组的元素顺序。
+sort()---对数组的元素进行排序。
+splice()---用于插入、删除或替换数组的元素。
+```
+
+## 原生js实现轮播图原理
+
+https://www.cnblogs.com/web-chuanfa/p/10070603.html
+
+## 实现懒加载的原理
+
+https://juejin.cn/post/6844904021308735502#heading-98
+
