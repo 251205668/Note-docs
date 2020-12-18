@@ -1,13 +1,14 @@
-https://juejin.cn/post/6844903625769091079#comment
+# Promise
 
-https://juejin.cn/post/6844903509934997511
+## JS为什么是单线程
 
-https://juejin.cn/post/6844903607968481287#heading-5
 ## 异步
 
-## Promise 的魅力,它解决了什么
+## Promise 的理解,它的作用是什么
 
+## Promise的一些API
 
 ## async await
 
 ## 手写 Promise 和其方法
+

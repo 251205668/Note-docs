@@ -115,6 +115,7 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
         "/guide/interview/JS/Promise.md",
         "/guide/interview/JS/ES6.md",
         "/guide/interview/JS/正则表达式.md",
+        "/guide/js/base.md",
         "/guide/interview/JS/JS高级工程师要会的手写题汇总.md",
         "/guide/interview/JS/经典面试题.md",
         "/guide/interview/JS/字节面试题收集.md",
@@ -134,6 +135,7 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
       title: groupC,
       collapsable: false,
       children: [
+        "/guide/interview/框架/Vue/Vue-router.md",
         "/guide/interview/框架/Vue/常用面试题.md",
       ]
     },
@@ -147,7 +149,8 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
       collapsable: true,
       children: [
         "/guide/interview/算法/基础.md",
-        "/guide/interview/算法/刷题汇总.md",
+        "/guide/interview/算法/hot.md",
+        "/guide/interview/算法/剑指offer.md",
       ]
     },
     {
@@ -178,7 +181,15 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
     {
       title: groupK,
       collapsable: true,
-      children: ['/guide/interview/软技能/常用面试题.md']
+      children: [ 
+      '/guide/interview/软技能/自我介绍.md',
+      '/guide/interview/软技能/学习历程.md',
+      '/guide/interview/软技能/实习心得.md',
+      '/guide/interview/软技能/自我总结.md',
+      '/guide/interview/软技能/业务.md',
+      '/guide/interview/软技能/个人职业规划.md',
+      '/guide/interview/软技能/实习心得.md',
+      '/guide/interview/软技能/HR面试.md']
     }
   ]
 }

@@ -1,6 +1,6 @@
 ## 手撕代码题
 
-[https://github.com/lf2021/Front-End-Interview/blob/master/08.%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E6%89%8B%E6%92%95%E4%BB%A3%E7%A0%81%E9%A2%98/%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E6%89%8B%E6%92%95%E4%BB%A3%E7%A0%81%E9%A2%98.md]()
+[地址](https://github.com/lf2021/Front-End-Interview/blob/master/08.%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E6%89%8B%E6%92%95%E4%BB%A3%E7%A0%81%E9%A2%98/%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E6%89%8B%E6%92%95%E4%BB%A3%E7%A0%81%E9%A2%98.md)
 
 ## 手写题
 
@@ -681,7 +681,7 @@ console.log(handler('kuai-shou-front-end'))
 
 </details>
 
-### 设计一个函数，奇数次执行的时候打印 1，偶数次执行的时候打印 2
+### 设计一个函数，奇数次执行的时候打印1，偶数次执行的时候打印2
 
 <details>
 <summary>查看答案</summary>
@@ -704,7 +704,7 @@ testFn(); // 1
 testFn(); // 2
 ```
 
-</detals>
+</details>
 
 ### 给定起始日期，输入出之前的日期
 
