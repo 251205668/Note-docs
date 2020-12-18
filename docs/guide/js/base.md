@@ -164,6 +164,14 @@ arr.pop() // [1,2,3,4,5]
 
 :::tip 扩展
 
+- slice()
+
+```js
+var a = [1,2,3]
+console.log(a.slice(1)) // [2,3]
+console.log(a.slice(0,1)) //[1]
+```
+
 - 触底刷新
   
   往往做下拉刷新的时候需要用到连接concat()这个api

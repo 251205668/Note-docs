@@ -1438,10 +1438,21 @@ a = "a" + 2
 
 **==转换规则**
 
-- 一 `string`,一 `number` - `string`先转number，再比较值
-- 类型相同 - 比大小
-- 一个是`Boolean`类型。 - boolean转为数字类型
-- 一个是`Object` - Object转为字符串 ==> '[object Object]'
+- 一个是字符串一个是数字 ：转为Number类型，再比较值
+- 类型相同 ： 比大小
+- 有一个是布尔类型。 ： boolean转为数字类型
+- 有一侧是object类型` - Object转为字符串 ：'[object Object]'，数组: ""
+
+```js
+[] == ![] //true
+
+1. !运算符优先，!运算符会将数转为布尔值 
+[] == !Boolean([])
+2. [] == false，符合第三条第四条规则转为:
+"" == 0
+3. Number("") == 0 // true
+
+```
 
 ### instanceof能否判断基本数据类型？
 
@@ -2014,6 +2025,7 @@ alert("Hello");
 - 事件捕获阶段
 - 目标接收事件
 - 事件冒泡阶段
+
 
 
 
@@ -2641,3 +2653,141 @@ https://www.cnblogs.com/web-chuanfa/p/10070603.html
 
 https://juejin.cn/post/6844904021308735502#heading-98
 
+
+## 说一下module.exports和exports的区别，export和export default的区别
+
+moudle.exports 和 exports es5就有这种写法
+
+**二者区别:**
+
+1. module.exports ：module变量代表当前模块。这个变量是一个对象，module对象会创建一个叫exports的属性，这个属性的默认值是一个空的对象.加载使用 `require`
+
+```js
+module.exports.Name="我是电脑"；
+module.exports.Say=function(){
+  console.log("我可以干任何事情")；  
+}
+module.exports = {
+
+}
+```
+
+2. exports：Nodejs的每个模块都有一个`exports`变量指向`module.exports`,二者几乎相同，但是 `exports`不允许直接导出函数和值
+
+```js
+module.exports=function(){
+  var a="Hello World"  
+  return   a;
+} // 可以
+
+exports = function(){
+  var a="Hello World"  
+  return   a;
+} // 报错
+```
+
+
+export和export default是es6引出的语法，用于导出模块中的变量，对象，函数，类。对应的导入关键字是import。
+
+**二者区别:**
+
+1. `export default` 在一个模块中只能有一个，当然也可以没有。export在一个模块中可以有多个
+2.  export default的对象、变量、函数、类，可以没有名字。export的必须有名字
+
+```js
+export default {a:1}
+export {a:1}//报错
+export const a = {a:1}//正确
+```
+
+3. export到处的模块需要使用大括号import,export default不需要
+
+## html页面实现自动刷新的几种方法
+
+1. 设置meta标签
+
+```html
+ <meta http-equiv="refresh" content="10">
+```
+2. 使用定时器，调用 `location.reload()`
+
+## 说一下对BigInt的理解，在什么场景下会使用
+
+BigInt是一种新的数据类型，用于**当整数值大于Number数据类型支持的范围**时。这种数据类型允许我们安全地对 **大整数执行算术操作**，表示**高分辨率的时间戳**，使用**大整数id**，等等，而不需要使用库。
+
+## 说一下什么是死锁
+
+死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去。
+
+**解决办法**:
+
+1. 加锁顺序:确保所有的线程都是按照相同的顺序获得锁
+2. 加锁时限:在尝试获取锁的过程中若超过了这个时限该线程则放弃对该锁请求
+3. 死锁检测:检测出来就释放所有的锁，回退，并且等待一段随机的时间后重试
+
+## for...in 和 for...of
+
+- for...of使用遍历数组/数组对象/字符串/map/set等拥有迭代器对象，但是不能遍历对象，因为对象没有迭代器对象。他可以使用break，continue，return
+- for...in来遍历对象，或者使用Object.keys()
+- for...in遍历的是数组的索引（键名），for...of是数组的值
+
+```js
+const arr = [5, 4, 3, 2, 1]
+arr.name = 'name'
+
+for(let i in arr){
+  console.log(i) // 0 1 2 3 4 name(字符串类型的索引)
+}
+```
+
+## 在 map 中和 for 中调用异步函数的区别
+
+- map：等待同步操作执行完成，再一步一步执行异步
+- for：等待异步结果，再进入下一次循环
+
+**map 函数的原理是**：
+
+1. 循环数组，把数组每一项的值，传给回调函数
+2. 将回调函数处理后的结果 push 到一个新的数组
+3. 返回新数组
+
+map 函数是同步执行的，循环每一项时，到给新数组值都是同步操作。
+
+## addEventListener 的第三个参数的作用
+
+设置为true，则代表再事件捕获中执行，否则在事件冒泡中执行
+
+## 如何同时获取h1到h6的标签的内容
+
+```js
+document.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(dom=>{
+console.log(`${dom.nodeName}:${dom.innterText}`)
+})
+```
+## 对 async、await 的理解，内部原理是怎样的？
+
+[https://juejin.cn/post/6844904004007247880#heading-67](https://juejin.cn/post/6844904004007247880#heading-67)
+
+
+## ES6 中的 map 和原生的对象有什么区别
+
+map: 键值可以为任意类型，map.keys()获取key数组
+Object: 键值只能为字符串，Object.keys()获取key数组
+
+## requestAnimationFrame详解
+
+[https://www.jianshu.com/p/fa5512dfb4f5](https://www.jianshu.com/p/fa5512dfb4f5)
+
+
+## 内存泄漏的表现形式
+
+- 意外的全局变量
+- 闭包
+- 未被清空的定时器
+- 未被销毁的事件监听
+- dom引用
+
+## target 和 currentTarget的区别
+
+- target：返回触发事件的源对象
+- currentTarget：返回事件绑定的对象

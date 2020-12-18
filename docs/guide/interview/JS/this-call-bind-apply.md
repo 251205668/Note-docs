@@ -1,5 +1,22 @@
 # this指向问题、call/bind/apply
+
 ## 经典 this 指向问题
+
+### this指向的表现形式有哪些
+
+- 如果是一般函数,this指向全局对象window;
+
+- 在严格模式下"use strict",为undefined.
+
+- 对象的方法里调用,this指向**调用该方法的对象**.
+
+- **构造函数里的this**,指向**创建出来的实例**.
+
+### 改变this指向的方法有哪些
+
+- bind
+- call
+- apply
 
 ## 手写 call/bind/apply
 

@@ -167,8 +167,8 @@ var x = document.documentElement.scrollWidth
 var y = document.documentElement.scrollHeight
 以上方法兼容性比较混乱，但是两种方法不可能同时有值，所以通常会写成以下方法(相加)获取滚动距离
 
-var x = document.body.scrollLeft + document.documentElement.scrollWidth
-var y = document.body.scrollTop + document.documentElement.scrollHeight
+var x = document.body.scrollWidth + document.documentElement.scrollWidth
+var y = document.body.scrollHeight + document.documentElement.scrollHeight
 ```
 4. 判断当前屏幕是否触底
 
