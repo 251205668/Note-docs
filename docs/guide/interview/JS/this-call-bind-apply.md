@@ -4,11 +4,11 @@
 
 ### this指向的表现形式有哪些
 
-- 如果是一般函数,this指向全局对象window;
+- 预编译过程中,this指向全局对象window;
 
 - 在严格模式下"use strict",为undefined.
 
-- 对象的方法里调用,this指向**调用该方法的对象**.
+- 对象的方法里调用,this指向**调用该方法的对象**.谁调用它就指向谁
 
 - **构造函数里的this**,指向**创建出来的实例**.
 
@@ -16,7 +16,162 @@
 
 - bind
 - call
-- apply
+- apply 
+
+### 例题分析
+
+```js
+function foo(){
+  bar.apply(null,arguments)
+}
+function bar(){
+  console.log(arguments)
+}
+foo(1,2,3,4,5)
+```
+
+<details>
+<summary>查看答案</summary>
+
+[1,2,3,4,5]
+```js
+因为bar.apply(null,arguments)相当于执行`bar(arguments)`,上层foo将实参列表传递过来，然后作为bar的实参传入，所以打印数组[1,2,3,4,5]
+```
+
+</details>
+<br/>
+
+**超经典试题**
+```js
+var name = "222"
+var a = {
+  name: "111",
+  say: function(){
+    console.log(this.name)
+  }
+}
+var fun = a.say
+fun() 
+a.say()
+var b = {
+  name:"333",
+  say:function (fun){
+    fun()
+  }
+}
+b.say(a.say)
+b.say = a.say
+b.say()
+```
+
+<details>
+<summary>查看答案</summary>
+
+222，111,222,333
+
+```js
+1. 首先分析fun被赋值了a对象里面的say方法，然后注意看fun没有谁调用，所以这个时候this走预编译，指向window,打印222
+2. a.say()，谁调用指向谁，this指向a，所以打印111
+3. b.say(a.say)，代表b对象的say方法的this指向b,然后a对象的say方法传入b的say方法，方法体作为参数，注意看此时fun()是谁调用的，没有谁调用它，所以也是走预编译，this依旧是window，打印222
+4. b.say = a.say 将a的say方法赋给了b，然后b调用，this指向b，打印333
+```
+
+</details>
+<br/>
+
+```js
+var a = 123
+function print() {
+  this.a = 234
+  console.log(a)
+}
+print()
+new print()
+```
+
+<details>
+<summary>查看答案</summary>
+
+234
+123
+```
+1. 因为预编译this指向window，
+print函数执行过程把GO的a替换成了234，所以打印234
+
+2. new print() 相当于创建了基于print原型创建了this对象，this就等于new print(),a作为它属性，所以找GO上的a，打印123
+```
+</details>
+<br/>
+
+```js
+var a =5
+function test() {
+  a =0
+  alert(a)
+  alert(this.a)
+  var a
+  alert(a)
+}
+```
+请问运行test()和运行new test()结果分别是什么
+
+<details>
+<summary>查看答案</summary>
+
+0,5,0
+
+0，undefined，0
+
+```js
+test() 
+1. 首先考虑预编译 GO{a:5,this:window}
+2. test执行考虑函数预编译，AO{a: 0,this:window}
+3. 继续执行 AO{a:0} 打印0
+4. 打印5
+5. 打印0
+
+new test()
+1. 首先考虑预编译 GO{a:5,this:window}
+2. AO{a:undefined}
+3. new test() = var this={__protp__:test.protptype},就是说此时test函数的this不指向window AO{a:undefined,this:{}}
+4. 继续执行,AO{a:0}，打印0
+5. 打印undefined
+6. 打印 0
+```
+
+</details>
+<br/>
+
+```js
+var bar ={
+  a:"002"
+}
+function print() {
+  bar.a = "a"
+  Object.prototype.b = "b"
+  return function inner(){
+    console.log(bar.a)
+    console.log（bar.b）
+  }
+}
+
+print()()
+```
+<details>
+<summary>查看答案</summary>
+
+a,b
+
+```js
+1. 预编译 GO{bar:{a:"002"}}
+2. GO{bar:{a:"a"}
+3. Object的原型上添加b属性值为b
+4. 执行print函数，打印a，然后首先找bar的b，找不到，去原型上找，打印b
+}
+```
+
+</details>
+<br/>
 
 ## 手写 call/bind/apply
 
@@ -107,4 +262,3 @@ Function.prototype.mybind = function(){
 }
 ```
 
-## 例题
