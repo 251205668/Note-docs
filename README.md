@@ -90,7 +90,7 @@
 - [x] Vue的diff算法和双向数据绑定原理熟悉
 - [x] 性能优化
 - [x] Css
-- [ ] JS: 正则表达式 this指向问题 异步和事件循环 promise ES6 手撕代码
+- [ ] JS: promise 整理test.md
 - [ ] 软技能(项目相关和整理Blog)
 - [ ] 刷算法和手撕
 

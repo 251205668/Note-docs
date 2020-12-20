@@ -114,11 +114,10 @@ repeatFunc('helloworld')
 ## 场景题
 
 ### 写一个 mySetInterVal(fn, a, b),每次间隔 a,a+b,a+2b 的时间，然后写一个 myClear，停止上面的 mySetInterVal
+<br/>
 
 <details>
 <summary>查看答案</summary>
-
-</details>
 
 ```js
 function mySetInterVal(fn, a, b) {
@@ -147,6 +146,8 @@ a.stop();
 ```
 
 </details>
+<br/>
+
 
 ### 实现 lodash 的_.get
 
@@ -191,8 +192,11 @@ console.log(result);
 ```
 
 </details>
+<br/>
 
 ### 实现 add(1)(2)(3)
+
+<br/>
 
 <details>
 <summary>查看答案</summary>
@@ -262,13 +266,16 @@ console.log(addCurry(1)(2, 3, 4, 5)())  //15
 ```
 
 </details>
+<br/>
 
 ### 数组转为树
 
-`[{id:1, parentId: 0}, {id:2, parentId:1},{id:3, parentId:1}]`
-把这个数组从顶级分类递归查找子分类，最终构建一个树状数组。结果输出如下
-`[{id:1, parentId: 0,children:[{id:2, parentId:1},{id:3, parentId:1}]}]`
-parentId为0 的是根节点
+```js
+要求将 [{id:1, parentId: 0}, {id:2, parentId:1},{id:3, parentId:1}] 输出成树结构
+
+[{id:1, parentId: 0,children:[{id:2, parentId:1},{id:3, parentId:1}]}]
+
+```
 
 <details>
 <summary>查看答案</summary>
@@ -307,6 +314,7 @@ var result = convert(list)
 ```
 
 </details>
+<br/>
 
 
 ### 输出结果题集
@@ -656,6 +664,8 @@ console.log(handler([2,6,3,8,10,9]));
 
 ### 输出一个随机的16进制颜色
 
+<br/>
+
 <details>
 <summary>查看答案</summary>
 
@@ -667,6 +677,8 @@ document.body.style.backgroundColor = color;
 </details>
 
 ### 手写代码实现 `kuai-shou-front-end=>KuaiShouFrontEnd`
+
+<br/>
 
 <details>
 <summary>查看答案</summary>
@@ -682,6 +694,8 @@ console.log(handler('kuai-shou-front-end'))
 </details>
 
 ### 设计一个函数，奇数次执行的时候打印1，偶数次执行的时候打印2
+
+<br/>
 
 <details>
 <summary>查看答案</summary>
@@ -851,6 +865,11 @@ console.log(sortVersion(versions)); // [ '1.5', '1.45.0', '3.3.3.3.3.3.3', '6' ]
 
 ### 实现一个功能，发送请求 5s 时间后，如果没有数据返回，中断请求,提示错误
 
+<br/>
+
+<details>
+<summary>查看答案</summary>
+
 ```js
 function request(params, timeout = 5000) {
   const options = {
@@ -899,8 +918,14 @@ var fetchData = async () => {
 };
 fetchData();
 ```
+</details>
 
-## 实现input框的autocomplete属性
+### 实现input框的autocomplete属性
+
+<br/>
+
+<details>
+<summary>查看答案</summary>
 
 ```js
 
@@ -930,3 +955,20 @@ fetchData();
       }
     }
 ```
+
+</details>
+
+### 手写trim()函数，去掉首尾空格
+
+<br/>
+
+<details>
+<summary>查看答案</summary>
+
+```js
+Function.prototype.trim = function(){
+  return this.replace(/^\s+/,"").replace(/\s+$/,"")
+}
+```
+
+</details>

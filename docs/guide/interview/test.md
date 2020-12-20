@@ -2817,6 +2817,11 @@ Object: 键值只能为字符串，Object.keys()获取key数组
 
 [https://www.jianshu.com/p/fa5512dfb4f5](https://www.jianshu.com/p/fa5512dfb4f5)
 
+- 要想动画流畅，需要一秒六十帧，即16.67ms更新一次视图
+- 相比于setTimeout，setTimeout需要手动控制频率，而RAF不需要。自动控制
+- 后台标签或者隐藏在iframe中，setTimeout需要手动清除，不然会一直执行，RAF自动暂停
+
+
 
 ## 内存泄漏的表现形式
 
