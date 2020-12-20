@@ -184,7 +184,6 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
       children: [ 
       '/guide/interview/软技能/自我介绍.md',
       '/guide/interview/软技能/学习历程.md',
-      '/guide/interview/软技能/实习心得.md',
       '/guide/interview/软技能/自我总结.md',
       '/guide/interview/软技能/业务.md',
       '/guide/interview/软技能/个人职业规划.md',
