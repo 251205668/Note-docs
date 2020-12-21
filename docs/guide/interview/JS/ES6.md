@@ -5,6 +5,22 @@
 [完整图谱](https://image.yangxiansheng.top/img/20201218193125.png?imglist)
 
 ## 谈谈ES6的新特性
+
+```js
+let const 块级作用域
+模板字符串
+解构赋值
+箭头函数，函数参数默认值
+扩展运算符（...）
+forEach for...of for...in
+数组方法map reduce includes
+map和set
+模块化
+promise proxy
+async
+class
+```
+
 - **新的声明**: let、const
 - **解构赋值**: 
   - 字符串解构：`const [a, b, c, d, e] = "hello`

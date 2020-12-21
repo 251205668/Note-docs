@@ -1,4 +1,5 @@
 # Promise
+![](https://image.yangxiansheng.top/img/20201221162654.png?imglist)
 
 ## JS为什么是单线程
 
@@ -6,11 +7,22 @@
 
 JS 对于这种场景就设计了异步 ———— 即，发起一个网络请求，就先不管这边了，先干其他事儿，网络请求啥时候返回结果，到时候再说。这样就能保证一个网页的流程运行。
 
-## Promise 的理解,它的作用是什么
+## Promise 的理解
 
-![](https://image.yangxiansheng.top/img/20201221162654.png?imglist)
+从几个方面讲：1.Promise的作用 2. Promise一共有哪几种状态 3.Promise的resolve和reject方法理解
 
-### Promise的用法和作用
+### Promise的作用
+
+解决异步回调嵌套过深造成代码难以维护和理解
+
+
+### Promise三个状态
+
+- pending: 等待
+- fulfilled: 操作成功
+- rejectd: 操作失败
+
+### Promise的用法
 
 ```js
 new Promise(
@@ -28,21 +40,12 @@ new Promise(
 )
 ```
 
-**定义：**
 
-resolve,reject本身是两个函数，有JS引擎提供，不需要自己部署。
+- 执行器传入的 resolve,reject本身是两个函数，有JS引擎提供，不需要自己部署。
 
-resolve函数的作用是，将Promise对象的状态从“未完成”变为“成功”（即从 pending 变为 resolved），在异步操作成功时调用，并将异步操作的结果，作为参数传递出去；reject函数的作用是，将Promise对象的状态从“未完成”变为“失败”（即从 pending 变为 rejected），在异步操作失败时调用，并将异步操作报出的错误，作为参数传递出去。
+- resolve函数的作用是，将Promise对象的状态从“未完成”变为“成功”（即从 pending 变为 resolved），在异步操作成功时调用，并将异步操作的结果，作为参数传递出去；
 
-**作用：**
-
-利用状态改变，传递回调函数给then()，解决回调地狱的问题
-
-### Promise三个状态
-
-- pending: 等待
-- fulfilled: 操作成功
-- rejectd: 操作失败
+- reject函数的作用是，将Promise对象的状态从“未完成”变为“失败”（即从 pending 变为 rejected），在异步操作失败时调用，并将异步操作报出的错误，作为参数传递出去。
 
 
 ## Promise的一些API

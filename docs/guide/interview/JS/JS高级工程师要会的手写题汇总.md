@@ -1,8 +1,41 @@
 ## 手撕代码题
 
-[地址](https://github.com/lf2021/Front-End-Interview/blob/master/08.%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E6%89%8B%E6%92%95%E4%BB%A3%E7%A0%81%E9%A2%98/%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E6%89%8B%E6%92%95%E4%BB%A3%E7%A0%81%E9%A2%98.md)
-
 ## 手写题
+
+### 实现一个闭包并分析一段代码讲出原因
+
+实现一个简单闭包
+
+```js
+function sum(a) {
+  return function (b) {
+    return a + b
+  }
+}
+
+var result = sum(1)(2)
+console.log(result) // 3
+```
+
+分析代码
+
+```js
+for (let i = 1; i < 5; i++) {
+  setTimeout(function timer() {
+    console.log(i)
+  }, i * 1000)
+}
+//输出 1,2,3,4
+//let 绑定 for 循环，将其重新绑定到每一次的迭代中，保证每次迭代结束都会重新赋值
+//有自己的作用域块，
+//var 没有自己的作用域块，所以循环变量就会后一个覆盖前一个，循环完毕只有一个值输出；
+for (var i = 0; i < 5; i++) {
+  setTimeout(() => {
+    console.log(i)
+  }, i * 1000)
+}
+// 输出 5,5,5,5
+```
 
 ### 手写JSONP
 
@@ -109,6 +142,1002 @@ repeatFunc('helloworld')
       return p.get(name)
   }
 ```
+
+### ### 数组去重
+
+```js
+function unique(arr) {
+  return [...new Set(arr)];
+}
+
+function unique(arr) {
+  // 当前值 下标 数组
+  return arr.filter((cur, index, array) => {
+    return array.indexOf(cur) === index;
+  })
+}
+
+function unique(arr){
+  return arr.reduce((pre,cur)=>{
+    if(!pre.includes(cur)){
+      return pre.concat(cur)
+    }else{
+      return pre
+    }
+  },[])
+}
+
+```
+
+### 手写数组扁平化
+
+```js
+function flatten(arr) {
+  return [].concat(...arr.map(v => {
+    return Array.isArray(v) ? flatten(v) : v;
+  }))
+}
+
+function flatten(arr) {
+  return arr.reduce((pre, cur) => {
+    return pre.concat(Array.isArray(cur) ? flatten(cur) : cur);
+  }, [])
+}
+```
+
+### 实现防抖函数（debounce)
+
+核心思想: 每次事件触发则删除原来的定时器，建立新的定时器。跟王者荣耀的回城功能类似，你反复触发回城功能，那么只认最后一次，从最后一次触发开始计时。
+```js
+function debounce(fn, delay) {
+  let timer = null;
+  return function (...args) {
+    if(timer) clearTimeout(timer);
+    timer = setTimeout(function() {
+      fn.apply(this, args);
+    }, delay);
+  }
+}
+```
+
+适用场景：
+
+- 按钮提交场景：防止多次提交按钮，只执行最后提交的一次
+- 服务端验证场景：表单验证需要服务端配合，只执行一段连续的输入事件的最后一次，还有搜索联想词功能类似
+
+### 实现节流函数（throttle）
+
+
+节流的核心思想: 如果在定时器的时间范围内再次触发，则不予理睬，等当前定时器完成，才能启动下一个定时器任务。这就好比公交车，10 分钟一趟，10 分钟内有多少人在公交站等我不管，10 分钟一到我就要发车走人！
+
+```js
+function throttle(fn, interval) {
+  let flag = true;
+  return function(...args) {
+    if (!flag) return;
+    flag = false;
+    setTimeout(() => {
+      fn.apply(this, args);
+      flag = true;
+    }, interval);
+  };
+};
+
+```
+适用场景：
+
+- 拖拽场景：固定时间内只执行一次，防止超高频次触发位置变动
+- 缩放场景：监控浏览器resize
+- 动画场景：避免短时间内多次触发动画引起性能问题
+
+### 洗牌算法和获取随机数
+
+```js
+function getRandomInt (min, max) {
+  // 取min-max的数据
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+export function shuffle (arr) {
+  // 当前数组值与取到的随机数组值交换 从而打乱数据
+  let _arr = arr.slice()
+  for (let i = 0; i < _arr.length; i++) {
+    let j = getRandomInt(0, i)
+    let t = _arr[i]
+    _arr[i] = _arr[j]
+    _arr[j] = t
+  }
+  return _arr
+}
+```
+
+
+### 实现instanceof
+
+```js
+function instanceof(L,R){
+  let O = R.prototype
+  L = L.__proto__
+  while(true){
+    if(L === null){
+      return false
+    }
+    if(L === O){
+      return true
+    }
+    L = L.__proto__
+  }
+}
+```
+
+### 模拟new
+
+```js
+function MyNew(ctor,...args){
+  const obj = Object.create(ctor.prototype)
+  const res = ctor.apply(obj,args)
+  return res instanceof Object ? res : obj
+}
+```
+
+### call、apply、bind
+
+
+```js
+// call
+function MyCall(context,...args){
+  context = context || window
+  const caller = new Simbol('caller')
+  context[caller] = this
+  const res = context[caller](...args)
+  delete context.caller
+  return res
+}
+```
+
+```js
+//apply
+function MyApply(context,args){
+  context = context || window
+  const caller = new Simbol('caller')
+  context[caller] = this
+  const res = context[caller](...args)
+  delete context.caller
+  return res
+}
+```
+
+```js
+//bind
+Function.prototype.bind = function(){
+  const args = Array.prototype.slice.call(arguments)
+  let t = args.shift()
+  return function(){
+    this.apply(t,args)
+  }
+}
+```
+
+### 手写一个 count 函数
+
+每次调用一个函数自动加 1
+
+```js
+count() 1
+count() 2
+count() 3
+```
+
+```js
+var count = (function () {
+  var a = 0
+  return function () {
+    console.log(++a)
+  }
+})()
+
+count() // 1
+count() // 2
+count() // 3
+```
+
+### 手写一个 sleep 睡眠函数
+
+比如 sleep(1000)代表等待 1000ms
+
+> 方法一：ES5 方式实现
+
+```js
+function sleep(callback, time) {
+  if (typeof callback == 'function') {
+    setTimeout(callback, time)
+  }
+}
+function output() {
+  console.log(111)
+}
+sleep(output, 2000)
+```
+
+> 方法二：使用 promise 方式
+
+```js
+const sleep = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time)
+  })
+}
+sleep(2000).then(() => {
+  console.log(111)
+})
+```
+
+> 方法三：利用 async
+
+```js
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
+async function init() {
+  var temp = await sleep(2000)
+  console.log(111) //2s后执行
+}
+
+init()
+```
+
+
+
+### 实现一个forEach方法
+
+> forEach()方法对数组的每个元素执行一次给定的函数。
+
+```js
+arr.forEach(function(currentValue, currentIndex, arr) {}, thisArg)
+
+//currentValue  必需。当前元素
+//currentIndex  可选。当前元素的索引
+//arr           可选。当前元素所属的数组对象。
+//thisArg       可选参数。当执行回调函数时，用作 this 的值。
+```
+
+```js
+Array.prototype._forEach = function(fn, thisArg) {
+    if (typeof fn !== 'function') throw "参数必须为函数";
+    if(!Array.isArray(this)) throw "只能对数组使用forEach方法";
+    let arr = this;
+    for(let i=0; i<arr.length; i++) {
+        fn.call(thisArg, arr[i], i, arr)
+    }
+}
+
+// test
+let arr = [1,2,3,4,5];
+arr._forEach((item, index) => {
+    console.log(item, index);
+})
+
+// test thisArg
+
+function Counter() {
+    this.sum = 0;
+    this.count = 0;
+}
+// 因为 thisArg 参数（this）传给了 forEach()，每次调用时，它都被传给 callback 函数，作为它的 this 值。
+Counter.prototype.add = function (array) {
+    array._forEach(function (entry) {
+        this.sum += entry;
+        ++this.count;
+    }, this);
+      // ^---- Note
+};
+
+const obj = new Counter();
+obj.add([2, 5, 9]);
+
+console.log(obj.count); // 3 === (1 + 1 + 1)
+console.log(obj.sum);  // 16 === (2 + 5 + 9)
+```
+
+### 用reduce实现map
+
+> reduce是一个累加方法，是对数组累积执行回调函数，返回最终计算结果。
+
+```js
+array.reduce(function(total, currentValue, currentIndex, arr){}, initialValue);
+
+//total 必需。初始值, 或者计算结束后的返回值。
+//currentValue  必需。当前元素
+//currentIndex  可选。当前元素的索引
+//arr   可选。当前元素所属的数组对象。
+//initialValue可选。传递给函数的初始值
+```
+
+> map是遍历数组的每一项，并执行回调函数的操作，返回一个对每一项进行操作后的新数组。
+
+```javascript
+array.map(function(currentValue,index,arr), thisArg)；
+//currentValue  必须。当前元素的值
+//index 可选。当前元素的索引值
+//arr   可选。当前元素属于的数组对象
+//thisArg 可选。对象作为该执行回调时使用，传递给函数，用作 "this" 的值。如果省略了 thisArg，或者传入 null、undefined，那么回调函数的 this 为全局对象。
+```
+
+> 用reduce实现map方法
+
+```js
+Array.prototype.myMap = function(fn, thisArg){
+    var res = [];
+    thisArg = thisArg || [];
+    this.reduce(function(pre, cur, index, arr){
+      res.push(fn.call(thisArg, cur, index, arr));
+  }, []);
+  return res;
+}
+var arr = [2,3,1,5];
+arr.myMap(function(item,index,arr){
+    console.log(item,index,arr);
+})
+let res = arr.myMap(v => v * 2);
+console.log(res); // [4,6,2,10]
+```
+
+### ['1', '2', '3'].map(parseInt)返回值
+
+> 首先返回值为: [1, NaN, NaN]
+
+map是传入的函数是有3个参数的: value, index, arr, 而parseInt有两个参数:
+> parseInt(string, radix);
+
+```txt
+string
+要被解析的值。如果参数不是一个字符串，则将其转换为字符串(使用toString 抽象操作)。字符串开头的空白符将会被忽略。
+
+radix 可选
+从 2 到 36，表示字符串的基数。例如指定 16 表示被解析值是十六进制数。请注意，10不是默认值！
+```
+
+所以['1', '2', '3'].map(parseInt)的过程是这样子的:
+
+```js
+parseInt('1', 0); // radix是0的情况见如下解释
+parseInt('2', 1); // radix基数只能取到 2 - 36 之间,所以NaN
+parseInt('3', 2); // radix=2 表示是二进制数,只能有0和1,解析的字符串是'3',所以是NaN
+```
+
+```txt
+如果 radix 是 undefined、0或未指定的，JavaScript会假定以下情况：
+
+如果输入的 string以 "0x"或 "0x"（一个0，后面是小写或大写的X）开头，那么radix被假定为16，字符串的其余部分被当做十六进制数去解析。
+如果输入的 string以 "0"（0）开头， radix被假定为8（八进制）或10（十进制）。具体选择哪一个radix取决于实现。ECMAScript 5 澄清了应该使用 10 (十进制)，但不是所有的浏览器都支持。因此，在使用 parseInt 时，一定要指定一个 radix。
+如果输入的 string 以任何其他值开头， radix 是 10 (十进制)。
+```
+
+
+
+### 手写一个 promise
+
+```js
+const PENDING = 'pending'
+const RESOLVED = 'resolved'
+const REJECTED = 'rejected'
+
+function MyPromise(fn) {
+  // 保存初始化状态
+  var self = this
+
+  // 初始化状态
+  this.state = PENDING
+
+  // 用于保存 resolve 或者 rejected 传入的值
+  this.value = null
+
+  // 用于保存 resolve 的回调函数
+  this.resolvedCallbacks = []
+
+  // 用于保存 reject 的回调函数
+  this.rejectedCallbacks = []
+
+  // 状态转变为 resolved 方法
+  function resolve(value) {
+    // 判断传入元素是否为 Promise 值，如果是，则状态改变必须等待前一个状态改变后再进行改变
+    if (value instanceof MyPromise) {
+      return value.then(resolve, reject)
+    }
+
+    // 保证代码的执行顺序为本轮事件循环的末尾
+    setTimeout(() => {
+      // 只有状态为 pending 时才能转变，
+      if (self.state === PENDING) {
+        // 修改状态
+        self.state = RESOLVED
+
+        // 设置传入的值
+        self.value = value
+
+        // 执行回调函数
+        self.resolvedCallbacks.forEach((callback) => {
+          callback(value)
+        })
+      }
+    }, 0)
+  }
+
+  // 状态转变为 rejected 方法
+  function reject(value) {
+    // 保证代码的执行顺序为本轮事件循环的末尾
+    setTimeout(() => {
+      // 只有状态为 pending 时才能转变
+      if (self.state === PENDING) {
+        // 修改状态
+        self.state = REJECTED
+
+        // 设置传入的值
+        self.value = value
+
+        // 执行回调函数
+        self.rejectedCallbacks.forEach((callback) => {
+          callback(value)
+        })
+      }
+    }, 0)
+  }
+
+  // 将两个方法传入函数执行
+  try {
+    fn(resolve, reject)
+  } catch (e) {
+    // 遇到错误时，捕获错误，执行 reject 函数
+    reject(e)
+  }
+}
+
+MyPromise.prototype.then = function (onResolved, onRejected) {
+  // 首先判断两个参数是否为函数类型，因为这两个参数是可选参数
+  onResolved =
+    typeof onResolved === 'function'
+      ? onResolved
+      : function (value) {
+          return value
+        }
+
+  onRejected =
+    typeof onRejected === 'function'
+      ? onRejected
+      : function (error) {
+          throw error
+        }
+
+  // 如果是等待状态，则将函数加入对应列表中
+  if (this.state === PENDING) {
+    this.resolvedCallbacks.push(onResolved)
+    this.rejectedCallbacks.push(onRejected)
+  }
+
+  // 如果状态已经凝固，则直接执行对应状态的函数
+
+  if (this.state === RESOLVED) {
+    onResolved(this.value)
+  }
+
+  if (this.state === REJECTED) {
+    onRejected(this.value)
+  }
+}
+```
+
+
+### 手写一个 Ajax
+
+AJAX 包括以下几个步骤
+
+1. 创建 XMLHttpRequest 对象，也就是创建一个异步调用对象
+2. 创建一个新的 HTTP 请求，并指定该 HTTP 请求的方法、URL 及验证信息
+3. 设置响应 HTTP 请求状态变化的函数
+4. 发送 HTTP 请求
+5. 获取异步调用返回的数据
+6. 使用 JavaScript 和 DOM 实现局部刷新
+
+一般实现:
+
+```js
+const SERVER_URL = '/server'
+
+let xhr = new XMLHttpRequest()
+
+// 创建 Http 请求 第三个参数为async，指定请求是否为异步方式，默认为 true。
+xhr.open('GET', SERVER_URL, true)
+
+// 设置请求头信息
+xhr.responseType = 'json'
+xhr.setRequestHeader('Accept', 'application/json')
+
+// 设置状态监听函数
+xhr.onreadystatechange = function () {
+  if (this.readyState !== 4) return
+
+  // 当请求成功时
+  if (this.status === 200) {
+    handle(this.responseText)
+  } else {
+    console.error(this.statusText)
+  }
+}
+
+// 设置请求失败时的监听函数
+xhr.onerror = function () {
+  console.error(this.statusText)
+}
+
+// 发送 Http 请求
+xhr.send(null)
+```
+
+promise 封装实现：
+
+```js
+function getJSON(url) {
+  // 返回一个 promise 对象
+  return new Promise(function (resolve, reject) {
+    let xhr = new XMLHttpRequest()
+
+    // 新建一个 http 请求， 第三个参数为async，指定请求是否为异步方式，默认为 true。
+    xhr.open('GET', url, true)
+
+    // 设置状态的监听函数
+    xhr.onreadystatechange = function () {
+      /*0: 请求未初始化
+        1: 服务器连接已建立
+        2: 请求已接收
+        3: 请求处理中
+        4: 请求已完成，且响应已就绪*/
+      if (this.readyState !== 4) return
+
+      // 当请求成功或失败时，改变 promise 的状态
+      /*200: "OK"
+        404: 未找到页面*/
+      if (this.status === 200) {
+        resolve(this.responseText)
+      } else {
+        reject(new Error(this.statusText))
+      }
+    }
+
+    // 设置响应的数据类型
+    xhr.responseType = 'json'
+
+    // 设置请求头信息
+    xhr.setRequestHeader('Accept', 'application/json')
+
+    // 发送 http 请求
+    xhr.send(null)
+  })
+}
+```
+
+### 实现一个红绿灯（3s打印red，2s打印green，1s打印yellow）
+
+```js
+let setColor = function (color, delay) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            console.log(color);
+            resolve();
+        }, delay);
+    })
+}
+
+async function sett() {
+    await setColor('red', 3000);
+    await setColor('green', 2000);
+    await setColor('yellow', 1000);
+    await sett();
+}
+
+sett();
+```
+
+### 斐波那契数列（递归，DP，循环）
+
+- 递归
+
+> 时间复杂度O(2^N) 空间复杂度O(1)
+
+```js
+function fiber(n) {
+  if (n == 0 || n == 1) {
+    return n
+  } else {
+    return fiber(n - 1) + fiber(n - 2)
+  }
+}
+
+console.log(fiber(5))
+```
+
+- DP 动态规划
+
+> 时间复杂度O(N)  空间复杂度O(N)
+
+```js
+function fiber(n) {
+  if (n === 0 || n === 1) return n
+  var dp = [0, 1]
+  for (let i = 2; i <= n; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2]
+  }
+  return dp[n]
+}
+```
+
+- 循环
+
+> 时间复杂夫O(N) 空间复杂度O(1)
+
+```js
+function fiber(n) {
+  if (n === 0 || n === 1) return n
+  var ret = 1
+  var a = 0
+  var b = 1
+  for (let i = 2; i < n; i++) {
+    a = b
+    b = ret
+    ret = a + b
+  }
+  return ret
+}
+```
+
+
+## 实现一个add函数 满足add(1,2,3)与add(1)(2)(3)结果相同
+
+这是函数柯里化的一种基本表现形式
+
+```js
+function add() {
+  let args = [...arguments];
+  let fn = function() {
+    args.push(...arguments);
+    return fn;
+  }
+  fn.toString = function(){ // toString
+    return args.reduce((t,v)=>t+v);
+  }
+  return fn;
+}
+
+alert(add(1,2,3));
+alert(add(1)(2)(3));
+```
+
+### 函数柯里化
+
+[参考链接](https://github.com/mqyqingfeng/Blog/issues/42)
+
+```js
+函数的柯里化：curry（又叫部分求值）
+
+把接受多个参数的函数变成接受一个参数的函数，并返回一个新的函数；
+
+实现方法：用一个闭包，返回一个函数，这个函数每次执行都会改写储存参数的数组，当函数的参数够了之后，便会执行
+```
+
+ES5 实现
+
+```js
+function curry(fn, args = []) {
+  // 获取函数需要的参数长度
+  var length = fn.length
+  return function () {
+    // 拼接得到现有的所有参数
+    for (let i = 0; i < arguments.length; i++) {
+      args.push(arguments[i])
+    }
+    // 判断参数的长度是否已经满足函数所需参数的长度
+    if (args.length >= length) {
+      // 如果满足，执行函数
+      return fn.apply(this, args)
+    } else {
+      // 如果不满足，递归返回科里化的函数，等待参数的传入
+      return curry.call(this, fn, args)
+    }
+  }
+}
+
+// test
+let add = curry((a,b,c) => a+b+c)
+// 一个一个测试
+console.log(add(1)(2)(3))
+console.log(add(1, 2)(3))
+console.log(add(1)(2, 3))
+```
+
+ES6 实现
+
+```js
+function curry(fn, ...args) {
+  return fn.length <= args.length ? fn(...args) : curry.bind(null, fn, ...args)
+}
+
+// test
+let add = curry((a,b,c) => a+b+c);
+console.log(add(1)(2)(3))
+console.log(add(1, 2)(3))
+console.log(add(1)(2, 3))
+```
+
+
+
+### 手写一个单例模式
+
+单例模式的定义是：保证一个类仅有一个一个实例，并提供一个访问它的全局访问点。
+
+```js
+class SingleTon {
+  constructor(name) {
+    this.name = name
+    this.instance = null
+  }
+
+  static getInstance(name) {
+    // 新建对象时判断全局是否有该对象，如果有，就返回该对象，没有就创建一个新对象返回。
+    if (!this.instance) {
+      this.instance = new SingleTon(name)
+    }
+    return this.instance
+  }
+}
+
+var oA = SingleTon.getInstance('Lee')
+var oB = SingleTon.getInstance('Fan')
+console.log(oA === oB) // true
+```
+
+> static 关键字解释：类相当于实例的原型， 所有在类中定义的方法， 都会被实例继承。 如果在一个方法前， 加上 static 关键字， 就表示该方法不会被实例继承， 而是直接通过类来调用， 这就称为“ 静态方法”。
+
+### 手写一个观察者模式
+
+```js
+var events = (function () {
+  var topics = {}
+
+  return {
+    // 注册监听函数
+    subscribe: function (topic, handler) {
+      if (!topics.hasOwnProperty(topic)) {
+        topics[topic] = []
+      }
+      topics[topic].push(handler)
+    },
+
+    // 发布事件，触发观察者回调事件
+    publish: function (topic, info) {
+      if (topics.hasOwnProperty(topic)) {
+        topics[topic].forEach(function (handler) {
+          handler(info)
+        })
+      }
+    },
+
+    // 移除主题的一个观察者的回调事件
+    remove: function (topic, handler) {
+      if (!topics.hasOwnProperty(topic)) return
+
+      var handlerIndex = -1
+      topics[topic].forEach(function (item, index) {
+        if (item === handler) {
+          handlerIndex = index
+        }
+      })
+
+      if (handlerIndex >= 0) {
+        topics[topic].splice(handlerIndex, 1)
+      }
+    },
+
+    // 移除主题的所有观察者的回调事件
+    removeAll: function (topic) {
+      if (topics.hasOwnProperty(topic)) {
+        topics[topic] = []
+      }
+    },
+  }
+})()
+```
+
+ES6 写法：
+
+```js
+class Event {
+  constructor() {
+    this.events = {}
+  }
+  subscribe(eventName, callback) {
+    if (this.events[eventName]) {
+      this.events[eventName] = [callback]
+    } else {
+      this.events[eventName].push(callback)
+    }
+  }
+
+  publish(eventName) {
+    if (this.events[eventName]) {
+      this.events[eventName].forEach((callback) => callback())
+    }
+  }
+
+  reomve(eventName, callback) {
+    if (this.events[eventName]) {
+      this.events[eventName] = this.events[eventName].filter(
+        (fn) => fn !== callback
+      )
+    }
+  }
+
+  reomveAll(eventName) {
+    if (this.events[eventName]) {
+      this.events[eventName] = []
+    }
+  }
+}
+```
+
+### 手写一个发布订阅模式
+
+```js
+// 发布订阅模式
+class EventEmitter {
+  constructor() {
+    // 事件对象，存放订阅的名字和事件
+    this.events = {}
+  }
+  // 订阅事件的方法
+  on(eventName, callback) {
+    if (!this.events[eventName]) {
+      // 注意是数据，一个名字可以订阅多个事件函数
+      this.events[eventName] = [callback]
+    } else {
+      // 存在则push到指定数组的尾部保存
+      this.events[eventName].push(callback)
+    }
+  }
+  // 触发事件的方法
+  emit(eventName) {
+    // 遍历执行所有订阅的事件
+    this.events[eventName] && this.events[eventName].forEach((cb) => cb())
+  }
+  // 移除订阅事件
+  removeListener(eventName, callback) {
+    if (this.events[eventName]) {
+      this.events[eventName] = this.events[eventName].filter(
+        (cb) => cb != callback
+      )
+    }
+  }
+  // 只执行一次订阅的事件，然后移除
+  once(eventName, callback) {
+    // 绑定的时fn, 执行的时候会触发fn函数
+    let fn = () => {
+      callback() // fn函数中调用原有的callback
+      this.removeListener(eventName, fn) // 删除fn, 再次执行的时候之后执行一次
+    }
+    this.on(eventName, fn)
+  }
+}
+
+// test
+let em = new EventEmitter();
+let workday = 0;
+em.on("work", function() {
+    workday++;
+    console.log("work everyday");
+});
+
+em.once("love", function() {
+    console.log("just love you");
+});
+
+function makeMoney() {
+    console.log("make one million money");
+}
+em.on("money",makeMoney)；
+
+let time = setInterval(() => {
+    em.emit("work");
+    em.removeListener("money",makeMoney);
+    em.emit("money");
+    em.emit("love");
+    if (workday === 5) {
+        console.log("have a rest")
+        clearInterval(time);
+    }
+}, 1);
+
+//  输出
+//  work everyday
+//  just love you
+//  work everyday
+//  work everyday
+//  work everyday
+//  work everyday
+//  have a rest
+```
+
+- 来看一个简单的用途:
+
+```js
+document.querySelector('#btn').addEventListener('click', function () {
+  alert('You click this btn');
+}, false)
+```
+
+我们平时对 DOM 的事件绑定就是一个非常典型的 发布-订阅者模式 ，这里我们需要监听用户点击按钮这个动作，但是我们却无法知道用户什么时候去点击，所以我们订阅 按钮上的 click 事件，只要按钮被点击时，那么按钮就会向订阅者发布这个消息，我们就可以做对应的操作了。
+
+- 再看vue中一个简答的用途:子组件与父组件通信
+
+Vue 中我们通过 props 完成父组件向子组件传递数据，子组件与父组件通信我们通过自定义事件即 $on,$emit来实现，其实也就是通过 $emit 来发布消息，并对订阅者 $on 做统一处理 ~
+
+### 对一个页面打印所有的结点类型和结点名称
+
+```JavaScript
+var nodes = [...document.getElementsByTagName('*')];
+nodes.forEach((node) => {
+  console.log(node.nodeType, node.nodeName)
+})
+```
+
+### 获取一个页面所有标签的个数
+
+```js
+function find() {
+  var map = {};
+  function __find(node) {
+    if (node.nodeType === 1) {
+      //这里我们用nodeName属性，直接获取节点的节点名称
+      var tagName = node.nodeName;
+      //判断对象中存在不存在同类的节点，若存在则添加，不存在则添加并赋值为1
+      map[tagName] = map[tagName] ? map[tagName] + 1 : 1;
+    }
+    //获取该元素节点的所有子节点
+    var children = node.childNodes;
+    for (var i = 0; i < children.length; i++) {
+      //递归调用
+      __find(children[i])
+    }
+  }
+  __find(document);
+  return map;
+}
+```
+
+### 如何将浮点数点左边的数每三位添加一个逗号，如 12000000.11 转化为『12,000,000.11』
+
+> toLocaleString()
+
+```js
+function format(number) {
+  return number.toLocaleString();
+}
+```
+
+> replace
+
+```js
+function format(number) {
+  return number && number.replace(/(?!^)(?=(\d{3})+\.)/g, ",");
+}
+```
+
+```js
+function format(number) {
+  return number && number.toString().replace(/(\d)(?=(\d{3})+\.)/g, $2 => $2 + ',')
+}
+```
+
 
 
 ## 场景题
@@ -971,4 +2000,32 @@ Function.prototype.trim = function(){
 }
 ```
 
+</details>
+
+### 查找字符串中出现最多的字符和个数
+
+<br/>
+
+<details>
+<summary>查看答案</summary>
+
+```js
+let str = "abcabcabcbbccccc";
+let num = 0;
+let char = '';
+
+ // 使其按照一定的次序排列
+str = str.split('').sort().join('');
+// "aaabbbbbcccccccc"
+
+// 定义正则表达式
+let re = /(\w)\1+/g;
+str.replace(re,($0,$1) => {
+    if(num < $0.length){
+        num = $0.length;
+        char = $1;        
+    }
+});
+console.log(`字符最多的是${char}，出现了${num}次`);
+```
 </details>
