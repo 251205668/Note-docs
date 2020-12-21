@@ -1,5 +1,126 @@
 
 # JS小知识点
+
+## reduce
+
+### 用法
+
+**语法**：`arr.reduce(callback,[initialValue])`
+
+**参数为:**
+
+```js
+callback （执行数组中每个值的函数，包含四个参数）
+
+    1、previousValue （上一次调用回调返回的值，或者是提供的初始值（initialValue））
+    2、currentValue （数组中当前被处理的元素）
+    3、index （当前元素在数组中的索引）
+    4、array （调用 reduce 的数组）
+
+initialValue （作为第一次调用 callback 的第一个参数。）
+```
+
+**看一遍就知道怎么用了**
+
+```js
+var arr = [1, 2, 3, 4];
+var sum = arr.reduce(function(prev, cur, index, arr) {
+    console.log(prev, cur, index);
+    return prev + cur;
+})
+console.log(arr, sum);
+```
+
+打印结果
+
+```js
+由于没有设置返回值，reduce遍历的index从1开始
+
+1,2,1
+3,3,2
+6,4,3
+[1,2,3,4] 10
+ ```
+
+再看一下加了初始值的情况
+
+
+```js
+var arr = [1, 2, 3, 4];
+var sum = arr.reduce(function(prev, cur, index, arr) {
+    console.log(prev, cur, index);
+    return prev + cur;
+},0)
+console.log(arr, sum);
+```
+
+打印结果
+
+```js
+由于加了初始值，遍历的index从0开始，pre的初始值等于initValue
+
+0,1,0
+1,2,1
+3,3,2
+6,4,3
+
+[1,2,3,4] 10
+```
+
+### 应用
+
+1. 求和,求乘积
+
+```js
+var  arr = [1, 2, 3, 4];
+var sum = arr.reduce((x,y)=>x+y)
+var mul = arr.reduce((x,y)=>x*y)
+console.log( sum ); //求和，10
+console.log( mul ); //求乘积，24
+```
+
+2. 计算数组元素出现的次数
+
+```js
+let names = ['alice','bob','xiaoming']
+
+let nameNum = names.reduce((pre,cur)=>{
+  if(cur in pre){
+    pre[cur]++
+  }else{
+    pre[cur] = 1
+  }
+},{})
+```
+
+3. 数组去重
+
+```js
+let arr = [1,2,3,4,5,4]
+function unique(arr){
+  arr.reduce((pre,cur)=>{
+  // 没出现过
+  if(!pre.includes(cur)){
+    return pre.concat(cur)
+  }else{
+    return pre
+  }
+  },[])
+}
+console.log(unique(arr))
+```
+
+4. 数组降维
+
+```js
+let arr = [1,2,[1,2,3,[1,2,3,4,45]]]
+function flatern(arr){
+  return arr.reduce((pre,cur)=>pre.concat(Array.isArray(cur)? flatern(cur):cur),[])
+}
+```
+
+
+
 ## 剩余/扩展运算符
 
 剩余/扩展运算符同样也是ES6一个非常重要的语法，使用3个点（...），后面跟着一个含有iterator接口的数据结构.

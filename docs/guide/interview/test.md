@@ -1107,7 +1107,6 @@ export function shuffle (arr) {
 ```
 ### 实现节流函数（throttle）
 
-[https://juejin.cn/post/6844904021308735502#heading-94](https://juejin.cn/post/6844904021308735502#heading-94)
 
 节流的核心思想: 如果在定时器的时间范围内再次触发，则不予理睬，等当前定时器完成，才能启动下一个定时器任务。这就好比公交车，10 分钟一趟，10 分钟内有多少人在公交站等我不管，10 分钟一到我就要发车走人！
 
@@ -1242,7 +1241,7 @@ console.log(`字符最多的是${char}，出现了${num}次`);
 
 ```
 
-###  给了一个具体的需求让写html+css，需求大概是模块水平垂直居中对齐+不定高，按文字自适应+带灰色遮罩+弹出动画
+###  给了一个具体的需求让写html+css，需求大概是模块水平垂直居中对齐+不定高，按文字自适应+带灰色遮罩+弹出动画(实现一个弹框，带遮罩层)
 
 ### 给一个ul下面插入100个li应该怎么插入，如何优化dom操作
 
@@ -2064,8 +2063,6 @@ alert("Hello");
 - 事件冒泡阶段
 
 
-
-
 ### 箭头函数和普通函数的区别？
 
 - 箭头函数的`this`是定义时所在的对象决定的
@@ -2388,6 +2385,7 @@ box-shadow:
 ```
 
 ### 有没有更好的判断变量类型的方法？
+
 可以使用`Object.prototype.toString.call(var)`，可以更加准确的判断某个变量的类型。
 
 ### 字符串的test、match、search它们之间的区别？
@@ -2574,50 +2572,9 @@ e.preventDefault();
 //IE8及以下
 window.event.returnValue = false;
 
-//无兼容问题（但不能用于节点直接onclick绑定函数）
-return false;
 ```
 
-## 事件代理/事件委托 以及 优缺点
 
-事件委托本质上是利用了浏览器事件冒泡的机制。因为事件在冒泡过程中会上传到父节点，并且父节点可以通过事件对象获取到目标节点，因此可以把子节点的监听函数定义在父节点上，由父节点的监听函数统一处理多个子元素的事件，这种方式称为事件代理。
-
-使用事件代理我们可以不必要为每一个子元素都绑定一个监听事件，这样减少了内存上的消耗。并且使用事件代理我们还可以实现事件的动态绑定，比如说新增了一个子节点，我们并不需要单独地为它添加一个监听事件，它所发生的事件会交给父元素中的监听函数来处理。
-
-```js
-<ul>
-  <li>苹果</li>
-  <li>香蕉</li>
-  <li>凤梨</li>
-</ul>
-
-// good
-document.querySelector('ul').onclick = (event) => {
-  const target = event.target
-  if (target.nodeName === 'LI') {
-    console.log(target.innerHTML)
-  }
-}
-
-// bad
-document.querySelectorAll('li').forEach((e) => {
-  e.onclick = function() {
-    console.log(this.innerHTML)
-  }
-}) 
-
-```
-
-事件委托的优点：
-
-- 减少内存消耗，不必为大量元素绑定事件
-- 为动态添加的元素绑定事件
-
-事件委托的缺点:
-
-- 部分事件如 focus、blur 等无冒泡机制，所以无法委托。
-- 事件委托有对子元素的查找过程，委托层级过深，可能会有性能问题
-- 频繁触发的事件如 mousemove、mouseout、mouseover等，不适合事件委托
 
 ## load 和 DOMContentLoaded 事件的区别
 
@@ -2645,23 +2602,7 @@ https://muyiy.cn/blog/
 - async 属性表示异步执行引入的 JavaScript，与 defer 的区别在于，如果已经加载好，就会开始执行，也就是说它的执行仍然会阻塞文档的解析，只是它的加载过程不会阻塞。多个脚本的执行顺序无法保证。
 
 
-## 在页面插入10000个元素，如何进行优化？
 
-使用 `Fragment` 文档片段
-
-```js
-	var container = document.getElementById('container')
-	var fragment = document.createDocumentFragment()
-	for(let i = 0; i < 10000; i++){
-		let li = document.createElement('li')
-    li.innerHTML = 'hello world'
-    // 所有构造的节点加入文档片段
-	    fragment.appendChild(li)
-  }
-  // 节点构造完成，将文档对象添加到页面中
-	container.appendChild(fragment);
-```
-JavaScript 提供了一个文档片段 `DocumentFragment` 的机制。**把所有要构造的节点都放在文档片段中执行，这样可以不影响文档树，也就不会造成页面渲染**。当节点都构造完成后，再将文档片段对象添加到页面中，**这时所有的节点都会一次性渲染出来，这样就能减少浏览器负担，提高页面渲染速度**。
 
 
 ## 逗号运算符
@@ -2672,17 +2613,7 @@ var a = (2,3) // 3
 var a = (1-1,1+1) // 2
 ```
 
-## 数组的方法中那些会改变原数组呢？
 
-```
-pop()---删除数组的最后一个元素并返回删除的元素。
-push()---向数组的末尾添加一个或更多元素，并返回新的长度。
-shift()---删除并返回数组的第一个元素。
-unshift()---向数组的开头添加一个或更多元素，并返回新的长度。
-reverse()---反转数组的元素顺序。
-sort()---对数组的元素进行排序。
-splice()---用于插入、删除或替换数组的元素。
-```
 
 ## 原生js实现轮播图原理
 
