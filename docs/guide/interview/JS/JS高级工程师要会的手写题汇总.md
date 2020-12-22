@@ -143,7 +143,7 @@ repeatFunc('helloworld')
   }
 ```
 
-### ### 数组去重
+### 数组去重
 
 ```js
 function unique(arr) {
