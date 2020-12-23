@@ -117,8 +117,7 @@
 //   }
 // }
 
-// const a = [8,2,9,5,6]
-// a.insertSort()
+
 
 // console.log(a)
 
@@ -132,19 +131,21 @@
 //   return -1
 // }
 
-// function binarySearch(item) {
-//   const high = this.length -1
-//   const low =0
-//   while(low<=high){
-//     const mid = Math.floor((high+low)/2)
-//     const element = this[mid]
-//     if(element < item){
-//       low = mid + 1
-//     }else if(element >item){
-//       high = mid - 1
-//     }else{
-//       return mid
-//     }
-//   }
-//   return -1
-// }
+function binarySearch(arr,item) {
+  let high = arr.length -1
+  let low =0
+  while(low<=high){
+    const mid = Math.floor((high+low)/2)
+    const element = arr[mid]
+    if(element < item){
+      low = mid + 1
+    }else if(element >item){
+      high = mid - 1
+    }else{
+      return mid
+    }
+  }
+  return -1
+}
+console.log(binarySearch([1,2,3],4))
+
