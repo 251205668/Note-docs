@@ -1,6 +1,10 @@
 ## 项目介绍 
 > 个人使用,请勿拍砖
 
+<p text-align="center">
+  <img src="https://image.yangxiansheng.top/img/20201224001206.png?imglist" />
+</p>
+
 前端知识杂而碎，如果这些知识不进行有效数理，就无法相互串联，形成以西。因此利用空闲时间整理，并将所学进行梳理，形成这份清单。
 
 
