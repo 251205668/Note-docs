@@ -91,10 +91,10 @@ class
   - 方法:
 
   ```js
-  get()：返回键值对
-  set()：添加键值对，返回实例
-  delete()：删除键值对，返回布尔
-  has()：检查键值对，返回布尔
+  get(key)：返回键值对
+  set(key,value)：添加键值对，返回实例
+  delete(key)：删除键值对，返回布尔
+  has(key)：检查键是否在map中，返回布尔
   clear()：清除所有成员
   keys()：返回以键为遍历器的对象
   values()：返回以值为遍历器的对象

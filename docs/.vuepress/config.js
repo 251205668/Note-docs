@@ -146,41 +146,42 @@ function getGuideSidebar(group,groupA, groupB, groupC,groupD,groupE,groupF,group
     },
     {
       title: groupE,
-      collapsable: true,
+      collapsable: false,
       children: [
         "/guide/interview/算法/基础.md",
+        "/guide/interview/算法/算法模板.md",
         "/guide/interview/算法/hot.md",
         "/guide/interview/算法/剑指offer.md",
       ]
     },
     {
       title: groupF,
-      collapsable: true,
+      collapsable: false,
       children: [ "/guide/interview/前端工程化/常用面试题.md",]
     },
     {
       title: groupG,
-      collapsable: true,
+      collapsable: false,
       children: ['/guide/interview/性能优化/常用面试题.md']
     },
     {
       title: groupH,
-      collapsable: true,
+      collapsable: false,
       children: ['/guide/interview/浏览器/常见面试题.md']
     },
     {
       title: groupI,
-      collapsable: true,
+      collapsable: false,
       children: ['/guide/interview/Http/常见http面试题.md']
     },
     {
       title: groupJ,
-      collapsable: true,
+      collapsable: false,
       children: ['/guide/interview/安全/常用面试题.md']
     },
     {
       title: groupK,
-      collapsable: true,
+      collapsable: false,
       children: [ 
       '/guide/interview/软技能/自我介绍.md',
       '/guide/interview/软技能/学习历程.md',
