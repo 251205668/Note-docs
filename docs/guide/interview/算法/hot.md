@@ -590,3 +590,179 @@ var twoSum = function(numbers, target) {
     return [-1,-1]
 };
 ```
+
+## 滑动窗口
+
+### [最小覆盖子串](https://leetcode-cn.com/problems/minimum-window-substring/)
+
+![](https://image.yangxiansheng.top/img/20201224152705.png?imglist)
+
+```js
+var minWindow = function(s, t) {
+    // 前期初始化数据
+    let left = 0
+    let right = 0
+    let need = new Map()
+    for(let c of t){
+        need.set(c,need.has(c) ? need.get(c) + 1 : 1)
+    }
+    let needSize = need.size
+    let res = ""
+    while(right < s.length){
+        let c1 = s[right]
+        //右滑，更新数据
+        if(need.has(c1)){
+            need.set(c1,need.get(c1) - 1)
+            if(need.get(c1) === 0){
+                needSize--
+            }
+        }
+       
+        /*
+         * 当目标子串已经完全覆盖，也代表needSize=0，左滑, 
+         * 更新(将value+1,也就是慢慢删除覆盖子串)数据和返回数据
+        * */ 
+        while(needSize == 0){
+            const newStr = s.substring(left,right+1)
+            // 保证第一次赋值，并且每次更新返回值
+            if(!res || res.length > newStr.length){
+                res = newStr
+            }
+            let c2 = s[left]
+            need.set(c2,need.get(c2) + 1)
+            if(need.get(c2) === 1){
+                needSize++
+            }
+            left++
+        }
+        right++
+    }
+    return res
+};
+```
+
+### [字符串的排列](https://leetcode-cn.com/problems/permutation-in-string/)
+
+![](https://image.yangxiansheng.top/img/20201224205841.png?imglist)
+
+```js
+var checkInclusion = function(s1, s2) {
+    /**
+     * 初始化: need = {'a':1,'b':1} left=0 right=0 needSize = 2，res=false
+     * 
+     * 右指针需做事情: 滑动指针，如果need碰到集合中有当前遍历字符， 更新need,更新needSize
+     * 
+     * 左指针需做事情: 滑动指针，如果need碰到集合中有当前字符，更新need和needSize，在这之前更新res，
+     * 如果窗口大小的等于s1的大小，则代表完全覆盖，res=true
+     * 
+     * 左指针滑动的条件: needSize = 0
+     */
+
+    let left = 0
+    let right = 0
+    let need = new Map()
+    // 初始化need
+    for(let c of s1){
+        need.set(c,need.has(c) ? need.get(c) + 1:1)
+    }
+    let needSize = need.size
+    while(right < s2.length){
+        let c1 = s2[right]
+        // 右滑，当前字符在need中
+        if(need.has(c1)){
+            // 更新need,value - 1
+            need.set(c1,need.get(c1)-1)
+            // 更新needSize
+            if(need.get(c1) === 0){
+                needSize--
+            }         
+        }
+        // 移动左指针
+        while(needSize === 0){
+            // 更新最终结果
+            if(right - left + 1  === s1.length){
+                return true
+            }
+            let c2 = s2[left]
+            // 左滑，更新need
+            if(need.has(c2)){
+                need.set(c2,need.get(c2) + 1)
+            }
+            // 更新needSize
+            if(need.get(c2) === 1){
+                needSize ++
+            }
+            left++
+           
+        }
+        // 这里的right指针位置具有玄学
+          right++
+    }
+    return false
+
+};
+```
+### [找到字符串中所有字母异位词](https://leetcode-cn.com/problems/find-all-anagrams-in-a-string/)
+
+![](https://image.yangxiansheng.top/img/20201224215739.png?imglist)
+
+```js
+var findAnagrams = function(s, p) {
+    let left = 0
+    let right = 0
+    let need = new Map()
+    for(let c of p){
+        need.set(c,need.has(c) ? need.get(c) + 1 : 1)
+    }
+    let needSize = need.size
+    let res = []
+    while(right < s.length){
+        let c1 = s[right]
+        if(need.has(c1)){
+            need.set(c1,need.get(c1) - 1)
+            if(need.get(c1) === 0){
+                needSize--
+            }
+        }
+        while(needSize === 0){
+            let c2 = s[left]
+            if(need.has(c2)){
+                if(right - left + 1 === p.length){
+                    res.push(left)
+                }
+                need.set(c2,need.get(c2) + 1)
+                if(need.get(c2) === 1){
+                    needSize++
+                }
+            }
+            left ++
+        }
+        right++
+    }
+    return res
+};
+```
+### [无重复字符的最长子串长度](https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/)
+
+![](https://image.yangxiansheng.top/img/20201224210113.png?imglist)
+
+维护滑动窗口，右滑字符插入，更新返回值，然后左指针碰到已有元素，左指针就等于map中已有元素的 `value+1`。直到右指针遍历完成
+
+```js
+var lengthOfLongestSubstring = function(s){
+  let left = 0
+  let map = new Map()
+  let res = 0
+  for(let right =0;right < s.length;s++){
+    // 如果碰到已有元素，则代表出现重复字符，左指针要改变指向
+    // 满足左指针不越位，然后赋值
+    if(map.has(s[right]) && map.get(s[right]) >= left){
+      left = map.get(s[right]) + 1
+    }
+    map.set(s[r],r)
+    res = Math.max(res,right-left + 1)
+  }
+  return res
+}
+```
+
