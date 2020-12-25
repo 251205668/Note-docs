@@ -766,3 +766,92 @@ var lengthOfLongestSubstring = function(s){
 }
 ```
 
+## 动态规划
+
+### [斐波那契数](https://leetcode-cn.com/problems/fibonacci-number/)
+
+![](https://image.yangxiansheng.top/img/20201226004549.png?imglist)
+
+```js
+var fib = function(n) {
+    let dp = [0,1,1]
+    for(let i = 3;i<=n;i++){
+        dp[i] = dp[i-1] + dp[i-2]
+    }
+    return dp[n]
+};
+```
+
+### [零钱兑换](https://leetcode-cn.com/problems/coin-change/)
+
+![](https://image.yangxiansheng.top/img/20201226004850.png?imglist)
+
+```js
+var coinChange = function(coins, amount) {
+    /**
+     * 1. 初始化dp
+     * 2. 初始化base-case
+     * 3. for循环所有的状态取值
+     * 4. dp[状态] = 求最值(选择1，选择2,...)
+     */
+    // amount+1 作为上限值
+    let dp = Array(amount + 1).fill(amount + 1)
+    dp[0] = 0
+    for(let i =0;i < dp.length;i++){
+        for(const coin of coins){
+            // 子问题不成立的情况
+            if(i-coin < 0){
+                continue
+            }
+            dp[i] = Math.min(dp[i],1 + dp[i-coin])
+        }
+    }
+    return dp[amount] === amount + 1 ? -1 : dp[amount]
+};
+```
+### [爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)
+
+![](https://image.yangxiansheng.top/img/20201226005009.png?imglist)
+
+```js
+var climbStairs = function(n) {
+    // base-case
+    let dp = [0,1,2]
+    for(let i = 3;i<=n;i++){
+        dp[i] = dp[i-1] + dp[i-2]
+    }
+    return dp[n]
+
+};
+```
+
+### [打家劫舍](https://leetcode-cn.com/problems/house-robber/)
+
+![](https://image.yangxiansheng.top/img/20201226005133.png?imglist)
+
+```js
+var rob = function(nums) {
+  /**
+   * dp表示盗窃某号房子的最大价值
+   * dp[i] = Math.max(dp[i-1],dp[i-2] + nums[i]): 
+   * 代表第i号房子可盗窃的最大价值是第i-1号房子可盗窃的最大价值和第i-2号房子可盗窃的最大价值
+   * 加上本身的价值作比较，取最大值
+   * 
+   * 举例说明: nums = [2,4,3],1号房子可盗窃最大价值就是本身nums[0]=2,2号房子可盗窃最大价值也是本身nums[1] = 4,3号房子可盗窃的最大价值dp[2] = Math.max(4,2+3) = 5,状态转移方程成立
+   *  */
+  let n = nums.length
+  if(!n){
+      return 0
+  }
+  if(n === 1){
+      return nums[0]
+  }
+  let dp = []
+  dp[0] = nums[0]
+  dp[1] = Math.max(nums[0],nums[1])
+  for(let i =2;i <= n;i++){
+      dp[i] = Math.max(dp[i-1],dp[i-2] + nums[i])
+  }
+  return dp[n-1]
+};
+```
