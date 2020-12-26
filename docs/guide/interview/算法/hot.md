@@ -855,3 +855,134 @@ var rob = function(nums) {
   return dp[n-1]
 };
 ```
+
+### [打家劫舍 II](https://leetcode-cn.com/problems/house-robber-ii/)
+
+![](https://image.yangxiansheng.top/img/20201226102813.png?imglist)
+
+> 这里和上面那道题的唯一区别就是首尾不能共存，所以需要分别剔除考虑、
+
+```js
+var rob = function(nums) {
+    /**
+     * 和打家劫舍一相比：这里需要分别剔除首尾的房子，然后比较两种情况的到最大金额的最大值
+     *  */ 
+    // 这里判空需要写在函数外面，否则会报错   
+     if(!nums.length){
+             return 0
+         }
+         if(nums.length === 1){
+             return nums[0]
+         }
+     function getRes(arr){
+         let n = arr.length
+         let dp = []
+         // base-case
+         dp[0] = arr[0]
+         dp[1] = Math.max(arr[0] , arr[1])
+         for(let i =2;i<=n;i++){
+             dp[i] = Math.max(dp[i-1],dp[i-2] + arr[i])
+         }
+         return dp[n-1]
+     }
+     // 由于首尾不能共存，分别剔除首尾
+     let shiftArray = JSON.parse(JSON.stringify(nums))
+     shiftArray.shift()
+     let res1 = getRes(shiftArray)     
+     let popArray =  JSON.parse(JSON.stringify(nums))
+     popArray.pop()
+     let res2 = getRes(popArray) 
+     return Math.max(res1,res2)
+     
+};
+```
+
+### [打家劫舍 III](https://leetcode-cn.com/problems/house-robber-iii/)
+
+![](https://image.yangxiansheng.top/img/20201226111556.png?imglist)
+
+```js
+var rob = function(root) {
+    /**
+     * 使用后续遍历;dp(0) 代表以node节点为根节点的数node节点不偷的最高金额，dp(1)为偷
+     * 1. 如果根节点偷了，左右子树均不能偷
+     * 2. 如果根节点没偷，则左右子树偷或者不偷，取最大值,可以同时偷
+     */
+    const dfs = (node)=>{
+        if(!node){
+            return [0,0]
+        }
+        let left = dfs(node.left)
+        let right = dfs(node.right)
+        let dp = Array(2)
+        // 分为偷和不偷两种情况，归类到最后的返回数组
+        dp[0] = Math.max(left[0],left[1]) + Math.max(right[0],right[1])
+        dp[1] = node.val + left[0] + right[0]
+        return dp  
+    }
+    let res = dfs(root)
+    return Math.max(res[0],res[1])
+};
+```
+
+### [目标和](https://leetcode-cn.com/problems/target-sum/)
+
+![](https://image.yangxiansheng.top/img/20201226132137.png?imglist)
+
+首先可以利用回溯算法求出解，然后使用备忘录优化,最后还可以转为动态规划问题里面的0-1背包问题
+
+```js
+var findTargetSumWays = function(nums, S) {
+   if(!nums.length){
+       return 0
+   }
+/**
+ * 回溯算法解法
+ */
+//    let result = 0
+//    // 路径，当前选择下标，剩余的target值
+//    function backtrack(track,index,res){
+//        // 终止递归条件
+//        if(index === track.length){
+//            if(res === 0){
+//                // 满足条件
+//                result++
+//            }
+//            return result
+//        }
+//        // 当选择-号，剩余值应该增加nums[index]
+//        res+=track[index]
+//        backtrack(track,index+1,res)
+//        // 撤销选择
+//        res-=track[index]
+//        res-=track[index]
+//        backtrack(track,index+1,res)
+//        res+=track[index]
+//    }
+//    backtrack(nums,0,S)
+//    return result
+
+/**
+ * 添加备忘录解法
+ */
+const map = new Map()
+function dp(nums,index,res){
+    if(index === nums.length){
+        if(!res){
+            return 1
+        }
+        return 0
+    }
+    let key = `${index}-${res}`
+    if(map.has(key)){
+        return map.get(key)
+    }
+    // 穷举法 加起来
+    const result = dp(nums,index+1,res+nums[index]) + dp(nums,index+1,res-nums[index])
+    map.set(key,result)
+    return result
+}
+return dp(nums,0,S)
+
+};
+```
