@@ -986,3 +986,75 @@ return dp(nums,0,S)
 
 };
 ```
+
+### [最长递增子序列问题](https://leetcode-cn.com/problems/longest-increasing-subsequence/)
+
+![](https://image.yangxiansheng.top/img/20201229170535.png?imglist)
+
+```js
+- 遍历到 nums[i] 时，需要把下标 i 之前的所有的数都看一遍；
+- 只要 nums[i] 严格大于在它位置之前的某个数，那么 nums[i] 就可以接在这个数后面形成一个更长的上升子序列；
+- 因此，dp[i] 就等于下标 i 之前严格小于 nums[i] 的状态值的最大者 +1
+```
+
+```js
+function lengthOfLIS(nums){
+  let n = nums.length
+  // base-case
+  if(!n){
+    return 0
+  }
+  if(n === 1){
+    return 1
+  }
+  // 假设每一个下标对应的元素都为1
+  let dp = Array(n).fill(1)
+  // 双层循环，i代表选中子序列的最后一个数，j代表在它之前的数，在它之前的数必须小于第i个元素,0<=j<i
+  for(let i = 1;i < nums.length;i++){
+    for(let j = 0;j < i;j++){
+      if(nums[j] < nums[j]){
+        // dp[i] 就等于下标 i 之前严格小于 nums[i] 的状态值的最大者 +1
+        dp[i] = Math.max(dp[i],dp[j] + 1)
+      }
+    }
+  }
+  // 现在dp是个数组，里面存着每个下标所对应的子序列长度，取最大值即可
+  return Math.max(...dp)
+}
+```
+
+
+
+
+### [最大连续子数组和](https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/)
+
+
+![](https://image.yangxiansheng.top/img/20201229194438.png?imglist)
+
+```js
+var maxSubArray = function(nums) {
+    /**
+     * dp[i] "以nums[i]结尾的最大数组和"
+     * 如果dp[i-1]<=0 ，则产生负效果，此时dp[i] = nums[i]
+     * 如果dp[i-1]>=0 ，则产生曾效果，此时dp[i] = dp[i-1] + nums[i]
+     */
+    let n = nums.length
+    if(!n){
+        return 0
+    }
+    let dp = Array(n)
+    // base-case
+    dp[0] = nums[0]
+    // 假设数组最大值为第一个元素
+    let maxSum = nums[0]
+    for(let i = 1;i < nums.length;i++){
+        if(dp[i-1] <= 0){
+            dp[i] = nums[i]
+        }else{
+            dp[i] = dp[i-1] + nums[i]
+        }
+        maxSum = Math.max(maxSum,dp[i])
+    }
+    return maxSum
+};
+```
