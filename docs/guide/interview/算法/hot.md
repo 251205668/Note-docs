@@ -5,6 +5,8 @@
 首先热身熟悉一下dfs，bfs，先中后序遍历
 
 ```js
+// JS定义多维数组 mxn
+Array.from(Array(m),()=>Array(n).fill(0))
 // 深度优先 尽量深的遍历数，先访问根节点，再递归访问根节点的子节点
 dfs = (root)=>{
   console.log(root.val)
@@ -768,11 +770,12 @@ var lengthOfLongestSubstring = function(s){
 
 ## 动态规划
 
-### [斐波那契数](https://leetcode-cn.com/problems/fibonacci-number/)
+### [斐波那契数](https://leetcode-cn.com/problems/fibonacci-number/)🥇
 
 ![](https://image.yangxiansheng.top/img/20201226004549.png?imglist)
 
 ```js
+// dp[n] ：输入n返回对应的斐波那契额数
 var fib = function(n) {
     let dp = [0,1,1]
     for(let i = 3;i<=n;i++){
@@ -782,7 +785,7 @@ var fib = function(n) {
 };
 ```
 
-### [零钱兑换](https://leetcode-cn.com/problems/coin-change/)
+### [零钱兑换](https://leetcode-cn.com/problems/coin-change/)🥇
 
 ![](https://image.yangxiansheng.top/img/20201226004850.png?imglist)
 
@@ -793,6 +796,7 @@ var coinChange = function(coins, amount) {
      * 2. 初始化base-case
      * 3. for循环所有的状态取值
      * 4. dp[状态] = 求最值(选择1，选择2,...)
+     * dp[n] ：输入需要凑的目标金额n，要求返回能够达到凑出来的金额等于n的最小硬币数量
      */
     // amount+1 作为上限值
     let dp = Array(amount + 1).fill(amount + 1)
@@ -803,18 +807,21 @@ var coinChange = function(coins, amount) {
             if(i-coin < 0){
                 continue
             }
+            // 如果满足条件 dp[i]就等于1+dp[i-coin]和自己的最小值,i-coin代表剩余需要凑的金额，+1代表数量+1
             dp[i] = Math.min(dp[i],1 + dp[i-coin])
         }
     }
+    // 满足不能越界
     return dp[amount] === amount + 1 ? -1 : dp[amount]
 };
 ```
-### [爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)
+### [爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)🥇
 
 ![](https://image.yangxiansheng.top/img/20201226005009.png?imglist)
 
 ```js
 var climbStairs = function(n) {
+    // dp[n] :代表n阶楼梯可以有几种爬法
     // base-case
     let dp = [0,1,2]
     for(let i = 3;i<=n;i++){
@@ -825,21 +832,21 @@ var climbStairs = function(n) {
 };
 ```
 
-### [打家劫舍](https://leetcode-cn.com/problems/house-robber/)
+### [打家劫舍](https://leetcode-cn.com/problems/house-robber/)🥇
 
 ![](https://image.yangxiansheng.top/img/20201226005133.png?imglist)
 
 ```js
 var rob = function(nums) {
   /**
-   * dp表示盗窃某号房子的最大价值
+   * dp[i]表示盗窃[0...i-1]号房子的最大价值,我们求的结果就是dp[n-1]
    * dp[i] = Math.max(dp[i-1],dp[i-2] + nums[i]): 
-   * 代表第i号房子可盗窃的最大价值是第i-1号房子可盗窃的最大价值和第i-2号房子可盗窃的最大价值
-   * 加上本身的价值作比较，取最大值
+   * 这个等式怎么来的，我们假设第i号房子盗取，则盗窃到这号房子的最大价值为dp[i-2]+ nums[i],因为相邻房子不能盗取；如果不盗取i号房子，则dp[i]和dp[i-1]是相同的。这两种取最大值即可得出方程
    * 
    * 举例说明: nums = [2,4,3],1号房子可盗窃最大价值就是本身nums[0]=2,2号房子可盗窃最大价值也是本身nums[1] = 4,3号房子可盗窃的最大价值dp[2] = Math.max(4,2+3) = 5,状态转移方程成立
    *  */
   let n = nums.length
+  // base-case
   if(!n){
       return 0
   }
@@ -847,6 +854,7 @@ var rob = function(nums) {
       return nums[0]
   }
   let dp = []
+  // 需要列举出dp[0] 和dp[1]的特殊情况
   dp[0] = nums[0]
   dp[1] = Math.max(nums[0],nums[1])
   for(let i =2;i <= n;i++){
@@ -856,11 +864,11 @@ var rob = function(nums) {
 };
 ```
 
-### [打家劫舍 II](https://leetcode-cn.com/problems/house-robber-ii/)
+### [打家劫舍 II](https://leetcode-cn.com/problems/house-robber-ii/)🥇
 
 ![](https://image.yangxiansheng.top/img/20201226102813.png?imglist)
 
-> 这里和上面那道题的唯一区别就是首尾不能共存，所以需要分别剔除考虑、
+> 这里和上面那道题的唯一区别就是首尾不能共存，所以需要分别剔除首尾
 
 ```js
 var rob = function(nums) {
@@ -897,14 +905,16 @@ var rob = function(nums) {
 };
 ```
 
-### [打家劫舍 III](https://leetcode-cn.com/problems/house-robber-iii/)
+### [打家劫舍 III](https://leetcode-cn.com/problems/house-robber-iii/)🥇
 
 ![](https://image.yangxiansheng.top/img/20201226111556.png?imglist)
 
 ```js
 var rob = function(root) {
     /**
-     * 使用后续遍历;dp(0) 代表以node节点为根节点的数node节点不偷的最高金额，dp(1)为偷
+     * 使用后续遍历
+     * dp就两个元素，一个是根节点偷的结果，一个是根节点不偷的结果
+     * dp(0) 代表以node节点为根节点的树，node节点不偷的最高金额，dp(1)为偷
      * 1. 如果根节点偷了，左右子树均不能偷
      * 2. 如果根节点没偷，则左右子树偷或者不偷，取最大值,可以同时偷
      */
@@ -925,7 +935,7 @@ var rob = function(root) {
 };
 ```
 
-### [目标和](https://leetcode-cn.com/problems/target-sum/)
+### [目标和](https://leetcode-cn.com/problems/target-sum/)🥇
 
 ![](https://image.yangxiansheng.top/img/20201226132137.png?imglist)
 
@@ -967,7 +977,9 @@ var findTargetSumWays = function(nums, S) {
  */
 const map = new Map()
 function dp(nums,index,res){
+  // dp(nums,index,res) 代表 nums数组中从index下标开始选择-1或者+1对其元素进行累加，最后使得结果和target相等时的方法数
     if(index === nums.length){
+      // 累加到最后的剩余值为0时，返回1，否则返回0
         if(!res){
             return 1
         }
@@ -987,7 +999,7 @@ return dp(nums,0,S)
 };
 ```
 
-### [最长递增子序列问题](https://leetcode-cn.com/problems/longest-increasing-subsequence/)
+### [最长递增子序列问题](https://leetcode-cn.com/problems/longest-increasing-subsequence/)🥇
 
 ![](https://image.yangxiansheng.top/img/20201229170535.png?imglist)
 
@@ -996,9 +1008,10 @@ return dp(nums,0,S)
 - 只要 nums[i] 严格大于在它位置之前的某个数，那么 nums[i] 就可以接在这个数后面形成一个更长的上升子序列；
 - 因此，dp[i] 就等于下标 i 之前严格小于 nums[i] 的状态值的最大者 +1
 ```
-
+`dp[i] 就等于下标 i 之前严格小于 nums[i] 的状态值的最大者 +1`
 ```js
 function lengthOfLIS(nums){
+  // dp[n] 代表以nums[n]结尾的最长子序列长度，也就是左右子序列里面最长的长度
   let n = nums.length
   // base-case
   if(!n){
@@ -1007,7 +1020,7 @@ function lengthOfLIS(nums){
   if(n === 1){
     return 1
   }
-  // 假设每一个下标对应的元素都为1
+  // 假设每一个下标对应的元素都为1，默认长度为1
   let dp = Array(n).fill(1)
   // 双层循环，i代表选中子序列的最后一个数，j代表在它之前的数，在它之前的数必须小于第i个元素,0<=j<i
   for(let i = 1;i < nums.length;i++){
@@ -1026,7 +1039,7 @@ function lengthOfLIS(nums){
 
 
 
-### [最大连续子数组和](https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/)
+### [最大连续子数组和](https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/)🥇
 
 
 ![](https://image.yangxiansheng.top/img/20201229194438.png?imglist)
@@ -1034,7 +1047,7 @@ function lengthOfLIS(nums){
 ```js
 var maxSubArray = function(nums) {
     /**
-     * dp[i] "以nums[i]结尾的最大数组和"
+     * dp[i] "以nums[i]结尾的最大子数组和"
      * 如果dp[i-1]<=0 ，则产生负效果，此时dp[i] = nums[i]
      * 如果dp[i-1]>=0 ，则产生曾效果，此时dp[i] = dp[i-1] + nums[i]
      */
@@ -1049,6 +1062,7 @@ var maxSubArray = function(nums) {
     let maxSum = nums[0]
     for(let i = 1;i < nums.length;i++){
         if(dp[i-1] <= 0){
+          // 累加产生负效果 直接等于nums[i]
             dp[i] = nums[i]
         }else{
             dp[i] = dp[i-1] + nums[i]
@@ -1056,5 +1070,230 @@ var maxSubArray = function(nums) {
         maxSum = Math.max(maxSum,dp[i])
     }
     return maxSum
+};
+```
+
+### [买卖股票的最佳时机](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)🥇
+
+![](https://image.yangxiansheng.top/img/20201230131225.png?imglist)
+
+`dp[3][2][1]的含义就是：今天是第三天，我现在手上持有着股票，至今最多进行 2 次交易的最大利润`
+
+思路详见模板
+```js
+var maxProfit = function(prices) {
+    let dp_i_0 = 0
+    let dp_i_1 = -Infinity
+    for(let n = 0;n< prices.length;n++){
+        dp_i_0 = Math.max(dp_i_0,dp_i_1 + prices[n])
+        dp_i_1 = Math.max(dp_i_1,-prices[n])
+    }
+    return dp_i_0
+};
+```
+
+### [买卖股票的最佳时机 II](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/)🥇
+
+![](https://image.yangxiansheng.top/img/20201230131302.png?imglist)
+
+```js
+var maxProfit = function(prices) {
+    let dp_i_0 = 0
+    let dp_i_1 = -Infinity
+    for(let i=0;i<prices.length;i++){
+        dp_i_0 = Math.max(dp_i_0,dp_i_1 + prices[i])
+        dp_i_1 = Math.max(dp_i_1,dp_i_0 - prices[i])
+    }
+    return dp_i_0
+};
+```
+
+### [买卖股票的最佳时机含手续费](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)🥇
+
+![](https://image.yangxiansheng.top/img/20201230134451.png?imglist)
+
+```js
+var maxProfit = function(prices, fee) {
+    let dp_i_0 = 0
+    let dp_i_1 = -Infinity
+    for(let i=0;i<prices.length;i++){
+        dp_i_0 = Math.max(dp_i_0,dp_i_1 + prices[i])
+        dp_i_1 = Math.max(dp_i_1,dp_i_0 - prices[i] - fee)
+    }
+    return dp_i_0
+};
+```
+
+### [最佳买卖股票时机含冷冻期](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/)🥇
+
+![](https://image.yangxiansheng.top/img/20201230134531.png?imglist)
+
+```js
+var maxProfit = function(prices) {
+  let dp_i_0 = 0
+  let dp_i_1 = -Infinity
+  let dp_pre_0 = 0 // 相当于 dp[i-2][0]
+  for(let i=0;i < prices.length;i++){
+      // 记录上次的最大利润
+      let temp = dp_i_0
+      dp_i_0 = Math.max(dp_i_0,dp_i_1 + prices[i])
+      dp_i_1 = Math.max(dp_i_1,dp_pre_0 - prices[i])
+      dp_pre_0 = temp
+  }
+  return dp_i_0
+};
+```
+
+### [最长回文子串](https://leetcode-cn.com/problems/longest-palindromic-substring/)🥇
+
+![](https://image.yangxiansheng.top/img/20201230141110.png?imglist)
+
+**使用中心扩散思想，以如果是奇数串以 `s[i]` 为中心点，如果是偶数串则以 `s[i]`和`s[i+1]` 为中心点，然后向两边扩散范围**
+
+```js
+let longestPalindrome = function (s) {
+  let n = s.length
+  if(n <2){
+    return s
+  }
+  // 定义最大值为1，开始下标为0
+  let begin = 0
+  let max = 1
+ // 扩散方法,传入头和尾下标
+ let spread = (start,end)=>{
+   while(s[start] ===s[end] && start>=0 && end <n){
+     // 此时窗口的大小
+     let len = end - start + 1
+     // 窗口大于最大值时，更新最大值和起始点
+     if(len > max){
+       max = len
+       begin = start
+     }
+     start --
+     end ++
+   }
+ }
+
+// 遍历字符串,考虑两种情况
+for(let mid = 0;mid<n;mid++){
+  spread(mid,mid)
+  spread(mid,mid+1)
+}
+return s.substr(begin,max)
+}
+```
+### [最长公共子序列](https://leetcode-cn.com/problems/longest-common-subsequence/)🥇
+
+![](https://image.yangxiansheng.top/img/20201230170955.png?imglist)
+思路：
+![](https://image.yangxiansheng.top/img/20201230171437.png?imglist)
+```js
+var longestCommonSubsequence = function(text1, text2) {
+  // 定义：s1[0..i-1] 和 s2[0..j-1] 的 lcs 长度为 dp[i][j]
+  // 目标：s1[0..m-1] 和 s2[0..n-1] 的 lcs 长度，即 dp[m][n]
+  // 如果s1[i] = s2[j] 则两个字符都在lcs中，长度加1；
+  // 如果s1[i]!==s2[j]，则有三种情况，一种是s1[i]不在lcs，一种是s2[j]不在lcs,一种是都不在，这种可以忽略
+  // base case: dp[0][..] = dp[..][0] = 0
+  let m = text1.length
+  let n = text2.length
+  const dp = Array.from(Array(m + 1), () => Array(n + 1).fill(0))
+  // 注意这里下标需要从1开始，最后一个元素可取
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      // 因为下标是从1开始的
+      let str1 = text1[i - 1]
+      let str2 = text2[j - 1]
+      if (str1 === str2) {
+        dp[i][j] = 1 + dp[i - 1][j - 1]
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
+      }
+    }
+  }
+  return dp[m][n]
+}
+```
+### [两个字符串的删除操作](https://leetcode-cn.com/problems/delete-operation-for-two-strings/)🥇
+
+![](https://image.yangxiansheng.top/img/20201230174846.png?imglist)
+
+```js
+var minDistance = function(word1, word2) {
+// 思路： 找到最大公共子序列，然后除去这两个子序列的长度即为所求
+  let m = word1.length
+  let n = word2.length
+  let dp = Array.from(Array(m+1),()=>Array(n+1).fill(0))
+  for(let i=1;i<=m;i++){
+      for(let j=1;j<=n;j++){
+          let s1 = word1[i-1]
+          let s2 = word2[j-1]
+          if(s1 === s2){
+              dp[i][j] = 1 + dp[i-1][j-1]
+          }else{
+              dp[i][j] = Math.max(dp[i][j-1],dp[i-1][j])
+          }
+      }
+  }
+  return m-dp[m][n]+n-dp[m][n]
+};
+```
+
+### [最长重复子数组](https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/)🥇
+
+![](https://image.yangxiansheng.top/img/20201230175204.png?imglist)
+
+```js
+// 思路:和最长公共子序列相同，dp[i][j] 代表s1[0...i-1]和s2[0...j-1]的公共部分的最大长度
+
+var findLength = function(A, B) {
+  let m = A.length
+  let n = B.length
+  let dp = Array.from(Array(m+1),()=>Array(n+1).fill(0))
+  let res =0
+  for(let i = 1;i <= m;i++){
+    for(let j = 1;j<= n;j++){
+      let a = A[i-1]
+      let b = B[j-1]
+      if(a === b){
+        dp[i][j] = 1 + dp[i-1][j-1]
+      }
+      // 不等已经初始化
+      res = Math.max(res,dp[i][j])
+    }
+  }
+  return res
+};
+```
+### [最小路径和](https://leetcode-cn.com/problems/minimum-path-sum/)🥇
+
+![](https://image.yangxiansheng.top/img/20201230175312.png?imglist)
+
+```js
+var minPathSum = function(grid) {
+  /**
+   * 思路: dp[i][j] = Math.min(dp[i-1][j],dp[i][j-1]) 代表到达(i，j)路径总和最小
+   * 其实我们字需要考虑，走到的那一步也就是(i,j)是从哪里来的，只有两种可能
+   * 1. 上方
+   * 2. 左方
+   * 所以可以推测出该动态规划方程，但是有两个特殊地方需要处理，第一行只能都是左方来的，第一列只能都是上方来的
+   * 这里遍历记得从1开始，防止越界
+   */
+  let row = grid.length
+  let col = grid[0].length
+  // 处理第一行 使用grid数组代替dp数组也可以达到效果
+  for(let j = 1;j < col;j++){
+      grid[0][j] += grid[0][j-1]
+  }
+  // 处理第一列
+  for(let i =1;i < row;i++){
+      grid[i][0] += grid[i-1][0]
+  }
+  // 处理常规行列
+  for(let i = 1;i < row;i++){
+      for(let j = 1;j < col;j++){
+          grid[i][j] += Math.min(grid[i-1][j],grid[i][j-1])
+      }
+  }
+  return grid[row-1][col-1]
 };
 ```
