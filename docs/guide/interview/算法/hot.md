@@ -41,7 +41,7 @@ bfs = (root)=>{
   }
 }
 
-// 二叉树的广度
+// 二叉树的广度优先
 bfs = (root,level)=>{
   let q =[[root,1]]
   while(q.length > 0){
@@ -1295,5 +1295,103 @@ var minPathSum = function(grid) {
       }
   }
   return grid[row-1][col-1]
+};
+```
+
+## 贪心算法
+
+### [分配饼干](https://leetcode-cn.com/problems/assign-cookies/)
+
+![](https://image.yangxiansheng.top/img/20201230231618.png?imglist)
+
+降序排序两个数组，用两个指针来分发饼干，将最大的饼干分给最贪婪的小朋友，如果能够开心则继续发下一个小朋友，否则无法满足，则放弃发这个小朋友，移动小朋友的指针即可
+```js
+var findContentChildren = function(g, s) {
+  // 内置的排序方法效率最好
+  g = g.sort((a,b)=>b-a)
+  s = s.sort((a,b)=>b-a)
+  // 因为数组从大到小排序 通过控制两个数组的指针来分配饼干，其实下标为0
+  let g1 = 0
+  let s1 = 0
+  let res = 0
+  while(g1< g.length && s1<s.length){
+    // 代表最大的饼干可以让最贪心的小朋友开心,更新数据
+    if(s[s1] >= g[g1]){
+      res++
+      s1++
+      g1++
+    }else{
+      // 最大的饼干无法满足最贪心小朋友
+      g1++
+    }
+  }
+  return res
+};
+```
+
+### [无重叠区间](https://leetcode-cn.com/problems/non-overlapping-intervals/)
+
+![](https://image.yangxiansheng.top/img/20201230231315.png?imglist)
+
+
+解题思路：
+
+![](https://image.yangxiansheng.top/img/1.gif?imglist)
+
+
+```js
+var eraseOverlapIntervals = function(intervals) {
+    /**
+     * 整体思路： 适用贪心算法
+     * 1. 首先在按照每个区间end从小到大排序的区间中调出第一个最小的区间 X
+     * 2. 然后遍历整个集合，如果有一个区间的start是大于等于 X的end，也就是说当前区间起始位置在X区间的后面，那么当前区间和X区间是不重叠的
+     * 3. 重复1,2,步，更新count和X即可
+     */
+  if(intervals.length === 0){
+    return 0
+  }
+  // intervals是一个二维数组，根据end升序排列
+  intervals = intervals.sort((a,b)=>a[1]-b[1])
+  // 假设长度为1
+  let count = 1
+  let end_x = intervals[0][1]
+  for(const interval of intervals){
+    start = interval[0]
+    // 判断start是否超过X的end, 不重叠
+    if(start >= end_x){
+        count++
+        end_x = interval[1]
+    }
+  }
+  return intervals.length- count
+};
+```
+
+### [用最少数量的箭引爆气球](https://leetcode-cn.com/problems/minimum-number-of-arrows-to-burst-balloons/)
+
+![](https://image.yangxiansheng.top/img/20201230232827.png?imglist)
+
+```js
+/**
+ * 思路： 乍一看，题目没读懂，仔细读之后发现这道题就是求重叠的区间的数量，和上面的区间重叠问题只有一个不同点，那就是如果Start = end 也会重叠
+ * 
+ * 这里求的是不重叠区间的个数
+ *
+*/
+var findMinArrowShots = function(points) {
+    if(!points.length){
+        return 0
+    }
+    points = points.sort((a,b)=>a[1]-b[1])
+    let count = 1
+    let end_x = points[0][1]
+    for(const point of points){
+        let start = point[0]
+        if(start > end_x){
+            count++
+            end_x = point[1]
+        }
+    }
+    return count
 };
 ```
