@@ -1367,6 +1367,44 @@ var eraseOverlapIntervals = function(intervals) {
 };
 ```
 
+### [合并区间](https://leetcode-cn.com/problems/merge-intervals/)
+
+![](https://image.yangxiansheng.top/img/20210102125235.png?imglist)
+
+画张图更易理解
+
+![](https://image.yangxiansheng.top/img/20210102123940.png?imglist)
+
+```js
+var merge = function(intervals) {
+    /**
+     * 首先假设两个两个数组pre，cur 需要按照start排序
+     * 1. 如果pre[1] <= cur[0] 则代表两数组相交，这时需要合并区间，区间最小值就是pre[0],最大值为Math.max(pre[1],cur[1])
+     * 2. 如果没有相交，则更新pre = cur，循环遍历下去，然后将pre保存到结果区间里即可
+     * 3. 最后将结果push进res
+     *  反正记住这里需要重复push两次pre到结果集就好了
+     */
+    if(intervals.length === 0){
+        return []
+    }
+    intervals = intervals.sort((a,b)=>a[0]-b[0])
+    let res = []
+    let pre = intervals[0]
+    for(let i = 1;i<intervals.length;i++){
+        let cur = intervals[i]
+        // 相交
+        if(pre[1] >= cur[0]){
+            pre[1] = Math.max(pre[1],cur[1])
+        }else{
+            res.push(pre)
+            pre = cur
+        }
+    }
+    res.push(pre)
+    return res
+};
+```
+
 ### [用最少数量的箭引爆气球](https://leetcode-cn.com/problems/minimum-number-of-arrows-to-burst-balloons/)
 
 ![](https://image.yangxiansheng.top/img/20201230232827.png?imglist)
@@ -1393,5 +1431,59 @@ var findMinArrowShots = function(points) {
         }
     }
     return count
+};
+```
+### [剪绳子](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210102114619.png?imglist)
+
+```js
+var cuttingRope = function(n) {
+  /**
+   * 8 = 3 + 3 + 2
+   * 根据贪心算法应该讲n分成多个3，但是有一种特殊情况，那就是n % 3 === 1，其实就是结尾是3和1，那么这两个数应该换成两个2，乘积会更大
+   * 
+   * 所以有以下情况
+   * n 除以 3 的结果为 a，余数为 b；
+    当 b 为 0 时，直接将 a 个 3 相乘；
+    当 b 为 1 时，将 (a - 1) 个 3 相乘，再乘以 4；
+    当 b 为 2 时，将 a 个 3 相乘，再乘以 2
+   */
+  if(n === 2){
+      return 1
+  }
+  if(n === 3){
+      return 2
+  }
+  // a
+  const a = Math.floor(n/3) 
+  // 余数b
+  const b = n % 3
+  if(b === 0){
+      return Math.pow(3,a)
+  }else if(b === 1){
+      return Math.pow(3,a-1) * 4 
+  }else if(b === 2){
+      return Math.pow(3,a) * 2
+  }
+};
+```
+
+### [跳跃游戏](https://leetcode-cn.com/problems/jump-game/)
+
+![](https://image.yangxiansheng.top/img/20210102115535.png?imglist)
+
+```js
+var canJump = function(nums) {
+    /**
+     * 元素可达的最大位置: nums[i] + i.如果每次更新的最大位置喜小于数组长度，则无法到达
+     */
+    let k = 0
+    for(let i = 0;i<nums.length;i++){
+        if(i > k) return false
+        k = Math.max(k,nums[i] + i)
+    }
+    return true
+
 };
 ```
