@@ -7,7 +7,7 @@
 ```js
 // JS定义多维数组 mxn
 Array.from(Array(m),()=>Array(n).fill(0))
-// 深度优先 尽量深的遍历数，先访问根节点，再递归访问根节点的子节点
+// 深度优先 尽量深的遍历数，先访问根结点，再递归访问根结点的子结点
 dfs = (root)=>{
   console.log(root.val)
   root.children.forEach(dfs)
@@ -82,7 +82,7 @@ inOrder = (root)=>{
     }
     const n = q.pop()
     console.log(v.val)
-    // 指向右节点 遍历右节点去
+    // 指向右结点 遍历右结点去
     p = n.right
   }
 }
@@ -104,7 +104,7 @@ postOrder = (root)=>{
       q.push(n.right)
     }
   }
-  // 输出节点
+  // 输出结点
   while(outputStack.length){
     const node = outputStack.pop()
     console.log(node.val)
@@ -132,7 +132,7 @@ function(nums){
       return
     }
     for(let i=0;i<nums.length;i++){
-      // 筛选条件，不允许路径理由重复的已选择节点
+      // 筛选条件，不允许路径理由重复的已选择结点
       if(track.includes(nums[i])){
         continue
       }
@@ -173,7 +173,7 @@ var solveNQueens = function(n) {
             return
         }
         for(let col = 0 ;col < n;col++){
-            //筛选不符合条件的节点
+            //筛选不符合条件的结点
             if(!isValid(board,row,col)){
                 continue
             }
@@ -242,7 +242,270 @@ var revirseListNode = (head)=>{
     p1 = temp
   }
   return p2
+
 }
+```
+**递归版**
+
+```js
+var reverseList = function(head) {
+  /**
+     * 递归版 cur :p1, pre:p2
+     */
+    let reverse = (pre,cur)=>{
+        if(!cur){
+            return pre
+        }
+        // 保存p1.next
+        let temp = cur.next
+        cur.next = pre
+        // 让递归去遍历链表去，传入的参数为p1,p1.next
+        return reverse(cur,temp) 
+    }
+    return reverse(null,head)
+}
+```
+
+### [反转链表 II](https://leetcode-cn.com/problems/reverse-linked-list-ii/)
+
+![](https://image.yangxiansheng.top/img/20210103194253.png?imglist)
+
+思路:
+
+![](https://image.yangxiansheng.top/img/20210103193705.png?imglist)
+
+```js
+var reverseBetween = function(head, m, n) {
+    /**
+     * 思路: a 和 d 先移动到指定位置，然后反转链表，最后将 a 指向d,b指向c
+     */
+    if(m === n){
+        return head
+    }
+    let dummyNode = new ListNode(0)
+    dummyNode.next = head
+    // 首先让a,d移动到相应的位置
+    let a = dummyNode
+    let d = dummyNode
+    for(let i = 0;i < m-1;i++){
+        a = a.next
+    }
+    for(let i = 0;i < n;i++){
+        d = d.next
+    }
+    // 反转m到n的链表
+    let b = a.next
+    let c = d.next
+  // 这里注意如何反转，定义变量写在条件里面，然后终止条件为p1!==c
+  for(let p2=b,p1=p2.next;p1!==c;){
+       let temp=p1.next;
+       p1.next=p2;
+       p2=p1
+       p1=temp;
+   }
+    // 将a指向d，m指向c
+    a.next = d
+    b.next = c
+    return dummyNode.next
+
+};
+```
+
+### [删除链表中的结点](https://leetcode-cn.com/problems/delete-node-in-a-linked-list/)
+
+![](https://image.yangxiansheng.top/img/20210103135651.png?imglist)
+
+```js
+var deleteNode = function(node) {
+    node.val = node.next.val
+    node.next = node.next.next
+};
+```
+### [删除排序链表中的重复元素](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list/)
+
+![](https://image.yangxiansheng.top/img/20210103135510.png?imglist)
+
+```js
+var deleteDuplicates = function(head) {
+  let p = head
+  while(p && p.next){
+      // 如果相同 删除
+      if(p.val === p.next.val){
+        p.next = p.next.next
+      }else{
+        // 遍历下去
+          p = p.next
+      }
+  }
+  return head
+};
+```
+
+### [两数相加](https://leetcode-cn.com/problems/add-two-numbers/)
+
+![](https://image.yangxiansheng.top/img/20210103195832.png?imglist)
+
+思路就是使用伪结点记录双结点的值相加，**但是需要考虑到超过10的情况，使用一个变量记录十位上的数，超过十则结点值为除以10的余数，最后如果最后一位也超过10，结点值就是十位上的数**。
+
+```js
+var addTwoNumbers = function(l1, l2) {
+   const l3 = new ListNode(0)
+   let p1 =l1
+   let p2 =l2
+   let p3 = l3
+   // 十位上的数，因为可能出现4+7的情况 11
+   let carry = 0
+   while(p1 || p2){
+       // 取值
+       const v1 = p1 ? p1.val:0
+       const v2 = p2 ? p2.val:0
+       const v3 = v1+v2+carry
+       carry = Math.floor(v3 / 10)
+       p3.next = new ListNode(v3 % 10)
+       if(p1) p1 = p1.next
+       if(p2) p2 =p2.next
+       p3 = p3.next
+   }
+   // 考虑最后一位可能也会超过10，直接以carry作为结点末尾
+   if(carry){
+       p3.next = new ListNode(carry)
+   }
+   return l3.next
+};
+```
+
+### [两两交换链表中的节点](https://leetcode-cn.com/problems/swap-nodes-in-pairs/)
+
+![](https://image.yangxiansheng.top/img/20210103204901.png?imglist)
+
+![](https://image.yangxiansheng.top/img/20210103205011.png?imglist)
+
+```js
+var swapPairs = function(head) {
+    /**
+     * 画图分析，这里node1.next = node2.next,node2.next=node1 需要写在while条件当中，让指针遍历下去
+     * p指针的作用: 确定node1和node2的位置
+     * 最后返回伪节点.next即可
+     */
+  if(head == null || head.next == null) 
+        return head;
+    let dummyHead = p = new ListNode();
+    dummyHead.next = head;
+    let node1, node2;
+    while((node1 = p.next) && (node2 = p.next.next)) {
+        node1.next = node2.next;
+        node2.next = node1;
+        p.next = node2;
+        p = node1;
+    }
+    return dummyHead.next;
+};
+```
+
+递归版
+
+```js
+var swapPairs = function(head){
+  if(head === null || head.next === null){
+    return head
+  }
+  let p1 = head
+  let p2 = head.next
+  p1.next = swapPairs(p2.next)
+  p2.next = p1
+  return p2
+}
+```
+
+### [K 个一组翻转链表](https://leetcode-cn.com/problems/reverse-nodes-in-k-group/)
+
+![](https://image.yangxiansheng.top/img/20210103205302.png?imglist)
+
+```js
+var reverseKGroup = function(head, k) {
+    let pre = null, cur = head;
+    let p = head;
+    // 下面的循环用来检查后面的元素是否能组成一组
+    for(let i = 0; i < k; i++) {
+        if(p == null) return head;
+        p = p.next;
+    }
+    for(let i = 0; i < k; i++){
+        let next = cur.next;
+        cur.next = pre;
+        pre = cur;
+        cur = next;
+    }
+    // pre为本组最后一个节点，cur为下一组的起点
+    head.next = reverseKGroup(cur, k);
+    return pre;
+};
+
+```
+
+### [合并两个有序链表](https://leetcode-cn.com/problems/merge-two-sorted-lists/)
+
+![](https://image.yangxiansheng.top/img/20210103205439.png?imglist)
+
+```js
+var mergeTwoLists = function(l1, l2) {
+    /**
+     * 将较小值的链表连接到排序好的链表之后，然后考虑特殊性情况l1,l2为null时的情况
+     */
+    if(l1 === null){
+        return l2
+    }
+    if(l2 === null){
+        return l1
+    }
+    if(l1.val > l2.val){
+        l2.next = mergeTwoLists(l1,l2.next)
+        return l2
+    }else{
+        l1.next = mergeTwoLists(l1.next,l2)
+        return l1
+    }
+    
+};
+```
+
+### [合并k个有序链表](https://leetcode-cn.com/problems/merge-k-sorted-lists/)
+
+![](https://image.yangxiansheng.top/img/20210103205515.png?imglist)
+
+```js
+var mergeKLists = function(lists) {
+    if(!lists.length){
+        return null
+    }
+    /**
+     * 合并两个有序链表，然后两两合并k个链表
+     */
+    var mergeTwoList = (l1,l2)=>{
+        if(l1 === null){
+            return l2
+        }
+        if(l2 === null){
+            return l1
+        }
+        if(l1.val<l2.val){
+            l1.next =  mergeTwoList(l1.next,l2)
+            return l1
+        }else{
+            l2.next = mergeTwoList(l1,l2.next)
+            return l2
+        }
+    }
+    let res = lists[0]
+    for(let i =1;i<lists.length;i++){
+        // 存在lists[i] 时，进行两两合并
+        if(lists[i]){
+         res = mergeTwoList(res,lists[i])
+        }
+    }
+    return res
+    
+};
 ```
 
 ## 双指针
@@ -250,6 +513,8 @@ var revirseListNode = (head)=>{
 ### [环形链表](https://leetcode-cn.com/problems/linked-list-cycle/description/)
 
 ![](https://image.yangxiansheng.top/img/20201222231824.png?imglist)
+
+快慢指针
 
 ```js
 var hasCycle = function(head) {
@@ -266,7 +531,7 @@ var hasCycle = function(head) {
 };
 ```
 
-### [求双链表的第一个公共节点](https://leetcode-cn.com/problems/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-dian-lcof/description/)
+### [求双链表的第一个公共结点](https://leetcode-cn.com/problems/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-dian-lcof/description/)
 
 ![](https://image.yangxiansheng.top/img/20201222232003.png?imglist)
 
@@ -288,6 +553,7 @@ var getIntersectionNode = function(headA,headB){
 
 ![](https://image.yangxiansheng.top/img/20201223220421.png?imglist)
 
+快慢指针
 ```js
 var detectCycle = function(head) {
     // 首先快指针和满指针先成环，跑一圈
@@ -304,7 +570,7 @@ var detectCycle = function(head) {
     if(!fast || !fast.next){
         return null
     }
-    // 然后再匀速跑,再次相遇就是第一个入环的节点
+    // 然后再匀速跑,再次相遇就是第一个入环的结点
     slow = head
     while(fast !== slow){
         fast = fast.next
@@ -318,6 +584,9 @@ var detectCycle = function(head) {
 ### [链表的中间结点](https://leetcode-cn.com/problems/middle-of-the-linked-list/)
 
 ![](https://image.yangxiansheng.top/img/20201223220516.png?imglist)
+
+
+快慢指针
 
 ```js
 var middleNode = function(head) {
@@ -333,9 +602,11 @@ var middleNode = function(head) {
 };
 ```
 
-### [删除链表的倒数第N个节点](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/)
+### [删除链表的倒数第N个结点](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/)
 
 ![](https://image.yangxiansheng.top/img/20201223220327.png?imglist)
+
+快慢指针
 
 ```js
 var removeNthFromEnd = function(head, n) {
@@ -345,11 +616,11 @@ var removeNthFromEnd = function(head, n) {
     for(let i=0;i<n;i++){
         fast = fast.next
     }
-    // 如果删除的倒数第n个节点是头结点，直接返回下一节点
+    // 如果删除的倒数第n个结点是头结点，直接返回下一结点
     if(fast === null){
         return head.next
     }
-    // 快指针走完之后双指针匀速前行，到头则slow.next就是要删除的倒数第n个节点
+    // 快指针走完之后双指针匀速前行，到头则slow.next就是要删除的倒数第n个结点
     while(fast && fast.next){
         fast = fast.next
         slow = slow.next
@@ -369,7 +640,7 @@ var removeNthFromEnd = function(head, n) {
 var isPalindrome = function(head) {
   /**
    * 1. 快满指针获取中间结点
-   * 2. 反转中间节点之后的结点
+   * 2. 反转中间结点之后的结点
    * 3. 遍历后半部分结点，一一比对前后链表的值，head=head.next reverseHead = reverseHead.next
    * 4. 相同返回true，否则返回false
    */
@@ -380,7 +651,7 @@ var isPalindrome = function(head) {
       fast = fast.next.next
       slow = slow.next
   }
-  // 将中间节点之后的节点反转
+  // 将中间结点之后的结点反转
   let reverseHead = reverseList(slow.next)
   while(reverseHead){
       if(head.val !== reverseHead.val){
@@ -409,6 +680,8 @@ function reverseList(head) {
 ### [反转字符串](https://leetcode-cn.com/problems/reverse-string/)
 
 ![](https://image.yangxiansheng.top/img/20201223220229.png?imglist)
+
+前后指针
 
 ```js
     var reverseString = function(s) {
@@ -446,7 +719,7 @@ var minDepth = function(root) {
 //   return res + 1
 
 
-// bfs 将节点和depth当成数组 然后遍历队列，当访问叶子结点时，返回depth
+// bfs 将结点和depth当成数组 然后遍历队列，当访问叶子结点时，返回depth
 if(!root){return 0}
 let q = [[root,1]]
 while(q.length){
@@ -590,6 +863,47 @@ var twoSum = function(numbers, target) {
         }
     }
     return [-1,-1]
+};
+```
+
+### [三数之和](https://leetcode-cn.com/problems/3sum/submissions/)
+
+![](https://image.yangxiansheng.top/img/20210103134451.png?imglist)
+
+```js
+var threeSum = function(nums) {
+  /**
+   * 思路：想要计算三个数相加等于0，其实就是要找一个数以外的两个数相加等于他的负数
+   * nums[i] - nums[i] = 0
+   * 可以利用twoSum计算出另外两个数之和等于 -nums[i]即可
+   */
+  const twoSum = (nums,target)=>{
+      const result = []
+      const map = new Map()
+      for(let i = 0;i<nums.length;i++){
+      if(map.has(nums[i])){
+          result.push([nums[map.get(nums[i])],nums[i]])
+      }else{
+          map.set(target - nums[i],i)
+      }
+      }
+        return result
+  }
+  nums.sort((a, b) => a - b)
+  let results = []
+  let newSet = new Set()
+  for (let i = 0; i < nums.length - 2; i++) {
+    let find = twoSum(nums.slice(i + 1), -nums[i])
+    if (find) {
+     find.forEach((arr) => {
+        if (!newSet.has(arr.join(''))) {
+          results.push([nums[i], ...arr])
+        }
+        newSet.add(arr.join(''))
+      })
+    }
+  }
+  return results
 };
 ```
 
@@ -913,10 +1227,10 @@ var rob = function(nums) {
 var rob = function(root) {
     /**
      * 使用后续遍历
-     * dp就两个元素，一个是根节点偷的结果，一个是根节点不偷的结果
-     * dp(0) 代表以node节点为根节点的树，node节点不偷的最高金额，dp(1)为偷
-     * 1. 如果根节点偷了，左右子树均不能偷
-     * 2. 如果根节点没偷，则左右子树偷或者不偷，取最大值,可以同时偷
+     * dp就两个元素，一个是根结点偷的结果，一个是根结点不偷的结果
+     * dp(0) 代表以node结点为根结点的树，node结点不偷的最高金额，dp(1)为偷
+     * 1. 如果根结点偷了，左右子树均不能偷
+     * 2. 如果根结点没偷，则左右子树偷或者不偷，取最大值,可以同时偷
      */
     const dfs = (node)=>{
         if(!node){
