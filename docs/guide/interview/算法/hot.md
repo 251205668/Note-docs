@@ -744,9 +744,108 @@ while(q.length){
 
 ### 特殊的二叉树
 
+#### [翻转二叉树](https://leetcode-cn.com/problems/invert-binary-tree/)
+
+![](https://image.yangxiansheng.top/img/20210107013035.png?imglist)
+
+```js
+var invertTree = function(root) {
+    /**
+     * 需要将根节点下的左右子树建换位置即可，类似于dfs
+     */
+    if(!root){
+        return null
+    }
+    let temp = root.left
+    root.left = root.right
+    root.right = temp
+
+    /**
+     * 左右子树继续翻转
+     */
+    invertTree(root.left)
+    invertTree(root.right)
+    return root
+
+};
+```
+
 ### 求二叉树的路径
 
 ### 其他
+
+#### [二叉树展开为链表](https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/)
+
+![](https://image.yangxiansheng.top/img/20210107012852.png?imglist)
+
+思路：
+
+![](https://image.yangxiansheng.top/img/20210107012915.png?imglist)
+
+```js
+var flatten = function(root) {
+    /**
+     * 1. 将左右子树打平，这一步其实就是在调用递归
+     * 2. 将根节点的右子树 接在 根节点的左子树打平后的最右边节点上的右子树上，
+     * 3. 最后需要将整棵二叉树的左子树置空，右子树更新为拼接好的树
+     */
+    let dfs = (root)=>{
+        if(!root){
+            return
+        }
+        dfs(root.left)
+        dfs(root.right)
+        let pre = root.left
+        if(pre){
+            // 获取根节点下左子树的最右节点:pre
+            while(pre.right){
+                pre = pre.right
+            }
+            // 最右节点右子树连接根节点的右子树
+            pre.right = root.right
+            // 将整棵树的右子树的值设为左子树的值，然后置空左子树
+            root.right = root.left
+            root.left = null
+        }
+    }
+    dfs(root)
+    return root
+    
+};
+```
+
+#### [填充每个节点的下一个右侧节点指针](https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/)
+
+![](https://image.yangxiansheng.top/img/20210107013213.png?imglist)
+
+```js
+var connect = function(root) {
+    /**
+     * 1. node1 和 node2 需要连接在一起
+     * 2. 考虑将同一父节点的左右子树需要连接在一起
+     * 3. 不同父节点的左右子树需要连接在一起 node1.right = node2.left
+     */
+     function changePosition(node1,node2){
+        // 传入的节点不能为空
+        if(node1 === null || node2 === null){
+            return
+        }
+        // 连接
+        node1.next = node2
+        // 自己的
+        changePosition(node1.left,node1.right)
+        changePosition(node2.left,node2.right)
+        // 不同父的
+        changePosition(node1.right,node2.left)
+    }
+    if(!root){
+        return null
+    }
+    changePosition(root.left,root.right)
+    return root
+};
+```
+
 
 ## 二分查找
 
