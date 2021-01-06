@@ -697,9 +697,13 @@ function reverseList(head) {
     };
 ```
 
-## BFS
+## 二叉树
 
-### [二叉树的最小深度](https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/)
+### 遍历系列
+
+### 已知二叉树求某值
+
+#### [二叉树的最小深度](https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/)
 
 ![](https://image.yangxiansheng.top/img/20201223164148.png?imglist)
 
@@ -737,6 +741,12 @@ while(q.length){
 }
 };
 ```
+
+### 特殊的二叉树
+
+### 求二叉树的路径
+
+### 其他
 
 ## 二分查找
 

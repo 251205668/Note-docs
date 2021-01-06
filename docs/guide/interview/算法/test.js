@@ -149,3 +149,22 @@ function binarySearch(arr,item) {
 }
 console.log(binarySearch([1,2,3],4))
 
+
+function miniDepth(root){
+  if(!root){
+    return
+  }
+  let q = [[root,1]]
+  while(q.length){
+    let [n,depth] = q.shift()
+    if(!n.left && !n.right){
+      return depth
+    }
+    if(n.left){
+      q.push([n.left,depth+1])
+    }
+    if(n.right){
+      q.push([n.right,depth+1])
+    }
+  }
+}
