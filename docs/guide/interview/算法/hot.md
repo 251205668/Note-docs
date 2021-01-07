@@ -1,5 +1,7 @@
 # 力扣hot100题刷题
 
+[[toc]]
+
 🥇代表复习过一遍，每道题最少复习三遍
 
 首先热身熟悉一下dfs，bfs，先中后序遍历
@@ -701,6 +703,40 @@ function reverseList(head) {
 
 ### 遍历系列
 
+#### [二叉树的层序遍历](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/description/)
+
+![](https://image.yangxiansheng.top/img/20210107143719.png?imglist)
+
+```js
+var levelOrder = function(root) {
+    /**
+     * 思路： 每一层都代表一个数组，我们只需要在每一层用一个层级数组res[level]去存储该层的元素，就能得到答案
+     */
+  if(!root){
+      return []
+  }
+  let q = [[root,0]]
+  let res = []
+  while(q.length){
+      let [n,level] = q.shift()
+      // 刚开始先push一个数组进去(初始化,[3]) 其他层级只需要拿到层级数组插入元素
+      if(!res[level]){
+          res.push([n.val])
+      }else{
+        // 拿到层级数组 然后添加当前层级元素
+        res[level].push(n.val)
+      }
+      if(n.left){
+          q.push([n.left,level+1])
+      }
+      if(n.right){
+          q.push([n.right,level+1])
+      }
+  }
+  return res
+};
+```
+
 ### 已知二叉树求某值
 
 #### [二叉树的最小深度](https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/)
@@ -742,6 +778,73 @@ while(q.length){
 };
 ```
 
+#### [二叉树的直径](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
+
+![](https://image.yangxiansheng.top/img/20210107150612.png?imglist)
+
+```js
+var diameterOfBinaryTree = function(root) {
+    /**
+     * 思路：题目之意在于让我们求一棵树的左子树的高度+右子树的高度是不是较左子树高度或者右子树高度里最大的
+     * 所以我们需要求出左右子树的高度
+     * 子树高度：1+Math.max(height(node.left),height(node.right))
+     */
+    function height(node){
+        if(!node){
+            return 0
+        }
+        return 1 + Math.max(height(node.left),height(node.right))
+    }
+    if(!root){
+        return 0
+    }
+    // 处理跟节点为顶点的直径
+    let directPath = height(root.left) + height(root.right)
+    // 最后返回值需要考虑根节点的左右子节点为顶点的直径，最后取出最大值即可
+    return Math.max(directPath,diameterOfBinaryTree(root.left),diameterOfBinaryTree(root.right))
+
+};
+```
+
+#### [二叉树的最近公共祖先](https://leetcode-cn.com/problems/er-cha-shu-de-zui-jin-gong-gong-zu-xian-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210107155720.png?imglist)
+
+```js
+var lowestCommonAncestor = function(root, p, q) {
+    /**
+     * 思路： 题意让我们找寻pq节点的最近祖先，只要有一个节点等于p或者q，则祖先就是自己，这也是递归结束的条件
+     * 有以下情况需要考虑：
+     * 1. 当qp在root左右侧
+     * 2. 当pq在root左右子树的左右侧
+     * 
+    /
+    /**
+     * 首先考虑p和q在root节点左右侧 
+     *  */
+     if(!root){
+        return null
+    }
+    // 当根节点有一个等于p或者q，祖先就是root
+    if(root === p || root === q){
+        return root
+    }
+    /**
+     * 继续考虑p和q分别在root节点左子树的两侧，或者右子树的两侧
+     */
+    let left = lowestCommonAncestor(root.left,p,q)
+    let right = lowestCommonAncestor(root.right,p,q)
+    // 当左子树结果为null，则pq的祖先在右子树第一个节点，反之同理
+    if(!left)return right
+    if(!right)return left
+    // 当pq都不在左右子树，就分布在root左右侧
+    return root
+};
+```
+
+
+
+
 ### 特殊的二叉树
 
 #### [翻转二叉树](https://leetcode-cn.com/problems/invert-binary-tree/)
@@ -770,7 +873,91 @@ var invertTree = function(root) {
 };
 ```
 
+#### [对称二叉树](https://leetcode-cn.com/problems/symmetric-tree/)
+
+![](https://image.yangxiansheng.top/img/20210107153457.png?imglist)
+
+```js
+var isSymmetric = function(root) {
+    /**
+     * 思路：判断左右子树是否是镜像相等的，我们需要传入两个节点参数，首先左右子节点值是否相等，然后还要判断左右子节点的左子树和右子树是否相等，最后处理特殊情况
+     * 
+     * 设传入的左右节点为left,right，依题意有以下情况
+     * 1. left === null && right === null 对称
+     * 2. left === null || right === null 非对称
+     * 3. left.val === right.val && 递归函数(left.left,right.right) && 递归函数(left.right,right.left) 对称
+     */
+    if(!root)return true
+    let isEqual = (left,right)=>{
+        if(!left && !right)return true
+        if(!left || !right)return false
+        return left.val === right.val
+          && isEqual(left.left,right.right)
+          && isEqual(left.right,right.left)
+    }
+    return isEqual(root.left,root.right)
+};
+```
+
 ### 求二叉树的路径
+
+#### [路径总和](https://leetcode-cn.com/problems/path-sum/description/)
+
+![](https://image.yangxiansheng.top/img/20210107144132.png?imglist)
+
+```js
+var hasPathSum = function(root, sum) {
+    /**
+     * 思路：使用dfs遍历，累加每个节点的和，当到达底部系欸但时，判断是否发满足条件即可
+     */
+ if(!root){
+     return false
+ }
+ let res = false
+ let dfs = (root,s)=>{
+     if(!root.left && !root.right && s === sum){
+         res = true
+     }
+     if(root.left){
+         dfs(root.left,s+root.left.val)
+     }
+     if(root.right){
+         dfs(root.right,s+root.right.val)
+     }
+ }
+ dfs(root,root.val)
+ return res
+};
+```
+
+#### [求根到叶子节点数字之和](https://leetcode-cn.com/problems/sum-root-to-leaf-numbers/)
+
+![](https://image.yangxiansheng.top/img/20210107143044.png?imglist)
+
+```js
+var sumNumbers = function(root) {
+    /**
+     * 将每个节点代表的数字当作字符串，然后使用dfs便利拼接，最后累加起来
+     */
+  
+    let res = 0
+    let dfs = (root,num)=>{
+        if(!root){
+        return
+        } 
+        // 当作字符串拼接，就不需要管十位还是个位了
+        num += root.val
+        if(!root.left && !root.right){
+            res += Number(num)
+        }
+        dfs(root.left,num)
+        dfs(root.right,num)
+    }
+    dfs(root,'')
+    return res
+
+};
+```
 
 ### 其他
 
