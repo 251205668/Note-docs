@@ -61,12 +61,12 @@ preOrder = (root)=>{
   while(q.length){
     const n = q.pop()
     console.log(n.val)
-    if(n.left){
-      q.push(n.left)
-    }
     if(n.right){
       q.push(n.right)
     }
+    if(n.left){
+    q.push(n.left)
+  }
   }
 }
 
@@ -80,7 +80,7 @@ inOrder = (root)=>{
   while(q.length || p){
     while(p){
        q.push(p)
-       p = p.next
+       p = p.left
     }
     const n = q.pop()
     console.log(v.val)
@@ -218,6 +218,92 @@ var solveNQueens = function(n) {
 };
 ```
 
+## 栈和队列
+
+### [最近的请求次数](https://leetcode-cn.com/problems/number-of-recent-calls/)
+
+![](https://image.yangxiansheng.top/img/20210110220235.png?imglist)
+
+```JS
+RecentCounter.prototype.ping = function(t) {
+    // q队列：保存请求事件在[t-3000,t]的请求时长 t 数组，如果q[0] < t-3000,也就是请求市场超出范围，就将这个队列出队，直到满足条件最后返回队列长度即可
+    this.q.push(t)
+    //
+    while(this.q[0] < t-3000){
+        this.q.shift()
+    }
+    return this.q.length
+};
+
+```
+
+### [有效的括号](https://leetcode-cn.com/problems/valid-parentheses/)
+
+![](https://image.yangxiansheng.top/img/20210110220323.png?imglist)
+
+```JS
+var isValid = function(s) {
+    /**
+     * 思路：遍历字符串，遇到左边的符号入栈，否则比较栈顶元素和当前遍历字符是否匹配完全，如果匹配完全就出栈，如果匹配失败返回false
+     * 最后判断栈的长度是否是0即可
+     * 特殊情况：栈长度为奇数直接返回false
+     */
+    let stack = []
+    if(s.length %2 === 1){
+        return false
+    }
+    for(let i =0 ;i<s.length;i++){
+        let c = s[i]
+        if(c === '(' || c === '[' || c === '{'){
+            stack.push(c)
+        }else{
+            let p = stack[stack.length -1]
+            if(p === '(' && c === ')' || p=== '[' && c === ']' || p === '{' && c === '}'){
+                stack.pop()
+            }else{
+                return false
+            }
+        }
+        
+    }
+    return stack.length === 0
+
+};
+```
+
+### [计数二进制子串](https://leetcode-cn.com/problems/count-binary-substrings/)
+
+![](https://image.yangxiansheng.top/img/20210110220421.png?imglist)
+
+```js
+var countBinarySubstrings = function(s) {
+    /**
+     * 思路：借鉴官方,利用counts数组解决
+     * 例如 [00110011],这里使用counts数组表示0,1个数分段数组 [2,2,2,2]
+     * 然后counts数组相邻元素假设为u,v 可能存在u个1，v个0或者u个0，v个1。
+     * 最后可以拿到的子串组合个树为min{u,v}，累加即可得到结果
+     * 
+     */
+    let counts = []
+    let ptr = 0
+    while(ptr < s.length){
+        const c = s.charAt(ptr)
+        let count = 0
+        // 如果元素相同
+        while(s.charAt(ptr) === c){
+            ++count
+            ++ptr
+        }
+        counts.push(count)
+    }
+    let countNum = 0
+    for(let i = 1;i<counts.length;i++){
+        countNum+= Math.min(counts[i-1],counts[i])
+    }
+    return countNum
+
+};
+```
 
 ## 链表
 
@@ -737,6 +823,43 @@ var levelOrder = function(root) {
 };
 ```
 
+#### [二叉树的中序遍历](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/)
+
+![](https://image.yangxiansheng.top/img/20210110220530.png?imglist)
+
+```js
+var inorderTraversal = function(root) {
+  let res =[]
+// 递归版本   let innerorder = (root)=>{
+//       if(!root){
+//           return
+//       }
+//       innerorder(root.left)
+//       res.push(root.val)
+//       innerorder(root.right)
+//   }
+//   innerorder(root)
+
+
+// 非递归版本
+let p = root
+let stack = []
+while(stack.length || p){
+    // 拿到所有的左节点
+    while(p){
+        stack.push(p)
+        p = p.left
+    }
+    // 弹出节点尽头，并访问
+    const n = stack.pop()
+    res.push(n.val)
+    // 取右节点
+    p = n.right
+}
+  return res
+};
+```
+
 ### 已知二叉树求某值
 
 #### [二叉树的最小深度](https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/)
@@ -745,6 +868,11 @@ var levelOrder = function(root) {
 
 ```JS
 var minDepth = function(root) {
+  /**
+   * 二叉树的最小深度：
+   * dfs：即在每次dfs的过程中更新最小结果
+   * bfs：标准bfs格式，只需要引入depth，每次遍历累加，最后返回深度
+   * */
 // dfs  if(!root){return 0}
 //   if(!root.left && !root.right){
 //       return 1
@@ -806,6 +934,39 @@ var diameterOfBinaryTree = function(root) {
 };
 ```
 
+#### [二叉树的深度](https://leetcode-cn.com/problems/er-cha-shu-de-shen-du-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210110215318.png?imglist)
+
+```js
+var maxDepth = function(root) {        
+  /**
+   * 思路：求二叉树的高度：1 + Math.max(height(root.left),height(root.right))
+   * */
+    if(!root){
+        return 0
+    }
+    return 1 + Math.max(maxDepth(root.left),maxDepth(root.right))
+    // let res = 0
+    // let dfs = (root,l)=>{
+    //       if(!root){
+    //             return 
+    //         }
+    //     if(!root.left && !root.right && l){
+    //         res = Math.max(res,l)
+    //     }
+    //     if(root.left){
+    //        dfs(root.left,l+1)
+    //     }
+    //     if(root.right){
+    //         dfs(root.right,l+1)
+    //     }
+    // }
+    // dfs(root,1)
+    // return res
+};
+```
+
 #### [二叉树的最近公共祖先](https://leetcode-cn.com/problems/er-cha-shu-de-zui-jin-gong-gong-zu-xian-lcof/)
 
 ![](https://image.yangxiansheng.top/img/20210107155720.png?imglist)
@@ -815,8 +976,8 @@ var lowestCommonAncestor = function(root, p, q) {
     /**
      * 思路： 题意让我们找寻pq节点的最近祖先，只要有一个节点等于p或者q，则祖先就是自己，这也是递归结束的条件
      * 有以下情况需要考虑：
-     * 1. 当qp在root左右侧
-     * 2. 当pq在root左右子树的左右侧
+     * 1. 当q,p在root左右侧
+     * 2. 当q,p在root左右子树的左右侧
      * 
     /
     /**

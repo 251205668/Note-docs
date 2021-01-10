@@ -11,6 +11,10 @@ module.exports = {
       }
     ]
   ],
+  markdown: {
+    // markdown-it-toc 的选项
+    toc: { includeLevel: [1, 2,3,4] },
+  },
   dest: './docs/.vuepress/dist',
   evergreen: true,
   // 配置导航
