@@ -1194,6 +1194,22 @@ var connect = function(root) {
 };
 ```
 
+## 堆
+
+### [数组中的第K个最大元素](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
+
+![](https://image.yangxiansheng.top/img/20210110235207.png?imglist)
+
+```js
+```
+
+### [前 K 个高频元素](https://leetcode-cn.com/problems/top-k-frequent-elements/)
+
+![](https://image.yangxiansheng.top/img/20210110235236.png?imglist)
+
+```js
+```
+
 
 ## 二分查找
 
