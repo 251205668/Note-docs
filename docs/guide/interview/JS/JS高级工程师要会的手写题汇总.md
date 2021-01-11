@@ -644,36 +644,24 @@ AJAX 包括以下几个步骤
 一般实现:
 
 ```js
-const SERVER_URL = '/server'
-
-let xhr = new XMLHttpRequest()
-
-// 创建 Http 请求 第三个参数为async，指定请求是否为异步方式，默认为 true。
-xhr.open('GET', SERVER_URL, true)
-
-// 设置请求头信息
-xhr.responseType = 'json'
-xhr.setRequestHeader('Accept', 'application/json')
-
-// 设置状态监听函数
-xhr.onreadystatechange = function () {
-  if (this.readyState !== 4) return
-
-  // 当请求成功时
-  if (this.status === 200) {
-    handle(this.responseText)
-  } else {
-    console.error(this.statusText)
+let xhr = new XMLHttpRequest();
+// readyState 为 4 和 status 为 200 的时候，是正常情况
+// Step1: 监听状态
+xhr.onreadystatechange = () => {
+  if (xhr.readyState === 4) {
+    xhr.status === 200 && console.log(xhr.responseText);
   }
-}
-
-// 设置请求失败时的监听函数
-xhr.onerror = function () {
-  console.error(this.statusText)
-}
-
-// 发送 Http 请求
-xhr.send(null)
+};
+// xhr.open(method: [get, post], url: string, async: [true, false])
+// async: 默认是 true; 代表异步请求
+// 如果async = false, 那么 xhr.send() 会阻塞
+// Step2: 打开请求
+xhr.open(
+  "GET",
+  "http://localhost:5050/search/song?key=周杰伦&page=1&limit=10&vendor=qq"
+);
+// Step3: 发送请求
+xhr.send();
 ```
 
 promise 封装实现：

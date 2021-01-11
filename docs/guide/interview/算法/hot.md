@@ -305,6 +305,41 @@ var countBinarySubstrings = function(s) {
 };
 ```
 
+### [最小栈](https://leetcode-cn.com/problems/min-stack/)
+
+![](https://image.yangxiansheng.top/img/20210111200143.png?imglist)
+
+```js
+class MinStack{
+    /**
+     * 思路: 栈的每个元素都保存它前面所有元素的最小值
+     */
+    constructor(){
+        this.stack = []
+    }
+    get size(){
+        return this.stack.length
+    }
+    push(x){
+        // 每个stack元素多保存一个属性，前面所有元素的最小值
+        this.stack.push({
+            val:x,
+            min:this.size ? Math.min(x,this.getMin()):x
+        })
+    }
+    pop(){
+        this.stack.pop()
+    }
+    top(){
+        return this.stack[this.size - 1].val
+    }
+    getMin(){
+        // 最小值就是栈顶元素的min属性
+        return this.stack[this.size - 1].min
+    }
+}
+```
+
 ## 链表
 
 ### [反转链表](https://leetcode-cn.com/problems/fan-zhuan-lian-biao-lcof/description/)
@@ -1515,10 +1550,10 @@ var findAnagrams = function(s, p) {
         }
         while(needSize === 0){
             let c2 = s[left]
+            if(right - left + 1 === p.length){
+                  res.push(left)
+              }
             if(need.has(c2)){
-                if(right - left + 1 === p.length){
-                    res.push(left)
-                }
                 need.set(c2,need.get(c2) + 1)
                 if(need.get(c2) === 1){
                     needSize++
@@ -1553,6 +1588,80 @@ var lengthOfLongestSubstring = function(s){
   }
   return res
 }
+```
+
+### [滑动窗口最大值](https://leetcode-cn.com/problems/sliding-window-maximum/)
+
+![](https://image.yangxiansheng.top/img/20210111173356.png?imglist)
+
+```js
+var maxSlidingWindow = function(nums, k) {
+    /**
+     * 思路：
+     * 1. 使用滑动窗口解决该问题,每次移动找到窗口内的最大值，左右指针都移动 时间复杂度为O(nk) 可能会超时
+     * 2. 双向队列解决该问题，将窗口视为递减队列，每次移动窗口，将窗口的最大值(this.deque[0])推入结果集，推入队列也就是push方法，需要保证推入的新值是小于队列的值的，否则删除掉小于它的数，最大值入队之后需要更新队列，也就是删除掉队列之前窗口之外的数 nums[i-k+1],删除的时候需要判断下删除的值是否和当前对头元素相等。最后返回结果集
+     */
+    // 滑动窗口思想
+    // if(!nums.length || k===0){
+    //     return []
+    // }
+    // let left = 0
+    // let right = k -1
+    // // 初始化结果集
+    // let res = [findMax(nums,left,right)]
+    // while(right < nums.length - 1){
+    //     right++
+    //     left++
+    //     res.push(findMax(nums,left,right))
+    // }
+    // // 寻找窗口最大值
+    // function findMax(nums,left,right){
+    //     let max = -Infinity
+    //     for(let i = left;i<=right;i++){
+    //         max = Math.max(max,nums[i])
+    //     }
+    //     return max
+    // }
+    // return res
+
+    // 双向队列思想
+    class MaxDeque{
+        constructor(){
+            this.deque = []
+        }
+        // 首先删除掉比插入元素还小的数，然后插入
+        push(val){
+            while(this.deque.length > 0 && this.deque[this.deque.length - 1] < val){
+                this.deque.pop()
+            }
+            this.deque.push(val)
+        }
+        // 删除前需要检验下当前对头是否和val相等
+        pop(val){
+            if(this.deque[0] === val){
+                this.deque.shift()
+            }
+        }
+        max(){
+            return this.deque[0]
+        }
+    }
+    let window = new MaxDeque()
+    let res = []
+    for(let i = 0;i<nums.length;i++){
+        // 先初始化窗口数据
+        if(i < k -1){
+            window.push(nums[i])
+        }else{
+            // 移动窗口
+            window.push(nums[i])
+            res.push(window.max())
+            // 删除虽然在队列中，但是最大值更新了，所以需要删除掉的左侧元素,左侧元素的下标为i-k+1
+            window.pop(nums[i-k+1])
+        }
+    }
+    return res
+};
 ```
 
 ## 动态规划
