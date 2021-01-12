@@ -7,6 +7,7 @@
 
 
 **前端知识图谱:**
+
 ![https://lsqimg-1257917459.cos.ap-beijing.myqcloud.com/blog/%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB.png](https://lsqimg-1257917459.cos.ap-beijing.myqcloud.com/blog/%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB.png)
 
 
@@ -15,7 +16,7 @@
 
 ## 知识点目录
 
-分为六大块:css进阶，js基础到进阶，vue源码分析，webpack实战，node.js基础到晋级，面试题。
+分为六大块:css进阶，js基础到进阶，vue源码分析，webpack实战，面试题。
 
 ### css
 
@@ -63,36 +64,8 @@
 - chrome标签试题练习
 
 
-### Vue
-正在填充
+## 算法打卡记录[https://www.processon.com/mindmap/5fdb5cbee401fd5bc82b2205](https://www.processon.com/mindmap/5fdb5cbee401fd5bc82b2205)
 
-
-### React
-正在填充
-
-## 目前已完成
-
-- js基础，js进阶小部分
-- css基础，布局，常用写法
-- vue入门到进阶面试
-- js，http，vue，css，html5，git，浏览器等面试题
-- git手册
-- Nodejs之koa入门，java之springboot入门
-
-## TODO
-
-- [x] 网络
-- [x] 浏览器
-- [x] Vue
-- [x] 安全
-- [x] 前端工程化
-- [x] 算法思维导图
-- [x] Vue的diff算法和双向数据绑定原理熟悉
-- [x] 性能优化
-- [x] Css
-- [ ] JS: 整理test.md
-- [ ] 软技能(项目相关和整理Blog)
-- [ ] 刷算法和手撕
 
 ## License
 
