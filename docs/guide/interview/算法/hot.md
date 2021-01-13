@@ -47,6 +47,16 @@ bfs = (root)=>{
 bfs = (root,level)=>{
   let q =[[root,1]]
   while(q.length > 0){
+    const [n,level] = q.shift()
+    if(n.left){
+      q.push([n.left,level+1])
+    }
+    if(n.right){
+      q.push([n.right,level+1])
+    }
+    if(!n.left && !n.right && level){
+      console.log(n.val)
+    }
 
   }
 }
@@ -1237,6 +1247,45 @@ var lowestCommonAncestor = function(root, p, q) {
     if(!right)return left
     // 当pq都不在左右子树，就分布在root左右侧
     return root
+};
+```
+
+### [二叉树的右视图](https://leetcode-cn.com/problems/binary-tree-right-side-view/)
+
+![](https://image.yangxiansheng.top/img/20210113171617.png?imglist)
+
+```js
+var rightSideView = function(root) {
+    /**
+     * 二叉树的右视图，也就是求每一层遍历的最右边的节点
+     * 获取每一层的最右侧节点方法：BFS每次遍历的队列对头元素，如果没有左右子节点并且不等于undefined则他就是这一层的最右节点
+     * 
+     */
+    if(!root){
+        return []
+    }
+    let res = []
+    let q = [root]
+    while(q.length){
+        let len = q.length
+        let last
+        // 获取到BFS每一层的最右侧节点
+        for(let i = 0;i<len;i++){
+            let n =q.shift()
+            if(n.left){
+                q.push(n.left)
+            }
+            if(n.right){
+                q.push(n.right)
+            }
+            if(n!== undefined){
+                last = n.val
+            }
+        }
+        res.push(last)
+    }
+    return res
+  
 };
 ```
 
