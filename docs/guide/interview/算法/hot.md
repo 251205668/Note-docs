@@ -340,6 +340,173 @@ class MinStack{
 }
 ```
 
+### [用栈实现队列](https://leetcode-cn.com/problems/implement-queue-using-stacks/)
+
+![](https://image.yangxiansheng.top/img/20210113133303.png?imglist)
+
+![](https://image.yangxiansheng.top/img/20210113133338.png?imglist)
+```js
+/**
+ * Initialize your data structure here.
+ */
+
+class MyQueue {
+    /**
+     * 上面两张图看完完全可以解释什么思路
+     */
+  constructor() {
+    this.stack1 = []; // 原始栈
+    this.stack2 = []; // 辅助栈 其实可以看成队列
+  }
+  push(x) {
+    this.stack1.push(x);
+  }
+  pop() {
+      // 栈1出栈 栈2入栈，然后栈2的栈顶就相当于对头 出栈即出队，最后还原栈1
+      while(this.stack1.length){
+          this.stack2.push(this.stack1.pop())
+      }
+      let res = this.stack2.pop()
+      while(this.stack2.length){
+          this.stack1.push(this.stack2.pop())
+      }
+      return res
+      
+  }
+  peek() {
+      // 找到对头就是找到栈2的栈顶
+      while(this.stack1.length){
+          this.stack2.push(this.stack1.pop())
+      }
+      let res = this.stack2[this.stack2.length - 1]
+      while(this.stack2.length){
+          this.stack1.push(this.stack2.pop())
+      }
+      return res
+  }
+  empty() {
+    return !this.stack1.length;
+  }
+}
+
+```
+
+### [用队列实现栈](https://leetcode-cn.com/problems/implement-stack-using-queues/)
+
+![](https://image.yangxiansheng.top/img/20210113133416.png?imglist)
+
+```js
+class MyStack{
+    /**
+     * 队列实现栈 出栈也就是相当于删掉队尾，这里需要借助中间队列，将原队列出队至一个元素也就是剩队尾，出队元素保存到中间队列，原队列出队即代表出队，最后恢复原队列
+     */
+    constructor(){
+        this.queue = []
+    }
+    push(x){
+        this.queue.push(x)
+       
+    }
+    pop(){
+        var queue1 = []
+        // 原队列只保留一个
+        while(this.queue.length > 1){
+            queue1.push(this.queue.shift())
+        }
+        // 删除队尾 - 完成出栈
+        let res = this.queue.shift()
+        // 恢复原队列
+        while(queue1.length){
+            this.queue.push(queue1.shift())
+        }
+        // 最后返回
+        return res
+      
+    }
+    top(){
+        // 栈顶就是队尾
+        return this.queue[this.queue.length - 1]
+       
+    }
+    empty(){
+        return !this.queue.length
+       
+    }
+}
+```
+
+### [字符串解码](https://leetcode-cn.com/problems/decode-string/)
+
+![](https://image.yangxiansheng.top/img/20210113142656.png?imglist)
+
+```js
+var decodeString = function(s) {
+    /**
+     * 思路：使用重复次数栈和累计字符栈进行维护，需要明确遇到四种类型的字符需要做些什么
+     * 
+     * 1. 数字 因为可能是连续的,累计次数 = 累计次数*10 + (累计次数 - '0')
+     * 2. 字符 resStr += cur
+     * 3. [ 遇到左括号，就把当前的resStr和repeat入栈，然后置空这两个变量
+     * 4. ] 遇到有括号，首先将重复次数栈的栈顶出栈，然后计算出重复的字符，最后和累计字符串栈顶连接，更新resStr  
+     */
+
+    let repeatStack = [] // 重复次数栈
+    let resStrStack = [] // 累计字符栈
+    let resStr = '' // 最后返回串
+    let repeat = 0
+    for(let i = 0;i < s.length;i++){
+        let cur =s[i]
+        if(cur === '['){
+            repeatStack.push(repeat)
+            resStrStack.push(resStr)
+            // 置空
+            repeat = 0
+            resStr = ''
+        }else if(cur === ']'){
+            let temp = ''
+            // 次数栈顶
+            let num = repeatStack.pop()
+            for(let i =0 ;i<num;i++){
+                temp += resStr
+            }
+            // 和累计字符串栈顶（上一个字符串）连接
+            resStr =  resStrStack.pop() + temp 
+        }else if(cur >= '0' && cur<= '9'){
+            repeat = repeat * 10 + (cur - '0')
+        }else{
+            resStr += cur
+        }
+    }
+    return resStr
+};
+```
+
+### [根据身高重建队列](https://leetcode-cn.com/problems/queue-reconstruction-by-height/)
+
+![](https://image.yangxiansheng.top/img/20210113145254.png?imglist)
+
+```js
+var reconstructQueue = function(people) {
+    /**
+     * 思路：
+     * 1. 队列按照身高降序，身高相同的人人数多的排后面，人数少的排前面
+     * 2. 排好序后的队列人数就是下标，将队列元素插到制定数组下标，返回即可
+     */
+    if(!people){
+        return
+    }
+    // 首先降序排序好
+    people = people.sort((a,b)=>a[0] === b[0] ? a[1] - b[1] : b[0] - a[0])
+    let res = []
+    for(let i = 0;i<people.length;i++){
+        // 插入的位置就是人数，有一个先后顺序插入的
+        res.splice(people[i][1],0,people[i])
+    }
+    return res
+
+};
+```
+
 ## 链表
 
 ### [反转链表](https://leetcode-cn.com/problems/fan-zhuan-lian-biao-lcof/description/)
@@ -818,6 +985,41 @@ function reverseList(head) {
             right--
         }
     };
+```
+
+### [合并两个有序数组](https://leetcode-cn.com/problems/merge-sorted-array/)
+
+![](https://image.yangxiansheng.top/img/20210113153409.png?imglist)
+
+```js
+var merge = function(nums1, m, nums2, n) {
+    /**
+     * 用三个指针解决这个问题，假设数组1，数组2，待填充数组1
+     * i,j,k 分别表示他们的尾步 m-1 n-1 nums1.length-1
+     * 1. 如果i,j都有值，则nums1[k] = 更大的值，指针往前移
+     * 2. 如果 i 指针循环完了，j 指针的数组里还有值未处理的话，直接从 k 位置开始向前填充 j 指针数组即可。因为此时数组 1 原本的值一定全部被填充到了数组 1 的后面位置，且这些值一定全部大于此时 j 指针数组里的值。
+     * 
+     */
+    let i = m-1 
+    let j = n-1
+    let k = nums1.length - 1
+    while(i>=0 && j>=0){
+        if(nums1[i] > nums2[j]){
+            nums1[k] = nums1[i]
+            i--
+        }else{
+            nums1[k] = nums2[j]
+            j--
+        }
+        k--
+    }
+    // i循环完成,直接从k开始填充nums2[j]
+    while(j>=0){
+        nums1[k] = nums2[j]
+        j--
+        k--
+    }
+};
 ```
 
 ## 二叉树
