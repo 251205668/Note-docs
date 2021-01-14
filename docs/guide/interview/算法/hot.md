@@ -116,11 +116,7 @@ postOrder = (root)=>{
       q.push(n.right)
     }
   }
-  // 输出结点
-  while(outputStack.length){
-    const node = outputStack.pop()
-    console.log(node.val)
-  }
+  return outputStack.reverse()
 }
 ```
 
@@ -1250,7 +1246,7 @@ var lowestCommonAncestor = function(root, p, q) {
 };
 ```
 
-### [二叉树的右视图](https://leetcode-cn.com/problems/binary-tree-right-side-view/)
+#### [二叉树的右视图](https://leetcode-cn.com/problems/binary-tree-right-side-view/)
 
 ![](https://image.yangxiansheng.top/img/20210113171617.png?imglist)
 
