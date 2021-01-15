@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style lang="">
+    *,body{
+      padding: 0;
+      margin: 0;
+    }
+    .cicle{
+      width: 120px;
+      height: 120px;
+      border: 12px solid red;
+      border-radius: 50%;
+    } 
+
+    .antzone{
+      width: 120px;
+      height: 120px;
+      border: 1px solid blue;
+      border-radius: 50%;
+      cursor: pointer;
+      animation: leftToRight 2s linear infinite;
+      
+    }
+    @keyframes leftToRight {
+      0%{
+        margin-left: 0;
+         }
+            100%{
+              margin-left: 300px;
+
+            }
+      
+    }
+    .antzone:hover{
+      animation-play-state: paused;
+    }
+
+    .box{
+      width: 150px;
+      height: 100px;
+      margin: 0 auto;
+      box-shadow: inset 0 0 0 1px #333333;
+    }
+
+    .scale-line{
+      margin: 20px auto;
+      width: 400px;
+      height: 5px;
+      border-bottom: 5px solid paleturquoise;
+      position: relative;
+      display: block;
+    }
+    .scale-line:before{
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 5px;
+      width: 10px;
+      height: 5px;
+      background-color: blueviolet;
+      transition: all .4s ease-in-out;
+      transform: scale(0);
+    }
+    .scale-line:hover:before{
+      transform: scaleX(40);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cicle"></div>
+<!-- 从左向右的动画，鼠标悬浮停止 -->
+<div class="antzone"></div>
+<!-- box-shadow 画边框 -->
+<div class="box"></div>
+<!-- 边框线中心扩散动画 -->
+<div class="scale-line"></div>
+
+</body>
+
+</html>

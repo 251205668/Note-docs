@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>弹窗</title>
+  <style>
+    #myModal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    #myModal .modal {
+      width: 500px;
+      height: 300px;
+      box-sizing: border-box;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -150px;
+      margin-left: -250px;
+      animation: animate 1s;
+    }
+
+    .modal-header {
+      height: 50px;
+      background: white;
+      color: #000;
+      line-height: 50px;
+      border-bottom: 1px solid #000000;
+    }
+
+    .modal-header p {
+      display: inline-block;
+      margin: 0;
+      position: absolute;
+      left: 20px;
+    }
+
+    .modal-header .close {
+      position: absolute;
+      right: 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .modal-content {
+      background: white;
+      height: 200px;
+      text-align: center;
+      line-height: 200px;
+    }
+
+    .modal-content p {
+      margin: 0;
+    }
+
+    .modal-footer {
+      background: white;
+      padding-bottom: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-block;
+      font-weight: 400;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 14px;
+      padding: 12px 20px;
+      border: 1px solid transparent;
+      line-height: 1;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+      outline: none;
+    }
+
+    .btn-primary {
+      border-color: #007bff;
+      color: #fff;
+      background-color: #007bff;
+      margin-right: 15px;
+    }
+
+    .btn-primary:focus {
+      border-color: #66b1ff;
+      background-color: #66b1ff;
+      color: #fff;
+    }
+
+    .btn-close {
+      border-color: #dcdfe6;
+      background-color: #fff;
+      color: #606266;
+
+    }
+
+    .btn-close:focus {
+      border-color: #007bff;
+      color: #007bff;
+    }
+
+    /*添加动画*/
+    @keyframes animate {
+      from {
+        top: 0;
+        opacity: 0
+      }
+
+      to {
+        top: 50%;
+        opacity: 1
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!--打开弹窗按钮-->
+  <button class="btn btn-primary" id="btn">打开弹窗</button>
+  <!--弹窗-->
+  <div id="myModal">
+    <!--弹窗头部-->
+    <div class="modal">
+      <div class="modal-header">
+        <p>危险警告</p>
+        <span class="close">&times;</span>
+      </div>
+      <!--弹窗文本-->
+      <div class="modal-content">
+        <p>您将进入一个不安全的页面</p>
+      </div>
+      <!--弹窗底部-->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">确认</button>
+        <button type="button" class="btn btn-close">取消</button>
+      </div>
+    </div>
+
+    <script>
+      window.onload = function () {
+        //获取弹窗按钮
+        var btn = document.getElementById("btn");
+        var close = document.getElementsByClassName('close')[0]
+        var confirmBtn = document.getElementsByClassName('btn')[1]
+        var closeBtn = document.getElementsByClassName("btn")[2];
+        var myModal = document.getElementById("myModal");
+        //按钮绑定事件
+        btn.onclick = () => {
+          //获取弹窗
+          myModal.style.display = "block";
+        }
+        confirmBtn.onclick = () => {
+          myModal.style.display = "none"
+        }
+        closeBtn.onclick = () => {
+          myModal.style.display = "none"
+        }
+        close.onclick = () => {
+          myModal.style.display = "none";
+        }
+        //用户点击其他地方关闭弹窗
+        window.onclick = function (event) {
+          console.log(event.target)
+          if (event.target == myModal) {
+            myModal.style.display = "none";
+          }
+        }
+      }
+    </script>
+</body>
+
+</html>
