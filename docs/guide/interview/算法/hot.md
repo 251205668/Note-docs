@@ -1041,28 +1041,54 @@ var levelOrder = function(root) {
     /**
      * 思路： 每一层都代表一个数组，我们只需要在每一层用一个层级数组res[level]去存储该层的元素，就能得到答案
      */
-  if(!root){
-      return []
-  }
-  let q = [[root,0]]
-  let res = []
-  while(q.length){
-      let [n,level] = q.shift()
-      // 刚开始先push一个数组进去(初始化,[3]) 其他层级只需要拿到层级数组插入元素
-      if(!res[level]){
-          res.push([n.val])
-      }else{
-        // 拿到层级数组 然后添加当前层级元素
-        res[level].push(n.val)
-      }
-      if(n.left){
-          q.push([n.left,level+1])
-      }
-      if(n.right){
-          q.push([n.right,level+1])
-      }
-  }
-  return res
+//   if(!root){
+//       return []
+//   }
+//   let q = [[root,0]]
+//   let res = []
+//   while(q.length){
+//       let [n,level] = q.shift()
+//       // 刚开始先push一个数组进去(初始化,[3]) 其他层级只需要拿到层级数组插入元素
+//       if(!res[level]){
+//           res.push([n.val])
+//       }else{
+//         // 拿到层级数组 然后添加当前层级元素
+//         res[level].push(n.val)
+//       }
+//       if(n.left){
+//           q.push([n.left,level+1])
+//       }
+//       if(n.right){
+//           q.push([n.right,level+1])
+//       }
+//   }
+//   return res
+// BFS 获取到数的每一层，也就是每次遍历队列的元素,然后用数组保存，最后将这些数组push到结果数组
+        if(!root){
+            return []
+        }
+        let q = [root]
+        let res =[]
+        // let last
+        while(q.length){
+            let size = q.length
+            let levelList = []
+            for(let i =0;i< size;i++){
+                let n = q.shift()
+                if(n.left){
+                    q.push(n.left)
+                }
+                if(n.right){
+                    q.push(n.right)
+                }
+                if(n !== undefined){
+                    // last = n.val// 用变量只能保存到最后一个节点
+                    levelList.push(n.val)
+                }
+            }
+            res.push(levelList)
+        }
+      return res
 };
 ```
 
@@ -1285,6 +1311,34 @@ var rightSideView = function(root) {
 };
 ```
 
+#### [二叉搜索树中第K小的元素](https://leetcode-cn.com/problems/kth-smallest-element-in-a-bst/)
+
+![](https://image.yangxiansheng.top/img/20210116194945.png?imglist)
+
+```js
+var kthSmallest = function(root, k) {
+    /**
+     * 思路：使用中序遍历，第k小的元素就是当k等于0时的取值
+     */
+    if(!root){
+        return
+    }
+    let p = root
+    let stack = []
+    while(stack.length || p){
+        while(p){
+            stack.push(p)
+            p = p.left
+        }
+        const n = stack.pop()
+        if(--k === 0){
+            return n.val
+        }
+        p = n.right
+    }  
+};
+```
+
 
 
 
@@ -1302,10 +1356,7 @@ var invertTree = function(root) {
     if(!root){
         return null
     }
-    let temp = root.left
-    root.left = root.right
-    root.right = temp
-
+    [root.left,root.right] = [root.right,root.left]
     /**
      * 左右子树继续翻转
      */
@@ -1339,6 +1390,147 @@ var isSymmetric = function(root) {
           && isEqual(left.right,right.left)
     }
     return isEqual(root.left,root.right)
+};
+```
+
+#### [二叉树的镜像](https://leetcode-cn.com/problems/er-cha-shu-de-jing-xiang-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210116181619.png?imglist)
+
+
+```js
+var mirrorTree = function(root) {
+  /**
+   * 思路：需要以数组形式拷贝左右子树 然后递归
+   * */
+    // null 返回本身
+    if(!root){
+        return root
+    }
+    // 左右数树，复制
+    [root.left,root.right] = [root.right,root.left]
+    mirrorTree(root.left)
+    mirrorTree(root.right)
+    return root
+};
+```
+
+#### [验证二叉搜索树](https://leetcode-cn.com/problems/validate-binary-search-tree/)
+
+![](https://image.yangxiansheng.top/img/20210116201336.png?imglist)
+
+```js
+var isValidBST = function(root) {
+    /**
+     * 思路：设置一个上下限值，满足二叉搜索树的左子树的上限就是根节点的值，满足二叉搜索树的右子树的下限就是根节点的值，然后递归即可
+     */
+    let helper = (node,lower,upper)=>{
+      // 结束递归
+        if(!node){
+            return true
+        }
+        // 节点的值保证在范围内
+        if(node.val <= lower || node.val >= upper){
+            return false
+        }
+        // 根节点处理完了，处理左右子树
+        return helper(node.left,lower,node.val) && helper(node.right,node.val,upper)
+    }
+    // 初始化下限和上限
+    return helper(root,-Infinity,Infinity)
+
+};
+```
+
+#### [把二叉搜索树转换为累加树](https://leetcode-cn.com/problems/convert-bst-to-greater-tree/)
+
+![](https://image.yangxiansheng.top/img/20210116205215.png?imglist)
+![](https://image.yangxiansheng.top/img/20210116205236.png?imglist)
+
+```js
+var convertBST = function(root) {
+    /**
+     * 思路：二叉搜索树的中序遍历必定是一个升序的数组，这里借助到反向中序遍历实现
+      1.定义一个全局变量sum，用于存储遍历的所有节点值的累计和；
+      2.递归终止条件： root为空就返回null;
+      3.递归右子树root.right;
+      4.遍历当前节点，作如下操作：
+         将其值累加到sum中；
+         把sum赋值给当前节点的值；
+      5.递归左子树root.left;
+     */
+    let sum = 0
+    let sumTree= (root)=>{
+        if(!root){
+            return null
+        }
+        // 遍历右子树
+        sumTree(root.right)
+        // 计算sum和赋值
+        sum += root.val
+        root.val = sum
+        // 遍历左子树
+        sumTree(root.left)
+        return root
+    }
+    return sumTree(root) 
+};
+```
+
+#### [从前序与中序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+
+![](https://image.yangxiansheng.top/img/20210116220456.png?imglist)
+
+```js
+var buildTree = function(preorder, inorder) {
+    /**
+     * 递归结束条件 ：二者都不为空 否则返回null
+     * 思路：前序遍历第一个节点一定是跟节点，然后确定根节点在中序遍历的位置，用key记录，然后前序的左子树和中序的左子树继续递归
+     * 1. root.left 就等于前序遍历的左子树和中序遍历的左子树递归
+     * root.left = buildTree(preorder.slice(1,key+1),inorder.slice(0,key))
+     * 2. root.right 就等于前序遍历的右子树和中序遍历的右子树递归
+     * root.right = buildTree(preorder.slice(key+1),inorder.slice(key+1))
+     * 最后返回root
+     */
+    if(!preorder.length || !inorder.length){
+        return null
+    }
+    let key = 0
+    // 构建树
+    let root = new TreeNode(preorder[0]) 
+    // 找到根节点在中序的位置
+    for(let i =0;i<inorder.length;i++){
+        if(inorder[i] === preorder[0]){
+            key = i
+        }
+    }
+    // 左右子树通过递归构建
+    root.left = buildTree(preorder.slice(1,key+1),inorder.slice(0,key))
+    root.right = buildTree(preorder.slice(key+1),inorder.slice(key+1))
+    return root
+};
+```
+
+#### [合并二叉树](https://leetcode-cn.com/problems/merge-two-binary-trees/)
+
+![](https://image.yangxiansheng.top/img/20210116221524.png?imglist)
+
+```js
+var mergeTrees = function(t1, t2) {
+    /**
+     * 思路：dfs 假设累加和的树根节点为t1,t1节点的值等于t2累加，最后返回t1或者t2
+     * t1.val+=t2.val
+     * t1.left = mergeTrees(t1.left,t2.left)
+     * t1.right = mergeTrees(t1.right,t2.right)
+     */
+
+    // 保证t1和t2有值
+    if(t1 && t2){
+        t1.val += t2.val
+        t1.left = mergeTrees(t1.left,t2.left)
+        t1.right = mergeTrees(t1.right,t2.right)
+    }
+    return t1 || t2 // 返回有值的即可
 };
 ```
 
