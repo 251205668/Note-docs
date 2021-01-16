@@ -14,7 +14,7 @@
 > 完整知识体系,参考[前端完整知识体系](https://www.processon.com/view/link/5c64d495e4b025fe7c964ca0#map)
 
 
-## [算法打卡记录](https://www.processon.com/mindmap/5fdb5cbee401fd5bc82b2205)
+## [算法打卡记录](https://www.processon.com/view/link/5fc870e31e08537a6942e39c)
 
 
 ## License
