@@ -513,6 +513,36 @@ var reconstructQueue = function(people) {
 };
 ```
 
+### [栈的压入、弹出序列](https://leetcode-cn.com/problems/zhan-de-ya-ru-dan-chu-xu-lie-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210118165638.png?imglist)
+
+```js
+var validateStackSequences = function(pushed, popped) {
+    /**
+     * 思路： 设置一个辅助栈，如果辅助栈最后为空则满足条件，如果辅助栈栈顶和pop栈当前元素相同，出栈
+     * !!! 注意这里使用unshift() 将push栈压入辅助栈 shift，出辅助栈元素
+     * 案例： push [1,2,3,4] pop[4,3,2,1]
+     * 1. stack = [4,3,2,1] k = 0 ,stack.length && popped[k]!==null && stack[0] === pop[k],stack.shift()
+     * 2. stack = [3,2,1] k=1 stack[0] !==null && popped[k]!==null && stack[0] === pop[k]  ,satck.shift()
+     * .....
+     */
+    let stack = []
+    let k = 0
+    // 辅助栈入栈
+    for(let i = 0;i < pushed.length;i++){
+        stack.unshift(pushed[i])
+        // while循环 pop和stac栈顶存在，如果相等，出栈
+        while(stack.length && popped[k]!==null && popped[k] === stack[0]){
+            stack.shift()
+            k++
+        }
+    }
+    return stack.length === 0
+
+};
+```
+
 ## 链表
 
 ### [反转链表](https://leetcode-cn.com/problems/fan-zhuan-lian-biao-lcof/description/)
@@ -1129,6 +1159,46 @@ while(stack.length || p){
 };
 ```
 
+#### [二叉树的锯齿形层序遍历](https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/)
+
+![](https://image.yangxiansheng.top/img/20210118155407.png?imglist)
+
+```js
+var zigzagLevelOrder = function(root) {
+    /**
+     * 思路：这道题的102层次遍历类似，只是说一层从左往右遍历一层从右往左,这个可以使用一个便变量控制,最后一个是push到层级数组，一个是unshift到层级数组，顺序不一样
+     */
+    if(!root){
+        return []
+    }
+    let q = [root]
+    let isLeftToRight = true
+    let res = []
+    while(q.length){
+        let levelList = []
+        let size = q.length
+        for(let i=0;i<size;i++){
+            let node = q.shift()
+            if(node.left){
+                q.push(node.left)
+            }
+            if(node.right){
+                q.push(node.right)
+            }
+            if(node!== undefined && isLeftToRight){
+               levelList.push(node.val)
+            }else{
+                levelList.unshift(node.val)
+            }
+        }
+        res.push(levelList)
+        isLeftToRight = !isLeftToRight
+    }
+    return res
+
+};
+```
+
 ### 已知二叉树求某值
 
 #### [二叉树的最小深度](https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/)
@@ -1272,6 +1342,37 @@ var lowestCommonAncestor = function(root, p, q) {
 };
 ```
 
+#### [左叶子之和](https://leetcode-cn.com/problems/sum-of-left-leaves/)
+
+![](https://image.yangxiansheng.top/img/20210118171121.png?imglist)
+
+```js
+var sumOfLeftLeaves = function(root) {
+    /**
+     * 思路：利用dfs，首先判断节点是否是叶子节点，然后使用dfs遍历左右子树去，计算左叶子节点的和
+     */
+    let sum = 0
+    // 判断是否是叶子
+    let isLeafNode = (node)=>{
+        return node && !node.left && !node.right
+    }
+    let dfs = (node)=>{
+            // 递归终止条件
+            if(!node){
+                return
+            }
+            if(isLeafNode(node.left)){
+                sum +=node.left.val
+            }
+            // 遍历左右子树
+            dfs(node.left)
+            dfs(node.right)
+        }
+   dfs(root)
+   return sum
+};
+```
+
 #### [二叉树的右视图](https://leetcode-cn.com/problems/binary-tree-right-side-view/)
 
 ![](https://image.yangxiansheng.top/img/20210113171617.png?imglist)
@@ -1393,6 +1494,30 @@ var isSymmetric = function(root) {
 };
 ```
 
+#### [平衡二叉树](https://leetcode-cn.com/problems/ping-heng-er-cha-shu-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210118152536.png?imglist)
+
+```js
+var isBalanced = function(root) {
+    let treeDepth = (root)=>{
+        if(!root){
+            return 0
+        }
+        return 1 + Math.max(treeDepth(root.left),treeDepth(root.right))
+    }
+    // 递归终止条件
+    if(!root)return true
+    // 左子树为平衡二叉树并且右子树也为平衡二叉树 并且深度相差<=1
+    return (
+        Math.abs(treeDepth(root.left) - treeDepth(root.right)) <=1 &&
+        isBalanced(root.left)&&
+        isBalanced(root.right)
+    )
+
+};
+```
+
 #### [二叉树的镜像](https://leetcode-cn.com/problems/er-cha-shu-de-jing-xiang-lcof/)
 
 ![](https://image.yangxiansheng.top/img/20210116181619.png?imglist)
@@ -1421,11 +1546,14 @@ var mirrorTree = function(root) {
 
 ```js
 var isValidBST = function(root) {
+   var isValidBST = function(root) {
     /**
-     * 思路：设置一个上下限值，满足二叉搜索树的左子树的上限就是根节点的值，满足二叉搜索树的右子树的下限就是根节点的值，然后递归即可
+     * 思路：从一颗二叉树得出结论，可以给二叉树的值设置一个上下限值，
+     * 满足二叉搜索树的左子树的上限就是根节点的值，
+     * 满足二叉搜索树的右子树的下限就是根节点的值，
+     * 然后递归即可
      */
     let helper = (node,lower,upper)=>{
-      // 结束递归
         if(!node){
             return true
         }
@@ -1438,6 +1566,7 @@ var isValidBST = function(root) {
     }
     // 初始化下限和上限
     return helper(root,-Infinity,Infinity)
+}
 
 };
 ```
@@ -1474,6 +1603,28 @@ var convertBST = function(root) {
         return root
     }
     return sumTree(root) 
+};
+```
+
+
+#### [将有序数组转换为二叉搜索树](https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/)
+
+![](https://image.yangxiansheng.top/img/20210118163615.png?imglist)
+
+```js
+var sortedArrayToBST = function(nums) {
+    /**
+     * 思路：将数组才分为左根右，然后递归构建树
+     */
+    let length = nums.length
+    if(!length)return null
+    let mid = Math.floor(length / 2)
+    // 根节点
+    let root = new TreeNode(nums[mid])
+    // 递归构建
+    root.left = sortedArrayToBST(nums.slice(0,mid))
+    root.right = sortedArrayToBST(nums.slice(mid+1,length)) 
+    return root
 };
 ```
 
@@ -1534,6 +1685,59 @@ var mergeTrees = function(t1, t2) {
 };
 ```
 
+#### [树的子结构](https://leetcode-cn.com/problems/shu-de-zi-jie-gou-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210118145146.png?imglist)
+
+```js
+var isSubStructure = function(A, B) {
+    /**
+     * 思路：
+     * 1. 判断子结构过程：判断A,B节点是否相等，不相等则直接返回false，否则继续判断左右子节点是否相等
+     * 2. B可能是A根节点的子结构，也可能是左右子树的子结构
+     * 3. 递归终止条件：两棵树有一颗不存在，返回false，判断子结构时，B为空树返回true，A为空树返回false
+     */
+    // 判断root2是否是root1的子结构
+    function isSubtree(root1,root2) {
+        if(!root2) return true;
+        if(!root1) return false;
+        if(root1.val !== root2.val) return false;
+        return isSubtree(root1.left,root2.left) && isSubtree(root1.right,root2.right);
+    }
+    // 递归终止条件
+    if(!A || !B){
+        return false
+    }
+    // 这里一定要写清楚函数，跟节点是否为subTree 左右子树是否为subTree调用的函数不一样
+    return isSubtree(A,B) || isSubStructure(A.left,B) || isSubStructure(A.right,B)
+};
+```
+
+#### [相同的树](https://leetcode-cn.com/problems/same-tree/)
+
+![](https://image.yangxiansheng.top/img/20210118150255.png?imglist)
+
+```js
+var isSameTree = function(p, q) {
+    /**
+     * 思路：先判断根节点 再递归判断左右子树，记得带上递归终止条件 思路类似判断树的子结构
+     */
+    // 递归终止条件
+    if(!p && !q)return true
+    if(!p && q)return false
+    if(p && !q)return false
+    // 首先判断根
+    if(p.val !== q.val)return false
+    // 左右子树
+    if(isSameTree(p.left,q.left) && isSameTree(p.right,q.right)){
+        return true
+    }else{
+        return false
+    }
+    
+};
+```
+
 ### 求二叉树的路径
 
 #### [路径总和](https://leetcode-cn.com/problems/path-sum/description/)
@@ -1591,6 +1795,42 @@ var sumNumbers = function(root) {
     dfs(root,'')
     return res
 
+};
+```
+
+#### [二叉树中和为某一值的路径或者路径总和||](https://leetcode-cn.com/problems/er-cha-shu-zhong-he-wei-mou-yi-zhi-de-lu-jing-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210118154735.png?imglist)
+
+```js
+var pathSum = function(root, sum) {
+    /**
+     * 思路：回溯算法：
+     * 1. 路径：等于sum的节点数组
+     * 2. 选择列表: 所有的节点
+     * 3. 终止条件：node等于null
+     */
+    // 结果集 当前路径
+    let res = [] , stack = []
+    // 使用dfs完成
+    let dfs = (node,sum)=>{
+        // 终止条件
+        if(!node)return
+        // 做选择
+        sum -= node.val
+        stack.push(node.val)
+        // 如果sum = 0，并且无左右子树,将路径保存在结果集
+        if(sum === 0 && !node.left && !node.right){
+            res.push([...(stack)])
+        }
+        // 递归
+        node.left && dfs(node.left,sum)
+        node.right && dfs(node.right,sum)
+        // 撤销选择
+        stack.pop()
+    }
+    dfs(root,sum)
+    return res
 };
 ```
 
