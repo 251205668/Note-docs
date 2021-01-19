@@ -1058,6 +1058,57 @@ var merge = function(nums1, m, nums2, n) {
 };
 ```
 
+### [通过删除字母匹配到字典里最长单词](https://leetcode-cn.com/problems/longest-word-in-dictionary-through-deleting/)
+
+![](https://image.yangxiansheng.top/img/20210119121153.png?imglist)
+
+```js
+var findLongestWord = function(s, d) {
+    /**
+     * 思路：使用双指针，题意是d中的哪个元素存在s，并且这个元素的长度是最大的，如果有多个就比较字典顺序。
+     * 这里使用双指针一个遍历s，一个d的每个元素。如果s[i] === w[j]，指针往前移动，这里也需要注意有一种情况是不需要移动的，已匹配数量 + 剩余字符个数 <= maxL，这里就不需要继续匹配
+     * 
+     * 讲的很绕，其实看代码就看的懂，原理就是维护双指针
+     */
+
+    // 找到d中存在于s的字符的字符最大数量
+    let find = (s,w,max)=>{
+       // 维护s和w指针
+        let i = 0
+        let j = 0
+        let count = 0
+        // 已匹配字符数量 + 剩余字符数量 >= max 才进行匹配
+        while(i<s.length && j<w.length && count + w.length - j >= max){
+            // 找到一个字符 就前移w指针
+            if(s[i] === w[j]){
+                j++
+                count++
+            }
+            i++
+        }
+        // 最后w.length = count,代表匹配完成
+        if(w.length === count){
+            return count
+        }else{
+            return 0
+        }
+    }
+
+      let maxL = 0
+      let index = -1
+      for(let i = 0;i<d.length;i++){
+          let curCount = find(s,d[i],maxL)
+          // 1.当前匹配字符数量大于最大值 2. 当前匹配数量等于最大值，更新字典顺序小的
+          // 更新maxL和index
+          if(curCount > maxL || maxL === curCount && d[index] > d[i]){
+              maxL = curCount
+              index = i
+          }
+      }
+      return !!d[index] ? d[index] : ""
+};
+```
+
 ## 二叉树
 
 ### 遍历系列
