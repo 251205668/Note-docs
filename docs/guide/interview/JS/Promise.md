@@ -11,6 +11,20 @@ JS 对于这种场景就设计了异步 ———— 即，发起一个网络请
 
 从几个方面讲：1.Promise的作用 2. Promise一共有哪几种状态 3.Promise的resolve和reject方法理解
 
+于是得到下面的理解
+
+```js
+promise的诞生是用来解决回调地狱的。
+
+首先promise分为 pending，fulfilled,rejected 三种状态，pending状态为初始状态-等待，
+他可以转换为成功和失败状态。当调用resolve(value)时，代表操作成功，
+状态从pending转为fulfilled，这里的value是操作成功时的值；当调用reject(reason)时，代表操作失败，
+状态从pending转为rejected,reason为操作失败原因。
+然后promise还有一个关键的then方法，里面有两个参数：onFulfilled,onRejected,成功有成功的值，失败有失败的原因，
+当状态为fulfilled执行onFulfilled，传入成功的value，
+当状态为rejected执行onRejected，传入reason，这里then方法也会返回一个新的promise对象
+```
+
 ### Promise的作用
 
 解决异步回调嵌套过深造成代码难以维护和理解
@@ -32,11 +46,11 @@ new Promise(
       if (/* 异步操作成功 */){
         resolve(value);
       } else {
-        reject(error);
+        reject(reason);
       }
 }).then(
-  function A(){},//成功时调用函数
-  function B(){} //失败时调用函数
+  function onFulfilled(){},//成功时调用函数
+  function onRejected(){} //失败时调用函数
 )
 ```
 
@@ -60,9 +74,9 @@ new Promise(
 2. 返回新的Promise对象，调用resolve方法
 
 ```js
-Promise.resolve = function(data){
+Promise.resolve = function(value){
   return new Promise((resolve,reject)=>{
-    resolve(data)
+    resolve(value)
   })
 }
 ```
@@ -73,27 +87,25 @@ Promise.resolve = function(data){
 
 **手写实现**
 
-1. 传入error参数
+1. 传入reason参数
 2. 返回新的Promise对象，调用reject方法
 
 ```js
-Promise.reject = function(error){
+Promise.reject = function(reason){
   return new Promise((resolve,reject)=>{
-    resolve(error)
+    resolve(reason)
   })
 }
 ```
 
 ### then
 
-Promise状态改变的回调函数，then 方法的第一个参数是 resolved 状态的回调函数，第二个参数（可选）是 rejected 状态的回调函数。
+Promise状态改变的回调函数，里面有两个参数：onFulfilled,onRejected,成功有成功的值，失败有失败的原因，当状态为fulfilled执行onFulfilled，传入成功的value，当状态为rejected执行onRejected，传入reason，这里then方法也会返回一个新的promise对象
 
 ```js
 getJSON("/posts.json").then(function(json) {
   return json.post;
-}).then(function(post) {
-  // ...
-});
+}).then((onFullfilled=(value)=>{},onRejected(reason)=>{}));
 ```
 
 
@@ -170,6 +182,7 @@ Promise.all = function(iterator){
     for(let i of iterator){
       Promise.resolve(i).then(data=>{
         res[count++] = data
+        // 最后传入的参数为一个数组
         if(count === iterator.length){
           resolve(res)
         }

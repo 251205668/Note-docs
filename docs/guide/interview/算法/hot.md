@@ -833,6 +833,33 @@ var mergeKLists = function(lists) {
     
 };
 ```
+### [复杂链表的复制](https://leetcode-cn.com/problems/fu-za-lian-biao-de-fu-zhi-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210122113125.png?imglist)
+
+```js
+var copyRandomList = function(head) {
+    /**
+     * 思路：使用哈希表完成链表的深拷贝，先把链表节点放入哈希表，一定要对next和random指针进行判空
+     */
+    let map = new Map()
+    // 保存链表
+    let node = head
+    while(node){
+        map.set(node,new Node(node.val))
+        node = node.next
+    }
+    // 判空
+    node = head
+    while(node){
+        // node节点的next和random判空
+       map.get(node).next = node.next ? map.get(node.next) : null
+       map.get(node).random = node.random ? map.get(node.random) : null
+       node = node.next
+    }
+    return map.get(head)
+};
+```
 
 ## 双指针
 
@@ -3110,6 +3137,224 @@ var canJump = function(nums) {
         k = Math.max(k,nums[i] + i)
     }
     return true
+
+};
+```
+
+## 前缀和
+
+### [和为K的子数组](https://leetcode-cn.com/problems/subarray-sum-equals-k/)
+
+![](https://image.yangxiansheng.top/img/20210122110208.png?imglist)
+
+```js
+var subarraySum = function(nums, k) {
+    /**
+     * 1. 暴力法 假设i到j的和为k
+     *    sum(i,j) = i到j的nums[i]累加
+     * 
+     * 2. 前缀和
+     * 
+     * 3. 哈希表+前缀和 记录前缀和和出现的次数，当前缀和等于preSum-k时数量累加
+     */ 
+    // 暴力法 ，超时
+    // let res = 0
+    // if(!nums.length)return 0
+    // for(let i = 0;i<nums.length;i++){
+    //     // 每次去计算i到j的和即可，不需要计算(0，i-1)
+    //     let sum = 0
+    //     for(let j = i;j<nums.length;j++){
+    //         sum+=nums[j]
+    //         if(sum === k){
+    //             res++
+    //         }
+    //     }
+    // }
+    // return res
+
+    // 前缀和 超时
+//    let n = nums.length
+//   if (!n) {
+//     return 0
+//   }
+
+//   let sums = []
+//   sums[0] = 0
+//   for (let i = 1; i <= n; i++) {
+//     sums[i] = sums[i - 1] + nums[i - 1]
+//   }
+
+//   let res = 0
+//   for (let left = 0; left < n; left++) {
+//     for (let right = left; right < n; right++) {
+//       let sum = sums[right + 1] - sums[left]
+//       if (sum === k) {
+//         res += 1
+//       }
+//     }
+//   }
+//   return res
+
+// 前缀和加上哈希表
+  const mp = new Map();
+  // 前缀和0,次数为1
+    mp.set(0, 1);
+    let count = 0, pre = 0;
+    for (const x of nums) {
+        pre += x;
+        // 前缀和等于pre-k 说明符合条件,累加次数
+        if (mp.has(pre - k)) {
+            count += mp.get(pre - k);
+        }
+        mp.set(pre,mp.has(pre) ? mp.get(pre) + 1:1)
+    }
+    return count;
+};
+```
+
+## 字符串
+
+### [电话号码的字母组合](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/)
+
+![](https://image.yangxiansheng.top/img/20210122212928.png?imglist)
+
+```js
+var letterCombinations = function(digits) {
+      /**
+         * 思路：回溯算法
+         * 1. 路径：这里是数字代表的字母之间的组合
+         * 2. 选择列表：当前选择数字代表的一组字符列表
+         * 3. 结束条件：当前选择到的数字下标等于digits的长度，代表遍历完了
+   */
+  if(digits.length === 0){
+      return []
+  }
+  let map = ['','','abc','def','ghi','jkl','mno','pqrs','tuv','wxyz']
+  let res = []
+  // 代表已经确定的字母组合
+  let path = []
+   // index代表选择到的数字下标
+  function backTrack(digits,index){
+      if(index === digits.length){
+          // 路径需要转换成字符
+          res.push(path.join(''))
+          return
+      }
+      // 获取当前数字的字母字符串
+      let digit = digits[index]
+      let letter = map[digit]
+      for(let i =0;i<letter.length;i++){
+          // 做选择
+          path.push(letter[i])
+          backTrack(digits,index+1)
+          path.pop()
+      }
+  }
+  backTrack(digits,0)
+  return res
+
+};
+```
+### [回文子串个数](https://leetcode-cn.com/problems/palindromic-substrings/)
+
+
+![](https://image.yangxiansheng.top/img/20210122215041.png?imglist)
+
+```js
+var countSubstrings = function(s) {
+    /**
+     * 思路：翻转字符串，然后用i,j前后指针记录开始和结束，可以将j看成分界线
+     * 1. 记录原字符串从开始到结束的字符串，s1
+     * 2. 记录翻转字符串从开始到结束的字符串,len-j开始截取j-i个字符,s2
+     * s1 === s2 count++
+     */
+    let count = 0
+    // 翻转字符
+    let s2 = s.split('').reverse().join('')
+    for(let i =0;i<s.length;i++){
+        // 这里注意j下标取等号
+        for(let j = i+1;j<=s2.length;j++){
+            // s1 取i到j字符串，但是取不到j,s2从len-j开始
+            if(s.substr(i,j-i) === s2.substr(s.length - j,j-i)){
+                count++
+            }
+        }
+    }
+    return count
+};
+```
+
+### [括号生成](https://leetcode-cn.com/problems/generate-parentheses/)
+
+![](https://image.yangxiansheng.top/img/20210122223051.png?imglist)
+
+```js
+var generateParenthesis = function(n) {
+  /**
+   * 思路：回溯
+   * 路径: 已拼接的字符
+   * 选择列表：左括号和右括号
+   * 结束条件：
+   * 1. 左括号数量等于右括号
+   * 2. 左括号 + 右括号数量 = 2 * n
+   * 
+   * === > l === r  === n
+   * 
+   * 剪枝：左括号数小于右括号
+   */
+
+  let res = []
+  // 左右括号数，当前拼接的字符串
+  function backTrack(l,r,str){
+      if(l === n && r === n){
+          res.push(str)
+          return
+      }
+      // 剪枝
+      if(l < r){
+          return
+      }
+      // 插入左括号
+      if(l < n){
+          backTrack(l+1,r,str + '(')
+      }
+      // 插入右括号
+      if(r < l){
+          backTrack(l,r+1,str + ')')
+      }
+  }
+  backTrack(0,0,'')
+  return res
+};
+```
+
+### [最长公共前缀](https://leetcode-cn.com/problems/longest-common-prefix/)
+
+
+![](https://image.yangxiansheng.top/img/20210122224235.png?imglist)
+
+```js
+var longestCommonPrefix = function(strs) {
+    /**
+     * 思路：首先将数组排序，然后取出最短的和最长的字符进行比较，如果a[i] === b[i],str+=a[i]
+     */
+    if(!strs.length){
+        return ""
+    }
+    let str = ""
+    // 排序
+    strs = strs.sort()
+    let a = strs[0]
+    let b = strs[strs.length - 1]
+    for(let i =0; i < a.length;i++){
+       // 保证b取得到值,否则终止循环
+       if(i < b.length && a[i] === b[i]){
+           str += a[i]
+       }else{
+           break
+       }
+    }
+    return str
 
 };
 ```

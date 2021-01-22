@@ -629,6 +629,147 @@ MyPromise.prototype.then = function (onResolved, onRejected) {
 }
 ```
 
+### 手写Vue双向数据绑定
+
+1. 对象，包含复杂对象
+2. 值类型
+3. 数组,改造原型
+
+```js
+const oldArrayPrototype = Array.prototype
+// 将ArraayObject原型指向他,然后扩展方法 即继承数组方法,不影响定义新方法
+const newArrayObject = Object.create(oldArrayPrototype)
+// 扩展常用方法
+['push','shift','unshift','pop'].forEach((methodName)=>{
+   // 扩展的方法
+  newArrayObject[methodName]=function(){
+   console.log('视图更新')
+   // 真正意义上的调用原生方法
+   oldArrayPrototype[methodName].call(this,...arguments)
+  }
+})
+
+function observer(target){
+  if(typeof target !== object || target == null){
+    // 非对象或数组
+    return target
+  }
+  if(Array.isArray(target)){
+    // 使用的时候将原型指向改造之后的arrayob
+    if(target instanceof Array){
+      target.__proto__ = newArrayObject
+  }
+  }
+  for(let key in target){
+    defineReactive(target,key,target[key])
+  }
+}
+
+function defineReactive(data,key,value){
+   // value可能是复杂对象 递归监听
+  observer(value)
+  Object.definePropetry(data,key,{
+    get:function(){
+      return value
+    },
+    set:function(newVal){
+      // 深度监听
+      observer(value)
+      if(newVal === value){
+        return 
+      }
+      value = newVal
+    }
+  })
+}
+
+const data ={
+  nums:[1,2]
+}
+observer(data)
+data.nums.push(3) // 视图更新
+```
+
+### 手写虚拟dom过程(html转为json格式)
+
+1. 将HTML字符串去<>,处理为一个数组
+2. 提取树形结构
+3. 将树形结构转JSON
+
+```js
+const str1 = '<div>1<span>2<a>3</a>4</span>5<span>6<a>7</a>8<a>9</a>10</span>11</div>';
+function Dom2JSON(str) {
+    str = str.split('<').map(x => x.split('>'));
+    let res = [],stack = [],temp = {},cur = {},key = 0;
+    // 获取树形结构
+    for(let i = 1;i < str.length; i++) {
+        if (str[i][0].indexOf('/') === -1) {
+            temp = {};
+            temp['key'] = key++;
+            temp['tag'] = str[i][0];
+            temp['value'] = str[i][1];
+            temp['children'] = [];
+            temp['parent'] = stack.length === 0 ? 0 : stack[0]['key'];
+            stack.unshift(temp);
+        } else {
+            cur = stack.shift();
+            // 当前元素为根元素时栈为空
+            stack.length !== 0 && (stack[0]['value'] = stack[0]['value'] + cur['value'] + str[i][1]);
+            res.unshift(cur);
+        }
+    }
+    // 使得遍历时索引与key值匹配
+    res = res.sort((x, y) => x['key'] - y['key']);
+    for (let i = res.length - 1;i > 0;i--) {
+        temp = {};
+        temp['tag'] = res[i]['tag'];
+        temp['value'] = res[i]['value'];
+        temp['children'] = res[i]['children'];
+        res[res[i]['parent']]['children'].unshift(temp);
+    }
+    res = res[0];
+    delete res['parent'];
+    delete res['key'];
+    return JSON.parse(JSON.stringify(res));
+}
+console.log(Dom2JSON(str1));
+
+// 转换结果如下
+// let res ={
+//     tag: "div",
+//     value: "1234567891011",
+//     children: [
+//         {
+//             tag: "span",
+//             value: "234",
+//             children: [
+//                 {
+//                     tag: "a",
+//                     value: "3",
+//                     children: [],
+//                 }
+//             ],
+//         },
+//         {
+//             tag: "span",
+//             value: "678910",
+//             children: [
+//                 {
+//                     tag: "a",
+//                     value: "7",
+//                     children: [],
+//                 },
+//                 {
+//                     tag: "a",
+//                     value: "9",
+//                     children: [],
+//                 }
+//             ]
+//         }
+//     ]}
+
+```
+
 
 ### 手写一个 Ajax
 
@@ -781,7 +922,7 @@ function fiber(n) {
 ```
 
 
-## 实现一个add函数 满足add(1,2,3)与add(1)(2)(3)结果相同
+### 实现一个add函数 满足add(1,2,3)与add(1)(2)(3)结果相同
 
 这是函数柯里化的一种基本表现形式
 
