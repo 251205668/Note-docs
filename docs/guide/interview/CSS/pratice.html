@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>三列布局练习(两侧定宽中间自适应，两列定宽一列自适应)</title>
+  <style>
+    /* 圣杯写法 */
+    .content1{
+      box-sizing: border-box;
+      padding: 0 200px 0 100px;
+    }
+    .header1{
+      height: 100px;
+      background-color: aqua;
+    }
+    .left1{
+      float: left;
+      margin-left: -100%;
+      height: 300px;
+      width: 100px;
+      position: relative;
+      left: -100px;
+      background-color: chartreuse;
+    }
+    .center1{
+      float: left;
+      width: 100%;
+      box-sizing: border-box;
+      height: 300px;
+      background-color: yellowgreen;
+      line-height: 300px;
+      text-align: center;
+    }
+    .center1 span{
+      vertical-align: middle;
+    }
+    .right1{
+      float: left;
+      width: 200px;
+      margin-left: -200px;
+      position: relative;
+      left: 200px;
+      height: 300px;
+      background-color: rebeccapurple;
+    }
+    
+    .footer1{
+      clear: both;
+      height: 100px;
+      background-color: aqua;
+    }
+    /* 双飞翼写法 */
+    /* 不管是双飞翼还是圣杯都需要将center盒提到最前面 */
+    .header2{
+      height: 100px;
+      margin-top: 20px;
+      background-color: aqua;
+    }
+    .footer2{
+      clear: both;
+      height: 100px;
+      background-color: aqua;
+    }
+    .left2{
+      margin-left: -100%;
+      float: left;
+      width: 100px;
+      height: 300px;
+      background-color: chartreuse;
+    }
+    .center2{
+      float: left;
+      width: 100%;
+      height: 300px;
+      background-color: yellowgreen;
+    }
+    .inner_box{
+      height: 300px;
+      margin: 0 200px 0 100px;
+      text-align: center;
+      line-height: 300px;
+    }
+    .inner_box span{
+      vertical-align: middle;
+    }
+    .right2{
+      float: left;
+      width: 200px;
+      margin-left: -200px;
+      height: 300px;
+      background-color: rebeccapurple;
+    }
+    /* 常规  */
+    
+  </style>
+</head>
+
+<body>
+  <div class="demo1">
+    <div class="header1"></div>
+ <div class="content1">
+   <!-- center盒最前面 -->
+   <div class="center1"><span>圣杯布局</span></div>
+   <div class="left1"></div>
+   <div class="right1"></div>
+ </div>
+ <div class="footer1"></div>
+  </div>
+  <div class="demo2">
+    <div class="header2"></div>
+    <div class="content2">
+      <div class="center2"><div class="inner_box"><span>双飞翼布局</span></div></div>
+      <div class="left2"></div>
+      <div class="right2"></div>
+    </div>
+    <div class="footer2"></div>
+  </div>
+  <div class="demo3">
+    <div class="left3"></div>
+    <div class="center3"></div>
+    <div class="right3"></div>
+  </div>
+  <div class="demo4">
+    <div class="left"></div>
+    <div class="center"></div>
+    <div class="right"></div>
+  </div>
+
+</body>
+
+</html>

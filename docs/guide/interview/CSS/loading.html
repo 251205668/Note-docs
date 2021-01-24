@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    .loading{
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 12px solid #f3f3f3;
+      border-top: 12px solid red ;
+      animation: ronate 2s linear infinite;
+    }
+    @keyframes ronate {
+      0%{
+        transform: rotate(0deg);
+
+      } 
+      100%{
+        transform: rotate(360deg);
+      }     
+    }
+    
+  </style>
+</head>
+
+<body>
+<div class="loading"></div>
+</body>
+
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    /* 压屏 */
+    #mymodal{
+      position: fixed;
+      display: none;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, .5);
+    }
+    .modal{
+      width: 500px;
+      height: 300px;
+      box-sizing: border-box;
+      position: absolute;
+      left: 50%;
+      top:50%;
+      transform: translate(-50%,-50%);
+      animation: pop 1s;
+    }
+    @keyframes pop {
+      from{
+        top: 0;
+        opacity: 0;
+      }
+      to{
+        top:50%;
+        opacity: 1;
+      }
+      
+    }
+    .header{
+      height: 50px;
+      background-color: #ffffff;
+      color: #000;
+      line-height: 50px;
+      border-bottom: 1px solid #000000;
+    }
+    .header span:first-child {
+      position: absolute;
+      font-size: 14px;
+      left: 20px;
+    }
+    .header span:last-child{
+      position: absolute;
+      right: 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .content{
+      background-color: #ffffff;
+      height: 200px;
+      text-align: center;
+      line-height: 200px;
+    }
+
+    .footer{
+      padding-bottom: 20px;
+      height: 50px;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn{
+      display: inline-block;
+      line-height: 1;
+      padding: 12px 20px;
+      font-size: 14px;
+      outline: none;
+      text-align: center;
+      vertical-align: middle;
+      font-weight: 400;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .confirm{
+      border: 1px solid #007bff;
+      color: #ffffff;
+      background-color: #007bff;
+      margin-right: 15px;
+    }
+    .cancel{
+      border:1px solid #dcdfe6 ;
+      color: #606266;
+      background-color: #ffffff;
+    }
+    
+  </style>
+</head>
+
+<body>
+  <button id="btn" type="button" class="btn confirm">确认</button>
+<div id="mymodal">
+<div class="modal">
+  <div class="header">
+    <span>标题</span>
+    <span id="close" class="close">&times;</span>
+  </div>
+  <div class="content"><span>内容内容内容内容内容内容内容内容</span></div>
+  <div class="footer">
+    <button id="confirm" type="button" class="confirm btn">确认</button>
+    <button id="cancel" type="button" class="cancel btn">取消</button>
+  </div>
+</div>
+</div>
+<script>
+  // 点击按钮显示弹窗
+  window.onload = function(){
+    var button = document.getElementById('btn')
+    var confirm = document.getElementById('confirm')
+    var cancel = document.getElementById('cancel')
+    var close = document.getElementById('close')
+    var Mymodal = document.getElementById('mymodal')
+    button.onclick = function(){
+      Mymodal.style.display = 'block'
+    }
+    confirm.onclick = function(){
+      Mymodal.style.display = 'none'
+    }
+    close.onclick = function(){
+      Mymodal.style.display = 'none'
+    }
+    cancel.onclick = function(){
+      Mymodal.style.display = 'none'
+    }
+    // 点击非弹窗主题部分区域隐藏弹窗
+    window.onclick = function(event){
+      if(event.target == Mymodal){
+        // 说明触发点击事件dom是非弹窗
+        Mymodal.style.display = 'none'
+      }
+    }
+  }
+</script>
+</body>
+</html>
