@@ -143,6 +143,38 @@ repeatFunc('helloworld')
   }
 ```
 
+### 实现驼峰转换
+
+```js
+/**
+ * 输入：
+content-type
+输出：
+contentType
+ * */
+
+function camel(str) {
+    // TODO
+    let ans = "";
+    let upper = false;
+    for (let index = 0; index < str.length; index++) {
+        const element = str[index];
+        if (element == '_' || element == '-' || element == '@') {
+            upper = true;
+        } else {
+            if (upper) {
+                ans += element.toUpperCase();
+            } else {
+                ans += element;
+            }
+            upper = false;
+        }
+    }
+    return ans;
+};
+
+```
+
 ### 数组去重
 
 ```js
