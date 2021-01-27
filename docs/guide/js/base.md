@@ -90,6 +90,7 @@ let nameNum = names.reduce((pre,cur)=>{
   }else{
     pre[cur] = 1
   }
+  return pre
 },{})
 ```
 
