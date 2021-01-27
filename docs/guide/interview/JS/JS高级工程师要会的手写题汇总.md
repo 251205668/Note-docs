@@ -136,11 +136,19 @@ repeatFunc('helloworld')
   }
 
   // URLSearchParams
-  function queryURL(name){
-      const search = location.search
-      const p = new URLSearchParams(search)
-      return p.get(name)
-  }
+function queryParams(){
+  let search = location.search.slice(1)
+  let p = new URLSearchParams(search)
+  /**
+   * get(key) ：获取参数值
+   * getAll(key): 获取所有的参数
+   * has(key) 检验是否有
+   * keys和values返回两个迭代器，可以使用for of 遍历拿到值
+   * */
+  // 解析为对象
+  return Object.fromEntries(p.entries())
+  
+}
 ```
 
 ### 实现驼峰转换
@@ -404,24 +412,6 @@ sleep(2000).then(() => {
 })
 ```
 
-> 方法三：利用 async
-
-```js
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms)
-  })
-}
-
-async function init() {
-  var temp = await sleep(2000)
-  console.log(111) //2s后执行
-}
-
-init()
-```
-
-
 
 ### 实现一个forEach方法
 
@@ -454,24 +444,6 @@ arr._forEach((item, index) => {
 
 // test thisArg
 
-function Counter() {
-    this.sum = 0;
-    this.count = 0;
-}
-// 因为 thisArg 参数（this）传给了 forEach()，每次调用时，它都被传给 callback 函数，作为它的 this 值。
-Counter.prototype.add = function (array) {
-    array._forEach(function (entry) {
-        this.sum += entry;
-        ++this.count;
-    }, this);
-      // ^---- Note
-};
-
-const obj = new Counter();
-obj.add([2, 5, 9]);
-
-console.log(obj.count); // 3 === (1 + 1 + 1)
-console.log(obj.sum);  // 16 === (2 + 5 + 9)
 ```
 
 ### 用reduce实现map
@@ -479,9 +451,9 @@ console.log(obj.sum);  // 16 === (2 + 5 + 9)
 > reduce是一个累加方法，是对数组累积执行回调函数，返回最终计算结果。
 
 ```js
-array.reduce(function(total, currentValue, currentIndex, arr){}, initialValue);
+array.reduce(function(prev, currentValue, currentIndex, arr){}, initialValue);
 
-//total 必需。初始值, 或者计算结束后的返回值。
+//pre 上一次回调返回值。
 //currentValue  必需。当前元素
 //currentIndex  可选。当前元素的索引
 //arr   可选。当前元素所属的数组对象。
@@ -831,7 +803,8 @@ xhr.onreadystatechange = () => {
 // Step2: 打开请求
 xhr.open(
   "GET",
-  "http://localhost:5050/search/song?key=周杰伦&page=1&limit=10&vendor=qq"
+  "http://localhost:5050/search/song?key=周杰伦&page=1&limit=10&vendor=qq",
+  true
 );
 // Step3: 发送请求
 xhr.send();
@@ -901,57 +874,6 @@ async function sett() {
 sett();
 ```
 
-### 斐波那契数列（递归，DP，循环）
-
-- 递归
-
-> 时间复杂度O(2^N) 空间复杂度O(1)
-
-```js
-function fiber(n) {
-  if (n == 0 || n == 1) {
-    return n
-  } else {
-    return fiber(n - 1) + fiber(n - 2)
-  }
-}
-
-console.log(fiber(5))
-```
-
-- DP 动态规划
-
-> 时间复杂度O(N)  空间复杂度O(N)
-
-```js
-function fiber(n) {
-  if (n === 0 || n === 1) return n
-  var dp = [0, 1]
-  for (let i = 2; i <= n; i++) {
-    dp[i] = dp[i - 1] + dp[i - 2]
-  }
-  return dp[n]
-}
-```
-
-- 循环
-
-> 时间复杂夫O(N) 空间复杂度O(1)
-
-```js
-function fiber(n) {
-  if (n === 0 || n === 1) return n
-  var ret = 1
-  var a = 0
-  var b = 1
-  for (let i = 2; i < n; i++) {
-    a = b
-    b = ret
-    ret = a + b
-  }
-  return ret
-}
-```
 
 
 ### 实现一个add函数 满足add(1,2,3)与add(1)(2)(3)结果相同
@@ -1275,6 +1197,9 @@ function find() {
 }
 ```
 
+
+## 场景题
+
 ### 如何将浮点数点左边的数每三位添加一个逗号，如 12000000.11 转化为『12,000,000.11』
 
 > toLocaleString()
@@ -1298,10 +1223,6 @@ function format(number) {
   return number && number.toString().replace(/(\d)(?=(\d{3})+\.)/g, $2 => $2 + ',')
 }
 ```
-
-
-
-## 场景题
 
 ### 写一个 mySetInterVal(fn, a, b),每次间隔 a,a+b,a+2b 的时间，然后写一个 myClear，停止上面的 mySetInterVal
 <br/>
