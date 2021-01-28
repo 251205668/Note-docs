@@ -658,12 +658,9 @@ function observer(target){
     // 非对象或数组
     return target
   }
-  if(Array.isArray(target)){
-    // 使用的时候将原型指向改造之后的arrayob
-    if(target instanceof Array){
-      target.__proto__ = newArrayObject
-  }
-  }
+  if(target instanceof Array){
+    target.__proto__ = newArrayObject
+}
   for(let key in target){
     defineReactive(target,key,target[key])
   }
