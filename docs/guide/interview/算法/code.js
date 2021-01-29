@@ -86,3 +86,66 @@ function generateParenthesis(n){
   backtrack(0,0,'')
   return res
 }
+
+
+//反转区间m===>n的链表
+/**
+ * dummy => a=>b=>...=>d=>c=>..null
+ * 首先找到a，d位置，反转m-n之间的链表，最后将a,b指针指向d,c
+ */
+
+ function reverseBetween(head,m,n){
+   //base-case
+   if(m === n){
+     return head
+   }
+   let dummy = new ListNode(0)
+   dummy.next = head
+   // 确定a,d位置
+   // 反转m。。。n
+   let b = a.next
+   let c = d.next
+   for(let p2 = b;p1=p2.next;p1!==c){
+     let temp = p1.next
+     p1.next = p2
+     p2 = p1
+     p1 = temp
+   }
+   a.next = b
+   d.next = c
+   return dummy.next
+ }
+
+ // 删除链表的重复元素
+ function delete(head){
+   while(p && p.next){
+     if(p.val === p.next.val){
+       p.next = p.next.next
+     }else{
+       p = p.next
+     }
+   }
+   return head
+ }
+
+
+ function quicksort(arr){
+   let recc =(array)=>{
+     if(array.length<=1){
+       return array
+     }
+     let left = []
+     let right = []
+     let mid = array[0]
+     for(let i =0;i<array.length;i++){
+       if(array[i] < mid){
+         left.push(array[i])
+       }else{
+         right.push(array[i])
+       }
+     }
+     return [...recc(left),mid,...recc(right)]
+   }
+   return recc(arr)
+
+ }
