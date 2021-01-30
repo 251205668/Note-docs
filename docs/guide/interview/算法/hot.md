@@ -1136,6 +1136,38 @@ var findLongestWord = function(s, d) {
 };
 ```
 
+### [盛最多水的容器](https://leetcode-cn.com/problems/container-with-most-water/)
+
+![](https://image.yangxiansheng.top/img/20210130153411.png?imglist)
+
+```js
+var maxArea = function(height) {
+    /**
+     * 双指针法：
+     * 1. 如果左指针的高度小于右指针的话，也就是左边低右边高，这是时候面积 = 左高*(右减左),左指针移动
+     * 2. 右指针高度小于左指针，面积=右高度*(左减右),右指针缩小
+     * 每次更新最后的返回值
+     */
+    if(!height)return 0
+    let res = 0
+    let left = 0
+    let right = height.length - 1
+    while(left < right){
+        if(height[left] <= height[right]){
+            let curArea = height[left] * (right-left)
+            res = Math.max(res,curArea)
+            left++ 
+        }else{
+            let curArea = height[right] * (right - left)
+            res = Math.max(res,curArea)
+            right--
+        }
+    }
+    return res
+
+};
+```
+
 ## 二叉树
 
 ### 遍历系列
@@ -1993,6 +2025,83 @@ var connect = function(root) {
 ![](https://image.yangxiansheng.top/img/20210110235207.png?imglist)
 
 ```js
+class MiniHeap {
+  constructor(){
+    // 定义堆
+    this.heap = []
+  }
+  // 千万不要写成m和n交换
+  swap(m,n){
+    let temp = this.heap[m]
+    this.heap[m] = this.heap[n]
+    this.heap[n] = temp
+  }
+  /**
+   * 插入: 插入元素到底部，然后将该元素做上移操作(需要满足父节点必须小于等于子节点)
+   * @param {*} value 插入元素值
+   */
+  insert(value){
+    this.heap.push(value)
+    this.shiftUp(this.heap.length - 1)
+  }
+  // 上移，比较父节点和子节点的大小,如果不符合条件就交换元素，然后对新的元素继续进行上移操作
+  shiftUp(index){
+    // 堆顶不上移
+    if(index === 0){
+      return
+    }
+    const parentIndex = Math.floor(index - 1 / 2)
+    if(this.heap[parentIndex] > this.heap[index]){
+      this.swap(parentIndex,index)
+      this.shiftUp(parentIndex)
+    }
+  }
+  // 堆大小
+  len(){
+      return this.heap.length
+  }
+  /**
+   * 删除: 不能直接删除堆顶元素，需要用数组尾元素替换堆顶元素，然后进行下移操作
+   */
+  pop(){
+    // 替换堆顶元素先
+    this.heap[0] = this.heap.pop()
+    // 下移
+    this.shiftDown(0)
+  }
+  // 下移操作，这里我们需要保证子节点是大于等于父节点的
+  shiftDown(index){
+    const leftChildIndex = 2 * index + 1
+    const rightChildIndex = 2 * index + 2
+    if(this.heap[index] > this.heap[leftChildIndex]){
+      this.swap(index,leftChildIndex)
+      this.shiftDown(leftChildIndex)
+    }
+    if(this.heap[index] > this.heap[rightChildIndex]){
+      this.swap(index,rightChildIndex)
+      this.shiftDown(rightChildIndex)
+    }
+  }
+  // 获取堆顶元素
+  heep(){
+    return this.heap[0]
+  }
+}
+var findKthLargest = function(nums, k) {
+    /**
+     * 思路：最小堆或者直接使用排序
+     */
+    // let h1 = new MiniHeap()
+    // nums.forEach(num=>{
+    //     h1.insert(num)
+    //     if(h1.len() > k){
+    //         h1.pop()
+    //     }
+    // })
+    // return h1.heep()
+    nums = nums.sort((a,b)=>b-a)
+    return nums[k-1]
+};
 ```
 
 ### [前 K 个高频元素](https://leetcode-cn.com/problems/top-k-frequent-elements/)
@@ -2000,6 +2109,81 @@ var connect = function(root) {
 ![](https://image.yangxiansheng.top/img/20210110235236.png?imglist)
 
 ```js
+class MinHeep{
+    constructor(){
+        this.heep = []
+    }
+    swap(m,n){
+        let temp = this.heep[m]
+        this.heep[m] = this.heep[n]
+        this.heep[n] = temp
+    }
+    shiftUp(index){
+        if(index === 0){
+            return
+        }
+        let parentIndex = Math.floor(index - 1 / 2)
+        // 可能会取到undefined
+        if(this.heep[parentIndex].value && this.heep[parentIndex].value > this.heep[index].value){
+            this.swap(parentIndex,index)
+            this.shiftUp(parentIndex)
+        }
+    }
+    shifDown(index){
+        let leftChildIndex = 2 * index + 1
+        let rightChildIndex = 2 * index + 2
+          // 可能会取到undefined
+        if(this.heep[leftChildIndex] && this.heep[leftChildIndex].value < this.heep[index].value){
+            this.swap(leftChildIndex,index)
+            this.shifDown(leftChildIndex)
+        }
+         if(this.heep[rightChildIndex] && this.heep[rightChildIndex].value < this.heep[index].value){
+            this.swap(rightChildIndex,index)
+            this.shifDown(rightChildIndex)
+        }
+    }
+    insert(value){
+        this.heep.push(value)
+        this.shiftUp(this.heep.length - 1)
+    }
+    delete(){
+        this.heep[0] = this.heep.pop()
+        this.shifDown(0)
+    }
+    top(){
+        return this.heep[0]
+    }
+    
+}
+var topKFrequent = function(nums, k) {
+    /**
+     * 按照题意有两种解法：
+     * 1. 用map保存每个数出现的次数为value，数为key，然后将map转为数组进行排序，最后截取前k个元素即可，时间复杂度：O(nlogn),不符合题意
+     * 2. 用map保存每个数出现的次数为value，数为key，然后使用最小堆将{key,value}对象插入，这时需要改造下最小堆的类。当容积大于k时，移除堆顶元素，最后返回堆的key组成的数组即可
+     */
+
+    // 最优做法
+    // 首先使用map记录各个元素出现的次数
+    let map = new Map()
+    nums.forEach(num=>{
+        map.set(num,map.has(num) ? map.get(num) + 1 : 1)
+    })
+    // // 使用最小堆解决问题
+    // let h1 = new MinHeep()
+    // // 记住这里是value-key
+    // map.forEach((value,key)=>{
+    //     h1.insert({value,key})
+    //     // 如果超过k
+    //     if(h1.heep.length > k){
+    //         h1.delete()
+    //     }
+    // })
+    // return h1.heep.map(obj=>obj.key)
+
+    // 使用排序O(nlogn)
+    let sortMapArray = Array.from(map).sort((a,b)=>b[1]-a[1])
+    return sortMapArray.map(arr=>arr[0]).slice(0,k)
+};
 ```
 
 
@@ -3357,4 +3541,282 @@ var longestCommonPrefix = function(strs) {
     return str
 
 };
+```
+
+## 排序和搜索
+
+### 冒泡排序
+
+```js
+Array.prototype.bunbleSort = function (){
+  for(let i = 0 ;i < this.length-1;i++){
+    for(let j = 0;j < this.length-1-i;j++){
+      if(this[j] > this[j+1]){
+        const temp = this[j]
+        this[j] = this[j+1]
+        this[j+1] = temp
+      }
+    }
+  }
+}
+```
+
+### 插入排序
+
+```js
+//插入: 从第二个数开始往前比 如果前面某个数比第二个数要大，就将这个数往后排，如果不大就停止，最后获取到的j就是要插入的位置
+
+Array.prototype.insertSort = function (){
+  // 从 1 开始是因为要从第二个数开始往前比
+  for(let i = 1;i < this.length;i++){
+     // 刚开始假设 取第二个元素 
+      const temp = this[i]
+      let j = i
+      while(j > 0){
+        if(this[j-1] > temp){
+          // 往后排
+          this[j] = this[j-1]
+        }else{
+          break
+        }
+        j--
+      }
+      // 获取到的 j 就是插入位置
+      this[j] = temp
+    
+  }
+```
+
+### 归并排序
+
+```js
+// 归并 先分成子有序数组 最后合并为大数组，合并有效数组就是比较对头，将较小者对头推入新数组中即可
+Array.prototype.mergeSort = function () {
+  const rec = (arr)=>{
+    if(arr.length <= 1){
+      return arr
+    }
+    const mid = Math.floor(arr.length / 2)
+    const left = arr.slice(0,mid)
+    // 注意这里是arr.length 而不是-1
+    const right = arr.slice(mid,arr.length)
+    // 递归 这里其实就是在将分好的左右数组再劈成两半
+    const orderLeft = rec(left)
+    const orderRight = rec(right)
+    
+
+    // 接下来合并数组，合并数组就是分别取出对头进行比较
+    const res = []
+    while(orderLeft.length || orderRight.length){
+      if(orderLeft.length && orderRight.length){
+        res.push(orderLeft[0] < orderRight[0] ? orderLeft.shift() : orderRight.shift())
+      }else if(orderLeft.length){
+        res.push(orderLeft.shift())
+      }else if(orderRight.length){
+        res.push(orderRight.shift())
+      }
+    }
+    return res
+  }
+ const result =  rec(this)
+ result.forEach((n,i)=>{
+   this[i] = n
+ })
+}
+```
+
+### 快速排序
+
+```js
+// 快速: 选择基准 ，将数组拆分左右数组，直到array的长度小于等于1递归结束
+
+Array.prototype.quickSort = function () {
+  const rec = (arr)=>{
+    if(arr.length <= 1){
+      return arr
+    }
+    const left =[]
+    const right =[]
+    const mid = arr[0]
+    for(let i =1;i < arr.length;i++){
+      if(arr[i] < mid){
+        left.push(arr[i])
+      }else{
+        right.push(arr[i])
+      }
+    }
+    return [...rec(left),mid,...rec(right)]
+  }
+  const result = rec(this)
+  result.forEach((n,i)=>{
+    this[i] = n
+  })
+}
+```
+
+### 选择排序
+
+```js
+// 选择 : 每一轮开始假设当前最小值第i个元素，然后遍历数组找到最小值，如果找到的最小值比当前元素小就交换，否则就将最小值更新，
+
+Array.prototype.selectionSort = function (){
+  for(let i = 0 ;i < this.length-1;i++){
+    let minIndex = i
+    for(let j = i;j<this.length;j++){
+      if(this[j] < this[minIndex]){
+        minIndex = j
+      }
+    }
+    if(minIndex !== i){
+      const temp = this[i]
+      this[i] = this[minIndex]
+      this[minIndex] = temp
+    }
+  }
+}
+```
+
+
+### 堆排序
+
+```js
+/**
+ * 思路： 堆排序需要三个方法：主体函数 + 构建堆 + 调整堆
+ */
+
+// 主方法: 首先构建堆，遍历数组，这个时候第一个元素就是最大值，将堆头和尾元素更换位置，length-1，继续调整堆调换位置
+
+function heapsort(arr){
+  buildHeap(arr)
+  for(let i = arr.length - 1;i>0;i--){
+    // 交换
+    swap(arr,0,i)
+    // 下移调整
+    heapify(arr,0,i)
+  }
+  return arr
+}
+function buildHeap(arr){
+  if(!arr.length){
+    return
+  }
+  // 只有Math.floor(len/2-1)需要调整，记得此处i可以等于0
+  for(let i = Math.floor(arr.length / 2 - 1);i>=0;i--){
+      heapify(arr,i,arr.length)
+  }
+}
+
+// 堆调整：找到子节点最大的，然后交换父子节点，循环结束要重新赋值父节点，表示找到了位置,可以理解为下移操作
+function heapify(arr,parent,length){
+  let temp = arr[parent]
+  let childIndex = 2 * parent + 1
+  // 找到最大节点下标
+  while(childIndex < length){
+    if(childIndex + 1 < length && arr[childIndex + 1] > arr[childIndex]){
+      childIndex ++
+    }
+    // 不符合大顶堆则跳出循环
+    if(arr[childIndex] <= arr[parent]){
+      break
+    }
+    arr[parent] = arr[childIndex]
+    parent = childIndex
+    childIndex = 2 * parent + 1
+  }
+  //循环结束要重新赋值父节点
+  arr[parent] = temp
+}
+
+function swap(arr,i,j){
+  let temp = arr[i]
+  arr[i] = arr[j]
+  arr[j] = temp
+}
+let arr1 = [1,21,12312312,3312,234,-1]
+console.log(heapsort(arr1))
+```
+
+
+### 二分法和进阶
+
+首先常规的二分查找不用多说直接上
+
+```js
+function binarySearch(arr,item){
+  let low = 0
+  let high = arr.length-1
+  while(low <= high){
+    let mid = Math.floor((low + high)/2)
+    let Element = arr[mid]
+    if(Element === item){
+      return mid
+    }else if(Element > item){
+      high = mid -1
+    }else if(Element < item){
+      low = mid + 1
+    }
+  }
+  return -1
+}
+```
+
+但是这个常规的二分查找无法处理一下情形
+
+> 输入 [1,2,3,3,4] ,3
+
+这个时候我们在搜索的如果中间位元素等于搜索元素就不能直接返回，要分两种情况了。
+一句话就是，寻找数组左侧第一位，就要缩小右侧边界范围，寻找右侧第一位，就要缩小左侧边界范围,然后检查数组越界也需要格外注意
+
+**左侧边界查找**：`[left,right)`, **当`nums[mid] == target`时不要立即返回而要收紧右侧边界(`high = mid -1`)以锁定左侧边界**
+
+```js
+function leftBoundSearch(arr,item){
+  let low = 0
+  let high = arr.length-1
+  while(low <= high){
+    // 切记 取值一定要定义在里面，不然会报错
+    let mid = Math.floor((low + high)/2)
+    let Element = arr[mid]
+    if(Element === item){
+      high = mid - 1
+    }else if(Element > item){
+      high = mid -1
+    }else if(Element < item){
+      low = mid + 1
+    }
+  }
+  // 检查数组越界
+  if(low >= arr.length || arr[left] !== item){
+    return -1
+  }
+  return left
+}
+
+```
+
+
+**右侧边界查找**：(left,right],**当`nums[mid] == target`时不要立即返回而要收紧左侧边界(`low = mid +1`)以锁定右侧边界**
+
+```js
+function rightBoundSearch(arr,item){
+  let low = 0
+  let high = arr.length-1
+  while(low <= high){
+    let mid = Math.floor((low + high)/2)
+    let Element = arr[mid]
+    if(Element === item){
+      low = mid + 1
+    }else if(Element > item){
+      high = mid -1
+    }else if(Element < item){
+      low = mid + 1
+    }
+  }
+  // 检查数组越界
+  if( high < 0|| arr[right] !== item){
+    return -1
+  }
+  return right
+}
+
 ```
