@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<style lang="">
+  #kw{
+    width: 286px;
+    box-sizing: border-box;
+    border: 2px solid #333333;
+    padding: 0 5px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 16px;
+  }
+  #append{
+    width: 286px;
+    box-sizing: border-box;
+    border: 2px solid #333333;
+    display: none;
+    border-top: 0;
+  }
+  #append .item:hover{
+    background-color: aqua;
+    cursor: pointer;
+  }
+  .item{
+    padding: 3px 5px;
+  }
+  
+</style>
+
+<body>
+<div class="wrapper">
+  <input id="kw" placeholder="请输入" onkeyup="getContent(this)" />
+  <div id="append"></div>
+</div>
+</body>
+
+<script>
+  var data= [
+    '你好',
+    '你好李焕英',
+    '你家里人'
+  ]
+  var kw = document.getElementById('kw')
+  var append = document.getElementById('append')
+  function getContent(obj){
+    let inputValue = obj.value.trim()
+    // 有 和 没有的情况
+    if(inputValue === ''){
+      append.style.display = 'none'
+      append.innerHTML = ''
+      return 
+    }
+    var html = ''
+    for(let i =0;i<data.length;i++){
+      if(data[i].indexOf(inputValue)){
+        html +="<div class='item' onClick='getCon(this)'>" + data[i] + '</div>'
+      }
+    }
+    if(html !== ''){
+      append.style.display = 'block'
+      append.innerHTML = html
+    }
+  }
+  // 点击子元素事件
+  function getCon(event){
+    kw.value = event.innerText
+    append.style.display = 'none'
+    append.innerHTML = ''
+  }
+</script>
+</html>
