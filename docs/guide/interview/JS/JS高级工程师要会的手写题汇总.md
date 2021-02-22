@@ -428,9 +428,7 @@ arr.forEach(function(currentValue, currentIndex, arr) {}, thisArg)
 
 ```js
 Array.prototype._forEach = function(fn, thisArg) {
-    if (typeof fn !== 'function') throw "参数必须为函数";
-    if(!Array.isArray(this)) throw "只能对数组使用forEach方法";
-    let arr = this;
+    let arr = Array.prototype.slice.call(this)
     for(let i=0; i<arr.length; i++) {
         fn.call(thisArg, arr[i], i, arr)
     }
@@ -444,6 +442,20 @@ arr._forEach((item, index) => {
 
 // test thisArg
 
+```
+
+### 实现一个filter方法
+
+每次需要将符合条件的元素放到返回数组中去
+
+```js
+Array.prototype._fillter = function(fn,thisArg){
+  let arr = Array.prototype.slice.call(this)
+  let resArr = []
+  for(let i=0;i<arr.length;i++){
+    fn.call(thisArg,arr[i],i,arr) && resArr.push(arr[i])
+    }
+}
 ```
 
 ### 用reduce实现map
@@ -631,6 +643,39 @@ MyPromise.prototype.then = function (onResolved, onRejected) {
     onRejected(this.value)
   }
 }
+```
+
+### Promise实现网络超时判断
+
+```js
+const uploadFile = (url, params) => {
+  return Promise.race([
+    uploadFilePromise(url, params),
+    uploadFileTimeout(3000)
+  ])
+}
+function uploadFilePromise(url, params) {
+  return new Promise((resolve, reject) => {
+    axios.post(url, params, {
+      headers: {'Content-Type': 'multipart/form-data'}, // 以formData形式上传文件
+      withCredentials: true
+    }).then(res => {
+      if(res.status===200 && res.data.code===0) {
+        resolve(res.data.result)
+      }else {
+        reject(res.data)
+      }
+    })
+  })
+}
+function uploadFileTimeout(time) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject({timeoutMsg: '上传超时'})
+    }, time)
+  })
+}
+
 ```
 
 ### 手写Vue双向数据绑定
@@ -1161,6 +1206,31 @@ document.querySelector('#btn').addEventListener('click', function () {
 
 Vue 中我们通过 props 完成父组件向子组件传递数据，子组件与父组件通信我们通过自定义事件即 $on,$emit来实现，其实也就是通过 $emit 来发布消息，并对订阅者 $on 做统一处理 ~
 
+### 图片懒加载
+
+```js
+function lazyload() {
+  const imgs = document.getElementsByTagName('img');
+  const len = imgs.length;
+  // 可视窗口高度
+  const viewHeight = document.documentElement.clientHeight;
+  // 滚动条高度
+  const scrollHeight = document.documentElement.scrollTop || document.body.scrollTop;
+  for (let i = 0; i < len; i++) {
+    // 元素距顶高度
+    const offsetHeight = imgs[i].offsetTop;
+    if (offsetHeight < viewHeight + scrollHeight) {
+      const src = imgs[i].dataset.src;
+      imgs[i].src = src;
+    }
+  }
+}
+
+// 可以使用节流优化一下
+window.addEventListener('scroll', lazyload);
+
+```
+
 ### 对一个页面打印所有的结点类型和结点名称
 
 ```JavaScript
@@ -1170,27 +1240,11 @@ nodes.forEach((node) => {
 })
 ```
 
-### 获取一个页面所有标签的个数
+### 打印页面HTML种类数量
 
 ```js
-function find() {
-  var map = {};
-  function __find(node) {
-    if (node.nodeType === 1) {
-      //这里我们用nodeName属性，直接获取节点的节点名称
-      var tagName = node.nodeName;
-      //判断对象中存在不存在同类的节点，若存在则添加，不存在则添加并赋值为1
-      map[tagName] = map[tagName] ? map[tagName] + 1 : 1;
-    }
-    //获取该元素节点的所有子节点
-    var children = node.childNodes;
-    for (var i = 0; i < children.length; i++) {
-      //递归调用
-      __find(children[i])
-    }
-  }
-  __find(document);
-  return map;
+function fn(){
+  return [...new Set([...document.getElementsByTagName('*')].map(el=>el.tagName))].length
 }
 ```
 
@@ -2106,5 +2160,35 @@ str.replace(re,($0,$1) => {
     }
 });
 console.log(`字符最多的是${char}，出现了${num}次`);
+
+···········
+let map = new Map()
+for(let c of str){
+  map.set(c,map.has(c) ? map.get(c) + 1 : 1)
+}
+let res = []
+res = [...map].sort((a,b)=>b[1]-a[1])
+console.log(`字符最多的是${res[0][0]}，出现了${res[0][1]}次`);
 ```
 </details>
+
+
+### 对输入的字符串，去除其中的字符'b'以及连续出现的'a'和'c'
+
+```js
+  'aacbd' -> 'ad'
+  'aabcd' -> 'ad'
+  'aaabbccc' -> ''
+
+```
+
+```js
+function fn(str){
+  let res = str.replace(/b/g,'')
+  while(res.match(/(ac)+/)){
+    res = res.replace(/ac/,'')
+  }
+  return res
+}
+
+```

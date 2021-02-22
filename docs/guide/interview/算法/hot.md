@@ -592,6 +592,7 @@ var reverseList = function(head) {
 }
 ```
 
+
 ### [反转链表 II](https://leetcode-cn.com/problems/reverse-linked-list-ii/)
 
 ![](https://image.yangxiansheng.top/img/20210103194253.png?imglist)
@@ -635,6 +636,53 @@ var reverseBetween = function(head, m, n) {
     return dummyNode.next
 
 };
+```
+
+### [链表奇偶重排](https://www.nowcoder.com/practice/02bf49ea45cd486daa031614f9bd6fc3?tpId=190&tqId=36037&rp=1&ru=%2Factivity%2Foj&qru=%2Fta%2Fjob-code-high-rd%2Fquestion-ranking&tab=answerKey)
+
+![](https://image.yangxiansheng.top/img/20210220114240.png?imglist)
+
+```js
+function oddEvenList( head ) {
+    // write code here
+    if(!head){
+        return null
+    }
+    let odd = head
+    let even = head.next
+    let evenHead = even //保存偶数链节点
+    // 保证偶数链走下去
+    while(even && even.next){
+        // 奇数和偶数下个节点都指向下下个
+        odd.next = odd.next.next
+        even.next = even.next.next
+        // 保证遍历下去
+        odd = odd.next
+        even = even.next
+    }
+    odd.next = evenHead
+    return head
+}
+```
+
+数组变型
+
+![](https://image.yangxiansheng.top/img/20210221092742.png?imglist)
+
+直接遍历数组元素，为奇数就和 `nums[i]`，交换位置
+```js
+var exchange = (nums)=>{
+  let i = 0
+  for(let j = 0;j<nums.length;j++){
+    if(nums[j] %2 !== 0){
+      let temp = nums[j]
+      nums[i] = nums[j]
+      nums[j] = temp
+    }
+  }
+  return nums
+}
+
 ```
 
 ### [删除链表中的结点](https://leetcode-cn.com/problems/delete-node-in-a-linked-list/)
@@ -1738,6 +1786,29 @@ var sortedArrayToBST = function(nums) {
 };
 ```
 
+#### [有序链表转换二叉搜索树](https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree/)
+
+![](https://image.yangxiansheng.top/img/20210222113632.png?imglist)
+
+```js
+var sortedListToBST = function(head) {
+  var stack = []
+  while(head){
+    stack.push(head.val)
+    head = head.next
+  }
+  function transformTree(nums){
+    if(!nums.length)return null
+    const mid = Math.floor(nums.length/2)
+    let root = new TreeNode(nums[mid])
+    root.left = transformTree(nums.slice(0,mid))
+    root.right = transformTree(nums.slice(mid+1))
+    return root
+  }
+  return transformTree(stack)
+}
+```
+
 #### [从前序与中序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
 
 ![](https://image.yangxiansheng.top/img/20210116220456.png?imglist)
@@ -1965,6 +2036,7 @@ var flatten = function(root) {
         if(!root){
             return
         }
+        // 将左右子树拉平
         dfs(root.left)
         dfs(root.right)
         let pre = root.left
@@ -2262,6 +2334,77 @@ var searchRange = function(nums, target) {
 };
 
 ```
+
+### [0～n-1中缺失的数字](https://leetcode-cn.com/problems/que-shi-de-shu-zi-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210222115629.png?imglist)
+
+```js
+var missingNumber = function(nums) {
+  let left = 0
+  let right = nums.length - 1
+  while(left<=right){
+      const mid = Math.floor((left+right)/2)
+      // 0到mid中不存在，需要扩大左边界
+      if(nums[mid] === mid){
+          left = mid + 1
+      }else{
+          right = mid - 1
+      }
+  }
+  return left
+};
+```
+
+### [x的平方根](https://leetcode-cn.com/problems/sqrtx/)
+
+![](https://image.yangxiansheng.top/img/20210222125627.png?imglist)
+
+```js
+var mySqrt = function(x) {
+// 和二分法唯一的区别是 需要用res保存mid结果
+  let left = 0
+  let right = x
+  let res
+  while(left <= right){
+      const mid = Math.floor((left+right)/2)
+      // 关键步骤一定要写对
+      if(mid*mid<=x){
+          res = mid
+          left = mid + 1
+      }else{
+          right = mid - 1
+      }
+  }
+  return res
+};
+```
+
+### [Pow(x, n)](https://leetcode-cn.com/problems/powx-n/)
+
+![](https://image.yangxiansheng.top/img/20210222131159.png?imglist)
+
+```js
+var myPow = function(x, n) {
+ // pow(2,10) = pow(4,5) = 4 * pow(4, 4) = 4 * 16 * pow(16, 2) = 4 * 16 * 256 * pow(1, 1)
+ // n为偶数 myPow(x*x,n/2) 
+ // n为奇数 x * myPow(x,n-1)
+ if(n === 0){
+     return 1
+ }
+ // 负数幂 幂倒
+ if(n < 0){
+     n = -n
+     x = 1/x
+ }
+ if(n%2 ===0){
+     return myPow(x*x,n/2)
+ }
+ else return x * myPow(x,n-1)
+}
+```
+
+
 ## N数之和
 
 ### [两数之和](https://leetcode-cn.com/problems/two-sum/submissions/)
@@ -3543,6 +3686,41 @@ var longestCommonPrefix = function(strs) {
 };
 ```
 
+### [字符串相加](https://leetcode-cn.com/problems/add-strings/)
+
+![](https://image.yangxiansheng.top/img/20210221092633.png?imglist)
+
+这道题就是大数相加
+
+```js
+let addString = (num1,num2)=>{
+// // 首先补零，然后从右往左相加(先从个位数相加)，考虑进位，如果两数之和大于9，进位置为1，否则置为0
+    while(num1.length > num2.length) num2 = '0' + num2
+    while(num2.length > num1.length) num1 = '0' + num1
+    let res = ''
+    let carry = 0 // 进位
+    for(let i = num1.length-1;i >= 0;i--){
+        const sum = +num1[i]+ +num2[i] + carry
+        // 最后结果就是每次两数之和个位数拼接res，也就是sum%10+res
+        res = sum % 10 + res;  
+        carry = sum > 9 ? 1 : 0
+    }
+    // 最后也需要考虑进位是否存在.存在就需要补1
+    return carry === 1 ? '1' + res : res
+}
+```
+
+### [翻转字符串里的单词](https://leetcode-cn.com/problems/reverse-words-in-a-string/)
+
+![](https://image.yangxiansheng.top/img/20210222114149.png?imglist)
+
+```js
+// 思路：去重两边空白字符然后转为数组反转，接着转为字符串
+var reverseWords = (s)=>{
+  return s.trim().split(/\s+/).reverse().join(' ')
+}
+```
+
 ## 排序和搜索
 
 ### 冒泡排序
@@ -3820,3 +3998,60 @@ function rightBoundSearch(arr,item){
 }
 
 ```
+
+## 矩阵
+
+### [矩阵查找](https://www.nowcoder.com/practice/3afe6fabdb2c46ed98f06cfd9a20f2ce?tpId=190&tqId=35380&rp=1&ru=%2Factivity%2Foj&qru=%2Fta%2Fjob-code-high-rd%2Fquestion-ranking&tab=answerKey)
+
+![](https://image.yangxiansheng.top/img/20210220112648.png?imglist)
+
+```js
+/**
+ * 思路：这里就是利用两个指针，分别代表行和列，因为是有序矩阵，如果查找的元素比当前元素小，则扩大，也就是行++，反之列--
+ * */
+
+function findElement( mat ,  n ,  m ,  x ) {
+    // 行数等于二维矩阵的数组大小,矩阵第一个元素数组大小等于列数
+    if(!mat.length || mat.length !== n || mat[0].length !== m){
+        return []
+    }
+    let row = 0
+    let col = mat[0].length - 1
+    while(row <= mat.length - 1 && col >= 0){
+        if(mat[row][col] === x){
+            return [row,col]
+        }else if(mat[row][col] > x){
+            col --
+        }else{
+            row ++
+        }
+    }
+    return []
+}
+```
+
+### [搜索二维矩阵 II](https://leetcode-cn.com/problems/search-a-2d-matrix-ii/)
+
+![](https://image.yangxiansheng.top/img/20210222122759.png?imglist)
+
+```js
+var searchMatrix = function(matrix, target) {
+    if(!matrix.length)return false
+    let row = 0
+    let col = matrix[0].length - 1
+    while(row <= matrix.length -1 && col >=0 ){
+        if(matrix[row][col] === target){
+            return true
+        }else if(matrix[row][col] < target){
+            row++
+        }else{
+            col--
+        }
+    }
+    return false
+};
+```
+
+## 智力题
+
+[题集](https://github.com/lf2021/Front-End-Interview/blob/master/09.%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/%E6%99%BA%E5%8A%9B%E9%A2%98.md)
