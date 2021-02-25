@@ -120,7 +120,47 @@ postOrder = (root)=>{
 }
 ```
 
-## 回溯算法
+## 递归与回溯
+
+一类题是排列组合题，一类是其他题
+
+### [子集](https://leetcode-cn.com/problems/subsets/)
+
+![](https://image.yangxiansheng.top/img/20210224211550.png?imglist)
+
+```js
+var subsets = function(nums) {
+    /** 
+     * 排列组合题。求一个数组全子集,这道题同样也适用于求字符串的全子集
+     * 回溯:
+     * 路径: track，子集
+     * 选择列表: nums
+     * 结束条件: 满足子集数量小于等于集合数量
+     */
+    let res = []
+    let n = nums.length
+    // i代表子集元素数量
+    function backTrack(track,i){
+        if(i <= n){
+            res.push(track)
+        }
+        // 保证子集数量在合法范围[i,n)
+        for(let j = i;j < n;j++){
+            // 做选择
+            track.push(nums[j])
+            // 递归,牢记浅拷贝一下
+            backTrack(track.slice(),j+1)
+            // 撤销
+            track.pop()
+        }
+    }
+    backTrack([],0)
+    return res
+
+};
+
+```
+
 ### [全排列](https://leetcode-cn.com/problems/permutations/)
 
 ![](https://image.yangxiansheng.top/img/20201222232114.png?imglist)
@@ -136,7 +176,7 @@ function(nums){
   let res = []
   function backtrack(track){
     if(track.length === nums.length){
-      res.push(track)
+      res.push(track.slice())
       return
     }
     for(let i=0;i<nums.length;i++){
@@ -157,6 +197,223 @@ function(nums){
   return res
 }
 
+```
+
+### [组合总和](https://leetcode-cn.com/problems/combination-sum/)
+
+![](https://image.yangxiansheng.top/img/20210225135548.png?imglist)
+
+```js
+var combinationSum = function(candidates, target) {
+    /**
+     * 求目标和的组合
+     * 回溯算法
+     * 终止条件: rest === 0
+     * 选择列表: candidates数组元素
+     * track: 和为target的子集
+     * 剪枝条件: rest < candidates[i] 永远都凑不齐，因为每个元素都大于剩余目标值
+     */
+ let res = [];
+    let len = candidates.length;
+    //这里排序是为了防止在for循环if判断时直接跳出了，比如这样的样例[8,7,4,3],11
+    candidates.sort((x,y) => x-y);	
+    function backTrack(path,i,rest){
+        if(rest === 0){
+            res.push(path);
+            return;
+        }
+        for(let j = i;j < len;j++){
+            //剪枝条件
+            if(rest < candidates[j]) break;          
+            path.push(candidates[j]);
+            backTrack(path.slice(),j,rest-candidates[j]);
+            path.pop();
+        }
+    }
+    backTrack([],0,target);
+ 
+    return res;
+
+};
+```
+
+### [字母大小写全排列](https://leetcode-cn.com/problems/letter-case-permutation/)
+
+![](https://image.yangxiansheng.top/img/20210224224727.png?imglist)
+
+```js
+var letterCasePermutation = function(S) {
+/**
+ * 回溯算法
+ * 如果遍历到的是字母，则分别堆小写字母和大写字母进行回溯，如果是数字则进行拼接回溯
+ * 选择条件: 是否是字母
+ * 路径: 每次拼接的str
+ * 结束条件: 当前遍历下标i === S.length,遍历完成
+ */
+    let res = []
+    let n = S.length
+    function backTrack(str,i){
+        if(i === n){
+            res.push(str)
+            return
+        }
+        let s = S[i]
+        // 如果是字母，分别对大写或者小写进行回溯
+        if(s>='a' && s<='z' || s>= 'A' && s<= 'Z'){
+            let lower = str + s.toLowerCase()
+            let upper = str + s.toUpperCase()
+            backTrack(lower,i+1)
+            backTrack(upper,i+1)
+        }else{
+            backTrack(str + s,i+1)
+        }
+    }
+    backTrack('',0)
+    return res
+};
+```
+
+### [面试题 08.08. 有重复字符串的排列组合](https://leetcode-cn.com/problems/permutation-ii-lcci/)
+
+![](https://image.yangxiansheng.top/img/20210224230538.png?imglist)
+
+```js
+var permutation = function(S) {
+  /**
+   * 思路：对每个已选择的元素做标记,用visited记录，1代表选择，0代表未选择
+   * 剪枝条件: S[i-1] === S[i] && visited[i-1] === 0
+   * 选择列表:[0,S]
+   * 路径:拼接好的字符串
+   * */
+  let n = S.length
+  let visited = new Array(n).fill(0)
+  let res = []
+  S = S.split('').sort().join('')
+  // str:拼接字符串
+  function backTrack(str){
+      // 结束条件
+      if(str.length === n){
+          res.push(str)
+          return
+      }
+      for(let i =0;i<n;i++){
+          // 剪枝,如果当前字符已经被选择，或者当前字符和上一个字符(未被选择)重复，则剪枝
+          if(visited[i] === 1){
+              continue
+          }
+          if(S[i] === S[i-1] && visited[i-1] === 0){
+              continue
+          }
+          visited[i] = 1
+          backTrack(str + S[i])
+          visited[i] = 0
+      }
+  }
+
+    backTrack("")
+    return res
+}
+
+```
+
+### [全排列 II](https://leetcode-cn.com/problems/permutations-ii/)
+
+![](https://image.yangxiansheng.top/img/20210225004713.png?imglist)
+
+```js
+// 本题和全排列唯一区别是集合元素可重复,和上一道重复字符串排列逻辑相同，借助visited
+var permuteUnique = function(nums) {
+  let n = nums.length
+  let visited = new Array(n).fill(0)
+  let res = []
+  // 排序
+  nums.sort((a,b)=>a-b)
+  function backTrack(track){
+    if(track.length === n){
+      return res.push(track.slice())
+    }
+    for(let i=0;i<n;i++){
+      if(visited[i] === 1){
+        continue
+      }
+      if(visited[i-1] === 0 && nums[i] === nums[i-1] && i-1>=0){
+        continue
+      }
+      track.push(nums[i])
+      visited[i] = 1
+      brackTrack(track)
+      track.pop()
+      visited[i] = 0
+    }
+  }
+  brackTrack([])
+  return res
+}
+```
+
+### [分割回文串](https://leetcode-cn.com/problems/palindrome-partitioning/)
+
+![](https://image.yangxiansheng.top/img/20210225181003.png?imglist)
+
+```js
+var partition = function(str) {
+  // 关键点，截取的子串为 str[start,i+1]
+ let res = [];
+ // 判断回文
+    function isPalindrome(s){
+        let head = 0;
+        let tail = s.length-1;
+        while(head <= tail){
+            if(s[head] !== s[tail]) return false;
+            head++;
+            tail--;
+        }
+        return true;
+    }
+    // 如果start起始位置等于字符窜长度，则已经结束回溯
+    function backtrack(path,start){
+    if(start === str.length) res.push(path);
+        for(let i = start;i < str.length;i++){
+            // 取出截取的[start,i]子集，判断是否是回文子串
+            console.log(i,str.slice(start,i+1))
+            if(!isPalindrome(str.slice(start,i+1))) continue;
+            path.push(str.slice(start,i+1));
+            backtrack(path.slice(),i+1);
+            path.pop();
+        }
+    }
+    backtrack([],0);
+    return res;
+
+};
+```
+
+### [面试题 16.11. 跳水板](https://leetcode-cn.com/problems/diving-board-lcci/)
+
+![](https://image.yangxiansheng.top/img/20210224213636.png?imglist)
+
+```js
+var divingBoard = function(shorter, longer, k) {
+    /**
+     * 排列组合题，假设shorter数量为i，那么longer数量一定为k-i,而i的取值范围在[0,k]
+     * 两种特殊情况:
+     * k === 0
+     * shorter === longer
+     */
+    if (k === 0) {
+        return []
+    }
+    if (shorter === longer) {
+        return [k * shorter]
+    }
+    let res = []
+    for (let i = 0; i <= k; i++) {
+        let longCount = i
+        let shortCount = k - i
+        res.push(shortCount * shorter + longCount * longer)
+    }
+    return res
+};
 ```
 
 ### [N皇后](https://leetcode-cn.com/problems/n-queens/)
@@ -1096,6 +1353,21 @@ function reverseList(head) {
             right--
         }
     };
+```
+
+### 判断回文字符串
+
+```js
+function isPalindrome(s){
+  let left = 0
+  let right = s.length - 1
+  while(left <right){
+    if(s[left]!==s[right])return false
+    left++
+    right--
+  }
+  return true
+}
 ```
 
 ### [合并两个有序数组](https://leetcode-cn.com/problems/merge-sorted-array/)
@@ -3589,26 +3861,18 @@ var letterCombinations = function(digits) {
 
 ```js
 var countSubstrings = function(s) {
-    /**
-     * 思路：翻转字符串，然后用i,j前后指针记录开始和结束，可以将j看成分界线
-     * 1. 记录原字符串从开始到结束的字符串，s1
-     * 2. 记录翻转字符串从开始到结束的字符串,len-j开始截取j-i个字符,s2
-     * s1 === s2 count++
-     */
-    let count = 0
-    // 翻转字符
-    let s2 = s.split('').reverse().join('')
-    for(let i =0;i<s.length;i++){
-        // 这里注意j下标取等号
-        for(let j = i+1;j<=s2.length;j++){
-            // s1 取i到j字符串，但是取不到j,s2从len-j开始
-            if(s.substr(i,j-i) === s2.substr(s.length - j,j-i)){
-                count++
-            }
+  // 双循环 计算出组合字符串，然后判断
+    let res = 0; //记录结果
+    for(let i=0;i<s.length;i++){
+        let str = ''; //正向组合字符串
+        let restr = ''; //反向组合字符串
+        for(let j=i;j<s.length;j++){
+            str += s[j];
+            restr = s[j] + restr;
+            if(str == restr) res++; 
         }
     }
-    return count
-};
+    return res
 ```
 
 ### [括号生成](https://leetcode-cn.com/problems/generate-parentheses/)
