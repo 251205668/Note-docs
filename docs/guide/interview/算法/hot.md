@@ -4007,26 +4007,25 @@ Array.prototype.bunbleSort = function (){
 
 ```js
 //插入: 从第二个数开始往前比 如果前面某个数比第二个数要大，就将这个数往后排，如果不大就停止，最后获取到的j就是要插入的位置
-
-Array.prototype.insertSort = function (){
-  // 从 1 开始是因为要从第二个数开始往前比
-  for(let i = 1;i < this.length;i++){
-     // 刚开始假设 取第二个元素 
-      const temp = this[i]
+  function insertSort(arr){
+    for(let i=1;i<arr.length;i++){
+      let temp = arr[i]
       let j = i
-      while(j > 0){
-        if(this[j-1] > temp){
-          // 往后排
-          this[j] = this[j-1]
+      while(j>0){
+        // 判断前面的数是否大于temp，大的话就交换j和j-1的位置
+        if(arr[j-1] > temp){
+          arr[j] = arr[j-1]
         }else{
           break
         }
         j--
       }
-      // 获取到的 j 就是插入位置
-      this[j] = temp
-    
+      // 插入的位置就是j
+      arr[j] = temp
+    }
+    return arr
   }
+  console.log(insertSort([212,12,12,31,1,34,2,5]))
 ```
 
 ### 归并排序
@@ -4099,23 +4098,17 @@ Array.prototype.quickSort = function () {
 ### 选择排序
 
 ```js
-// 选择 : 每一轮开始假设当前最小值第i个元素，然后遍历数组找到最小值，如果找到的最小值比当前元素小就交换，否则就将最小值更新，
+// 选择 : 计算出[i,arr.length-1]的最小值，还有下标，然后和当前遍历到的元素交换位置
 
-Array.prototype.selectionSort = function (){
-  for(let i = 0 ;i < this.length-1;i++){
-    let minIndex = i
-    for(let j = i;j<this.length;j++){
-      if(this[j] < this[minIndex]){
-        minIndex = j
-      }
+function selectSort(arr){
+    for(let i = 0;i < arr.length;i++){
+        let min = Math.min(...arr.slice(i));
+        let index = arr.indexOf(min);
+        [arr[i],arr[index]] = [arr[index],arr[i]];
     }
-    if(minIndex !== i){
-      const temp = this[i]
-      this[i] = this[minIndex]
-      this[minIndex] = temp
-    }
-  }
+    return arr;
 }
+console.log(selectSort([21,1,2,6,1,3]))
 ```
 
 
@@ -4176,7 +4169,11 @@ function swap(arr,i,j){
 }
 let arr1 = [1,21,12312312,3312,234,-1]
 console.log(heapsort(arr1))
+
 ```
+
+### [各排序算法的稳定性，时间复杂度，空间复杂度](https://juejin.cn/post/6844904175562653710#heading-48)
+
 
 
 ### 二分法和进阶

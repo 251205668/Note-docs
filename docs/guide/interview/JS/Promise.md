@@ -125,7 +125,7 @@ getJSON('/posts.json').then(function(posts) {
 ### race
 
 `Promise.race(iterable)` 方法返回一个 promise，一旦迭代器中的某个promise解决或拒绝，返回的 promise就会解决或拒绝。
-> 字面意思： 一旦数组里面有一个Promise实例状态改变，就调用操作成功函数
+> 字面意思： 一旦数组里面有一个Promise实例状态改变，就调用操作改变函数
 
 
 **手写实现**
@@ -141,9 +141,9 @@ Promise.race = function(iterator){
   }
   return new Promise((resolve,reject)=>{
     for(let i of iterator){
-      Promise.resolve(i)=>{data=>{
+      Promise.resolve(i).then(data=>{
         resolve(data)
-      }}
+      })
     }
   }).catch(e=>{
     reject(e)
