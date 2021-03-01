@@ -1792,6 +1792,7 @@ console.log(test());
 </details>
 
 <br/>
+
 ### 给定一个数组，按找到每个元素右侧第一个比它大的数字，没有的话返回-1 规则返回一个数组
 
 ```js
@@ -2193,4 +2194,16 @@ function fn(str){
   return res
 }
 
+```
+
+
+### 时间复杂度为O(n)的情况下随机不重复输出1~100
+
+```js
+let a = []
+for(let i=0;i<100;i++){
+  a[i] = i+1
+}
+a.sort(()=>0.5-Math.random())
+console.log(a)
 ```

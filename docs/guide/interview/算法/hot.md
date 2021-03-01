@@ -4316,3 +4316,5 @@ var searchMatrix = function(matrix, target) {
 ## 智力题
 
 [题集](https://github.com/lf2021/Front-End-Interview/blob/master/09.%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/%E6%99%BA%E5%8A%9B%E9%A2%98.md)
+
+[题库2](https://www.nowcoder.com/discuss/526897?type=2&order=0&pos=27&page=3&channel=-1&source_id=discuss_tag_nctrack)
