@@ -2207,3 +2207,12 @@ for(let i=0;i<100;i++){
 a.sort(()=>0.5-Math.random())
 console.log(a)
 ```
+
+### JavaScript：字符串内字母排序（升序和降序）
+
+```js
+		var s = "kadfjkajfkhgofqnmvc";
+		console.log(Array.from(s).sort().join(""));//aacdfffghjjkkkmnoqv
+		console.log(Array.from(s).sort().reverse().join(""));
+
+```
