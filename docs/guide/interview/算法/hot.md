@@ -7,7 +7,7 @@
 首先热身熟悉一下dfs，bfs，先中后序遍历
 
 ```js
-// JS定义多维数组 mxn
+// JS定义多维数组 mxn Array.from(arrayLike,mapFn)，第二个参数可选，新数组的每个元素都会执行这个回调
 Array.from(Array(m),()=>Array(n).fill(0))
 // 深度优先 尽量深的遍历数，先访问根结点，再递归访问根结点的子结点
 dfs = (root)=>{
@@ -388,6 +388,49 @@ var partition = function(str) {
 };
 ```
 
+### [复原IP地址](https://leetcode-cn.com/problems/restore-ip-addresses/)
+
+![](https://image.yangxiansheng.top/img/20210303165559.png?imglist)
+
+```js
+var restoreIpAddresses = function(s) {
+    /**
+     * 回溯算法
+     * 用p表示段数，start表示当前遍历的下标,path为拼接的路径,如果s的长度小于4或者大于12，直接返回空数组
+     * 
+     * 终止条件: 4段，并且当前的start === s.length，遍历完成
+     * 选择列表: start下标到start+3的字符
+     * track: 拼接的path
+     * 剪枝条件: 每段的总和大于255，每段第一个字符等于‘0’
+     */
+   const len = s.length
+    if (len < 4 || len > 12) return []
+    const result = []
+    /**
+     * start 当前遍历下标
+     * p 当前段数
+     * path 当前拼接字符串
+     * */
+    function backTrack(start, p, path) {
+        if (p === 4) {
+            if (start === len) result.push(path)
+            return 
+        }
+
+        let c = ''
+        for (let i = start; i < start + 3; i++) {
+          c += s[i]
+          if(s[start] === '0' || parseInt(c) > 255)break
+          // p === 3 代表下一段为最后一段，只不需要拼接 '.'
+          backTrack(i+1,p+1,path + c + (p === 3 ? '' : '.'))
+        }
+    }
+
+    backTrack(0, 0, '')
+    return result
+};
+```
+
 ### [面试题 16.11. 跳水板](https://leetcode-cn.com/problems/diving-board-lcci/)
 
 ![](https://image.yangxiansheng.top/img/20210224213636.png?imglist)
@@ -413,6 +456,59 @@ var divingBoard = function(shorter, longer, k) {
         res.push(shortCount * shorter + longCount * longer)
     }
     return res
+};
+```
+
+### [单词搜索](https://leetcode-cn.com/problems/word-search/)
+
+![](https://image.yangxiansheng.top/img/20210303151838.png?imglist)
+
+![](https://image.yangxiansheng.top/img/20210303151908.png?imglist)
+
+```js
+var exist = function(board, word) {
+    /**
+     * 回溯算法
+     * 思路：首先找到首字母是否存在，然后保证上 右 下 左 四个方向进行搜索，如果不符合则返回上一个状态
+     * 
+     * 结束条件: 当前遍历word的下标 i + 1 = word.length
+     * 选择列表: 向上 向右 向左 向下
+     * track： 当前word[i]
+     */
+    // 防止越界
+    board[-1] = []
+    board.push([])
+    var m = board.length
+    var n = board[0].length
+    // 保证第一个字符和回溯顺利进行
+   for(let row = 0;row < m;row++){
+       for(let col = 0;col < n;col++){
+           if(word[0] === board[row][col] && backTrack(row,col,0)){
+               return true
+           }
+       }
+   }
+
+   // 查找回溯
+   function backTrack(y,x,i){
+       // 代表单词全部查找完毕
+       if(i+1 === word.length){
+           return true
+       }
+       // 做选择
+       let temp = board[y][x]
+       board[y][x] = false
+       // 上右下左
+       if(board[y - 1][x] === word[i+1] && backTrack(y - 1,x,i+1))return true
+       if(board[y][x + 1] === word[i+1] && backTrack(y,x + 1,i+1))return true
+       if(board[y + 1][x] === word[i+1] && backTrack(y + 1,x,i+1))return true
+       if(board[y][x - 1] === word[i+1] && backTrack(y,x - 1,i+1))return true
+       // 撤销选择
+       board[y][x] = temp
+   }
+
+   return false
+
 };
 ```
 
@@ -1480,6 +1576,37 @@ var maxArea = function(height) {
         }else{
             let curArea = height[right] * (right - left)
             res = Math.max(res,curArea)
+            right--
+        }
+    }
+    return res
+
+};
+```
+
+### [接雨水](https://leetcode-cn.com/problems/trapping-rain-water/)
+
+![](https://image.yangxiansheng.top/img/20210303184355.png?imglist)
+
+```js
+var trap = function(height) {
+    /**
+     * 当前单元格能够存放的水量 = (左边单元格高度最大值 - 当前单元格高度)
+     * 双指针
+     */
+    let left = 0
+    let leftHeight = 0
+    let right = height.length - 1
+    let rightHeight = 0
+    let res = 0
+    while(left < right){
+        if(height[left] < height[right]){
+            leftHeight = Math.max(height[left],leftHeight)
+            res += leftHeight - height[left]
+            left++
+        }else{
+            rightHeight = Math.max(height[right],rightHeight)
+            res += rightHeight - height[right]
             right--
         }
     }
@@ -3020,6 +3147,35 @@ var maxSlidingWindow = function(nums, k) {
 };
 ```
 
+### 长度最小的子数组(https://leetcode-cn.com/problems/minimum-size-subarray-sum/)
+
+![](https://image.yangxiansheng.top/img/20210303175823.png?imglist)
+
+```js
+var minSubArrayLen = function(s, nums) {
+    /**
+     * 暴力枚举
+     */
+    let min = Infinity
+    for(let i=0;i<nums.length;i++){
+        let sum = 0
+        for(let j =i;j<nums.length;j++){
+            sum += nums[j]
+            if(sum >= s){
+                min = Math.min(j - i + 1,min)
+                // 如果最小值为1 立即返回
+                if(min === 1){
+                    return min
+                }
+                // 下标 j 作为数组的右边界从 0 开始不停向后扩展，每往后一位，就把本次的求和加上新的数字，只要本轮循环的和大于 s，就应该停止循环，因为没必要再往后扩展了，往后扩展的数组长度一定是大于当前长度的
+                break
+            }
+        }
+    }
+    return min === Infinity ? 0 : min
+};
+```
+
 ## 动态规划
 
 ### [斐波那契数](https://leetcode-cn.com/problems/fibonacci-number/)🥇
@@ -4311,6 +4467,56 @@ var searchMatrix = function(matrix, target) {
     }
     return false
 };
+```
+
+### [顺时针打印矩阵](https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210303232528.png?imglist)
+
+```js
+var spiralOrder = function(matrix) {
+    // 一层一层的剥开 首先第一层数组，然后最右层数组 然后最下层数组，然后最下层数组
+    const res = []
+    while(matrix.length){
+        let topArray = matrix.shift()
+        let rightArray = matrix.map(item=>item.pop())
+        let bottomArray = matrix.pop()
+        let leftArray = matrix.map(item=>item.shift())
+
+        topArray && res.push(...topArray)
+        rightArray && res.push(...rightArray)
+        bottomArray && res.push(...bottomArray.reverse())
+        leftArray && res.push(...leftArray.reverse())
+    }
+    return res.filter(item => item !== undefined)
+};
+```
+
+### [矩阵置零](https://leetcode-cn.com/problems/set-matrix-zeroes/)
+
+![](https://image.yangxiansheng.top/img/20210303234922.png?imglist)
+
+```js
+//利用了js的特性，-0和0的不相等
+//将0所在行列中非0元素置为-0
+var setZeroes = function(matrix) {
+    for(let i = 0;i < matrix.length;i++){
+        for(let j = 0;j < matrix[i].length;j++){
+            if(Object.is(matrix[i][j],0)){
+                for(let k = 0;k < matrix.length;k++){
+                    if(k !== i && Object.is(matrix[k][j],0)) continue;
+                    else matrix[k][j] = -0
+                }
+                for(let k = 0;k < matrix[i].length;k++){
+                    if(k !== j && Object.is(matrix[i][k],0)) continue;
+                    else matrix[i][k] = -0
+                }                
+            }
+        }
+    }
+    return matrix;
+};
+
 ```
 
 ## 智力题
