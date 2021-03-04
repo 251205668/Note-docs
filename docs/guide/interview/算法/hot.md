@@ -3147,7 +3147,7 @@ var maxSlidingWindow = function(nums, k) {
 };
 ```
 
-### 长度最小的子数组(https://leetcode-cn.com/problems/minimum-size-subarray-sum/)
+### [长度最小的子数组](https://leetcode-cn.com/problems/minimum-size-subarray-sum/)
 
 ![](https://image.yangxiansheng.top/img/20210303175823.png?imglist)
 

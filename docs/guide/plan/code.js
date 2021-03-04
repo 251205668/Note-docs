@@ -407,3 +407,32 @@ window.onscroll = function (){
 }
 
 // promise相关
+
+Promise.all = function(iterator){
+  if(!Array.isArray(iterator))return
+  let res = []
+  let count = 0
+  return new Promise((resolve,reject)=>{
+    for(let i of iterator){
+      Promise.resolve(i).then(data=>{
+        res[++count] = data
+        if(count === iterator.length){
+          resolve(res)
+        }  
+      })
+    }
+  }).catch(e=>{
+    console.log(e)
+  })
+}
+
+Promise.race = function(iterator){
+  if(!Array.isArray(iterator))return
+  return new Promise((resolve,reject)=>{
+    for(let i of iterator){
+      Promise.resolve(i).then(data=>{
+        resolve(data)
+      })
+    }
+  })
+}
