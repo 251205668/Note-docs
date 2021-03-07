@@ -4,6 +4,104 @@
 
 🥇代表复习过一遍，每道题最少复习三遍
 
+牛客输入输出JS写法标准写法
+
+```js
+// 单行输入 输入1,5  输出 6
+//            2,6      8
+while(line=readline()){
+    var lines = line.split(' ');
+    var a = parseInt(lines[0]);
+    var b = parseInt(lines[1]);
+    function add(m,n){
+        return m+n;
+    }
+    print(add(a,b));
+}
+
+// 多行输入 
+// 每调用一次 readline()就读取一行参数
+/**
+ * 输入 : 2       输出 6
+ *        1  5        30
+ *        10  20
+ * */
+var count = readline();
+while(line = readline()){
+  var lines = line.split(' ')
+  var a = parseInt(lines[0]);
+  var b =parseInt(lines[1])
+  // 每行输出
+  print(a+b)
+}
+```
+**举例说明**
+
+![](https://image.yangxiansheng.top/img/20210306141132.png?imglist)
+
+```js
+while(line = readline()){
+    var lines = line.split(' ')
+    var a = parseInt(lines[0])
+    var b = parseInt(lines[1])
+    print(a+b)
+}
+```
+
+![](https://image.yangxiansheng.top/img/20210306141211.png?imglist)
+
+```js
+var count = readline();
+while(line=readline()){
+    var lines = line.split(' ');
+    var a= parseInt(lines[0]);
+    var b = parseInt(lines[1]);
+    print(a+b);
+}
+```
+
+![](https://image.yangxiansheng.top/img/20210306141246.png?imglist)
+
+```js
+while(line = readline()){
+    var lines = line.split(' ');
+    var a =parseInt(lines[0]);
+    var b =parseInt(lines[1]);
+    if(a ===0 && b === 0)break
+    print(a+b);
+}
+```
+
+![](https://image.yangxiansheng.top/img/20210306141322.png?imglist)
+
+```js
+while(line = readline()){
+    if(line == '0')break
+    let lines = line.split(' ');
+    let sum = 0;
+    for(let i=0;i<lines[0];i++){
+        sum += parseInt(lines[i+1])
+    }
+    print(sum)
+}
+```
+
+![](https://image.yangxiansheng.top/img/20210306141357.png?imglist)
+
+```js
+var count = readline();
+while(line = readline()){
+    let sum = 0;
+    let lines = line.split(' ');
+    for(let i=0;i<lines[0];i++){
+        sum +=parseInt(lines[i+1])
+    }
+    print(sum);
+}
+```
+
+
+
 首先热身熟悉一下dfs，bfs，先中后序遍历
 
 ```js
@@ -2125,6 +2223,40 @@ var isValidBST = function(root) {
     return helper(root,-Infinity,Infinity)
 }
 
+};
+```
+
+### [剑指 Offer 33. 二叉搜索树的后序遍历序列](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/)
+
+![](https://image.yangxiansheng.top/img/20210306144519.png?imglist)
+
+```js
+var verifyPostorder = function(postorder) {
+    /**
+     * 思路：通过后序遍历找到跟节点，然后划分左右子树，需要保证左节点小于根节点，右节点大于根节点，最后递归传入后序遍历树的左右子树判断
+     */
+    let len = postorder.length
+    // 只有一个或者没有结点
+    if(len < 2)return true
+    
+    // root
+    let root = postorder[len-1]
+    // 划分左右,假设i就是分界点
+    let i = 0
+    for(;i< len - 1;i++){
+        // 左子树需要小于跟
+        if(postorder[i] > root){
+            break
+        }
+    }
+    // 拿到右子树,保证右子树每个都大于root
+    let result = postorder.slice(i,len-1).every(item=>item > root)
+    // 如果满足二叉搜索树,继续递归后序的左右子树
+    if(result){
+        return verifyPostorder(postorder.slice(0,i)) && verifyPostorder(postorder.slice(i,len-1))
+    }else{
+        return false
+    }
 };
 ```
 

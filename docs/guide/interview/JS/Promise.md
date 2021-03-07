@@ -203,6 +203,36 @@ console.log(Promise.all([p1,p2])) //1,2
 
 ```
 
+### done
+
+`Promise.done((onFullfilled,onRejected))` 用于捕捉任何可能发生的异常，然后全局抛出，总是处于回调链的尾部
+
+```js
+Promise.prototype.done = function(onFulfilled,onRejected){
+  this.then(onFulfilled,onRejected).catch(reason=>{
+    setTimeout(()=>{throw reason},0)
+  })
+}
+```
+
+
+### finally
+
+`finally` 方法用于指定不管 `Promise` 对象最后状态如何，都会执行的操作,传入回调函数
+
+```js
+  Promise.prototype.finally = function (callback) {
+    let P = this.constructor
+    return this.then(
+      value => P.resolve(callback()).then(() => {}),
+      reason => P.resolve(callback()).then(() => {
+        throw reason
+      })
+    )
+  }
+```
+
+
 ## async await
 
 - async: 声明一个异步函数，并且返回值一定是Promise对象

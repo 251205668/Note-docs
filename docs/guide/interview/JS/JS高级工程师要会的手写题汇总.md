@@ -680,6 +680,99 @@ function uploadFileTimeout(time) {
 
 ```
 
+### 基于 Promise.all 实现Ajax的串行和并行
+
+所谓串行也就是执行完一个操作之后再去执行另一个操作
+
+```js
+var p = function(){
+  return new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+      console.log(100)
+    })
+  },1000)
+}
+var p1 = function(){
+  return new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+      console.log(200)
+    })
+  },2000)
+}
+
+p().then(()=>{
+  return p1()
+}).then(()=>{
+  console.log('end')
+})
+```
+
+使用 `Promise.all()` 实现并行操作
+
+```js
+var promises = function(){
+  return [1000,2000,3000].map(current=>{
+    return new Promise((resolve,reject)=>{
+      setTimeout(()=>{
+        console.log(current)
+      },current)
+    })
+  })
+}
+
+Promise.all(promises().then(()=>{
+  console.log('end')
+}))
+```
+
+
+```
+实现一个批量请求函数 multiRequest(urls, maxNum)，要求如下：
+• 要求最大并发数 maxNum
+• 每当有一个请求返回，就留下一个空位，可以增加新的请求
+• 所有请求完成后，结果按照 urls 里面的顺序依次打出
+```
+
+使用递归调用的方式进行实现
+
+```js
+function multiRequest(urls = [],maxNum){
+  // 根据请求数量创建一个数组保存请求结果
+  const len = urls.length
+  const result = new Array(len).fill(false)
+  // 当前完成数量
+  let count = 0
+  return new Promise((resolve,reject)=>{
+    // 保证小于并发数量时执行next()
+    while(count < maxNum){
+      next()
+    }
+    function next(){
+      let current = count++
+      // 请求全部完成就将结果resolve出去
+      if(current >= len){
+        !result.includes(false) && resolve(result)
+        return
+      }
+      const url = urls[current]
+      fetch(url).then((res)=>{
+        result[current] = res
+        if(current < len){
+          next()
+        }
+      }).catch((err)=>{
+        result[current] = err
+        if(current < len){
+          next()
+        }
+      })
+    }
+  
+  })
+}
+```
+
+
 ### 手写Vue双向数据绑定
 
 1. 对象，包含复杂对象
@@ -2215,4 +2308,29 @@ console.log(a)
 		console.log(Array.from(s).sort().join(""));//aacdfffghjjkkkmnoqv
 		console.log(Array.from(s).sort().reverse().join(""));
 
+```
+
+### 打印1-100以内的质数
+
+质数，大于1的正整数满足除自身外，无其他因数的数
+
+```js
+function isPrimeNumber(x){
+  var tmp = true
+  // 因数从2开始取
+  for(let i = 2;i < x;i++){
+    if(x % i === 0){
+      tmp = false
+      break
+    }
+  }
+  return x > 1 && tmp
+}
+let res = []
+for(let i = 1;i<=100;i++){
+  if(isPrimeNumber(i)){
+    res.push(i)
+  }
+}
+console.log(res)
 ```
