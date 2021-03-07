@@ -531,27 +531,335 @@ var coinChange = function(coins,amount){
 }
 // 爬楼梯🥇
 // 打家劫舍🥇
-// 打家劫舍 II🥇
+/**
+ * dp[i] 代表偷[0,...i-1]的房子的价值
+ * dp[i] = Math.max(dp[i-2],dp[i-1] + nums[i])
+ * @param {*} nums 
+ */
+var rob = function(nums) {
+  let n = nums.length
+  if(!n)return 0
+  if(n === 1)return nums[0]
+  let dp = []
+  dp[0] = nums[0]
+  dp[1] = Math.max(nums[0],nums[1])
+  for(let i=2;i<nums.length;i++){
+    dp[i] = Math.max(dp[i-2],dp[i-1] + nums[i])
+  }
+  return dp[n-1]
+}
+// 打家劫舍 II🥇 
+// 删除首尾即可
 // 打家劫舍 III🥇
+/**
+ * dp(0) dp(1)
+ * 根节点偷 左右节点不能偷
+ * 根节点不偷 左右节点偷一个，可以同时偷
+ * @param {*} root 
+ */
+var rob = function(root) {
+  const dfs = (node)=>{
+    if(!node)return 0
+    let left = dfs(node.left)
+    let right = dfs(node.right)
+    let dp = []
+    dp[0] = Math.max(left[0],left[1]) + Math.max(right[0],right[1])
+    dp[1] = node.val + left[0] + right[0]
+    return dp
+  }
+  let res = dfs(root)
+  return Math.max(res[0],res[1])
+}
 // 目标和🥇
+/**
+ * 
+ * @param {*} nums 
+ * @param {*} S 
+ */
+var findTargetSumWays = function(nums, S) {
+  // 备忘录法
+  if(!nums.length){
+    return 0
+  }
+  let map = new Map()
+  function dp(nums,index,rest){
+    // 递归终止条件
+    if(index === nums.length){
+      if(rest === 0){
+        return 1
+      }
+      return 0
+    }
+    let key = `${index}-${rest}`
+    if(map.has(key)){
+      return map.get(key)
+    }
+    // 加和减法都需要考虑
+    const result = dp(nums,index+1,rest - nums[index]) + dp(nums,index+1,rest + nums[index])
+    map.set(key,result)
+    return result
+  }
+  return dp(nums,0,S)
+}
 // 最长递增子序列问题🥇
+/**
+ * dp[i] 代表到下标i之前严格小于nums[i]的递增子序列长度
+ * 所以需要使用双循环来遍历，如果严格满足nums[j] > nums[i],dp[i] = Math.max(dp[i],1+dp[j]) 二者取最大值
+ * @param {*} nums 
+ */
+function lengthOfLIS(nums){
+  let n = nums.length
+  if(!n)return 0
+  if(n === 1)return 1
+  // dp数组存放递增子序列长度 默认为1
+  let dp = Array(n).fill(1)
+  for(let i=1;i<n;i++){
+    for(let j=0;j<n;j++){
+      if(nums[i] > nums[j]){
+        dp[i] = Math.max(dp[i],1+dp[j])
+      }
+    }
+  }
+  return Math.max(...dp)
+}
 // 最大连续子数组和🥇
+/**
+ * dp[i] 代表数组以 nums[i]结尾的最大连续数组和
+ * 如果dp[i-1]>0 ,产生正效果 dp[i] = dp[i-1] + nums[i]
+ * 如果dp[i-1]<=0,产生负效果 dp[i] = nums[i],直接丢弃dp[i-1]
+ * @param {*} s 
+ */
+var maxSubArray = function(nums) {
+  const n = nums.length
+  if(!n)return 0 
+  let dp = new Array(n)
+  // 假设最大值是第一个元素
+  dp[0] = nums[0]
+  let maxSum = nums[0]
+  for(let i = 1;i<n;i++){
+    if(dp[i-1] <= 0){
+      dp[i] = nums[i]
+    }else{
+      dp[i] = dp[i-1] + nums[i]
+    }
+    maxSum = Math.max(maxSum,dp[i])
+  }
+  return maxSum
+}
+
 // 买卖股票的最佳时机🥇
 // 买卖股票的最佳时机 II🥇
 // 买卖股票的最佳时机含手续费🥇
 // 最佳买卖股票时机含冷冻期🥇
 // 最长回文子串🥇
+/**
+ * 使用中心扩散思想，如果奇数串，那么从s[mid]开始向中心扩散，如果是偶数串，那么从s[mid]和s[mid+1]向中心扩散,需要用到两个关键的参数，一个是begin,一个是max最大值
+ * @param {*} s 
+ */
+let longestPalindrome = function (s) {
+  let n = s.length
+  if(n < 2)return n
+  let begin = 0
+  // 最长回文子串长度
+  let max = 1
+  let spread = (start,end)=>{
+    while(s[start] === s[end] && start >=0 && end < n){
+      // 计算窗口大小
+      let len = end - start + 1
+      // 更新最大值和其实点
+      if(len > max){
+        max = len
+        begin = start
+      }
+      // 向中心扩散
+      start--
+      end++
+    }
+  }
+  // 遍历字符串考虑两种情况
+  for(let mid =0;mid < n;mid++){
+    spread(mid)
+    spread(mid,mid+1)
+  }
+  return s.substr(begin,max)
+}
+
 // 最长公共子序列🥇
+/**
+ * 找到最长公共子序列
+ * 这道题的思路就是如果s1[i] === s2[j],s1[i]和s2[j]都在lcs中，如果不相等，有三种情况，一种是s1不在一种s2不在,一种二者都不在，但是二者都不在一定是比前者更小的，所以忽略掉
+ * dp[i][j] 代表 s1[0,i-1]s2[0,j-1]最长子序列的长度
+ * @param {*} text1 
+ * @param {*} text2 
+ */
+var longestCommonSubsequence = function(text1, text2) {
+  let m = text1.length
+  let n = text2.length
+  let dp = Array.from(Array(m+1),()=>Array(n+1).fill(0))
+  for(let i=1;i<m+1;i++){
+    for(let j=1;j<n+1;j++){
+      let s1 = text1[i-1]
+      let s2 = text2[j-1]
+      if(s1 === s2){
+        dp[i][j] = 1 + dp[i-1][j-1]
+      }else{
+        dp[i][j] = Math.max(dp[i-1][j],dp[i][j-1])
+      }
+    }
+  }
+  return dp[m][n]
+}
 // 两个字符串的删除操作🥇
+/**
+ * 要想让两个字符窜相同，删除的最小字符数
+ * 这道题就是变相的在考 最长公共子序列，然后用word1.length - lcs.length
+ * @param {*} word1 
+ * @param {*} word2 
+ */
+var minDistance = function(word1, word2) {
+  let m = word1.length
+  let n = word2.length
+  let dp = Array.from(Array(m+1),()=>Array(n+1).fill(0))
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      let s1 = word1[i-1]
+      let s2 = word2[j-1]
+      if(s1 === s2){
+        dp[i][j] = 1 + dp[i-1][j-1]
+      }else{
+        dp[i][j] = Math.max(dp[i-1][j],dp[i][j-1])
+      }
+    }
+  }
+  return m - dp[m][n]
+}
+
 // 最长重复子数组🥇
+/**
+ * dp[i][j]代表 数组[0,i-1]，数组[0,j-1]的最长重复子数组的长度
+ */
+var findLength = function(A,B){
+  // 使用双循环保证公共，如果两个数组有公共子树组长度
+  let m= A.length
+  let n = B.length
+  let res =0 
+  let dp = Array.from(Array(m+1),()=>Array(m+1).fill(0)) // 定义dp数组，row=m+1,col = n+1
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      let a = A[i-1]
+      let b = B[j-1]
+      if(a === b){
+        // a和b相同，则开始计数
+        dp[i][j] = 1+dp[i-1][j-1]
+      }
+      res = Math.max(res,dp[i][j])
+    }
+  }
+  return res
+}
+
 // 最小路径和🥇
+/**
+ * dp[i][j] 代表走到[i][j]路径和最小的和
+ * 首先走的每一个点都可能是从上方或者左方来的，然后取最小值累加
+ * @param {*} nums 
+ * @param {*} k 
+ */
+var minPathSum = function(grid) {
+  let row =grid.length
+  let col = grid[0].length
+  // 处理第一行和第一列
+  for(let i =0;i<col;i++){
+    grid[0][i] += grid[0][i-1]
+  }
+  for(let j=0;j<row;j++){
+    grid[j][0] += grid[j-1][0]
+  }
+  for(let i=1;i<row;i++){
+    for(let j=1;j<col;j++){
+      grid[i][j] += Math.min(grid[i-1][j],grid[i][j-1])
+    }
+  }
+  return grid[row-1][col-1]
+}
 // 贪心算法
 // 分配饼干
+/**
+ * 直接将最大饼干分给胃口最大小朋友 不满足则放弃喂养这个小朋友，移动指针
+ * @param {*} g 
+ * @param {*} s 
+ */
+var findContentChildren = function(g, s) {
+  g.sort((a,b)=>b-a)
+  s.sort((a,b)=>b-a)
+  let g1 = 0
+  let s1 = 0
+  let res = 0
+  while(g1<g.length && s1 <s,length){
+    // 满足胃口
+    if(g[0] < s[0]){
+      g1++
+      s1++
+      res++
+    }else{
+      g1++
+    }
+  }
+  return res
+}
 // 无重叠区间
+/**
+ * 先将所有区间按照 end排序，然后取出最小的区间的end
+ * 遍历集合，拿出每个子集的start，如果star>x_end，重叠区间数量++，更新end_x
+ * 最后返回length-count
+ * @param {*} intervals 
+ */
+var eraseOverlapIntervals = function(intervals) {
+  if(!intervals.length)return 0
+  intervals = intervals.sort((a,b)=>a[1]-b[1])
+  let end_x = intervals[0][1]
+  let count = 1
+  for(let interval of intervals){
+    let start = interval[0]
+    // 不重叠情况
+    if(start > end_x){
+      end_x = interval[1]
+      count++
+    }
+  }
+  return intervals.length - count
+}
 // 合并区间
+var merge = function(intervals) {
+  if(!intervals)return []
+  let res = []
+  intervals.sort((a,b)=>a[0] - b[0])
+  let pre = intervals[0]
+  for(let interval of intervals){
+    let cur = interval
+    // 如果相交 start > end_x,重叠就更新x的end，取值为当前区间end和最小区间的end的最大值
+    if(pre[1] > cur[0]){
+      pre[1] = Math.max(cur[1],pre[1])
+    }else{
+      res.push(x)
+      pre = cur
+    }
+  }
+  res.push(x)
+  return res
+}
 // 用最少数量的箭引爆气球
 // 剪绳子
 // 跳跃游戏
+var canJump = function(nums) {
+  // 元素可跳到的最大位置
+  let k =0
+  for(let i = 0;i<nums.length;i++){
+    if(i > k)return false
+    k = Math.max(k,nums[i] + i)
+  }
+  return true
+}
 // 前缀和
 // 和为K的子数组
 var subarraySum = function(nums, k) {}
