@@ -878,10 +878,83 @@ let addString = (num1,num2)=>{}
 var reverseWords = (s)=>{}
 // 排序和搜索
 // 冒泡排序
+function bubleSort(arr){
+  for(let i=0;i<arr.length-1;i++){
+    for(let j=i;j<arr.length-1-i;j++){
+      if(arr[j] > arr[j+1]){
+        let temp = arr[j]
+        arr[j] = arr[j+1]
+        arr[j+1] = temp
+      }
+    }
+  }
+  return arr
+}
 // 插入排序
+function insertSort(arr){
+  for(let i = 1;i<arr.length;i++){
+    let temp = arr[i]
+    let j = i
+    while(j > 0){
+      if(arr[j-1] > arr[j]){
+        arr[j] = arr[j-1]
+      }else{
+        break
+      }
+      j--
+    }
+    arr[j] = temp
+  }
+  return arr
+}
 // 归并排序
+function mergeSort(arr){
+  let recc = (array)=>{
+    if(array.length <= 1)return array
+    const mid = Math.floor(array.length / 2)
+    let left = array.slice(0,mid)
+    let right = array.slice(mid)
+    let orderLeft = recc(left)
+    let orderRight = recc(right)
+    
+    let res = []
+    while(orderLeft.length || orderRight.length){
+      if(orderLeft.length && orderRight.length){
+        res.push(orderLeft[0] < orderRight[0] ? orderLeft.shift() : orderRight.shift())
+      }else if(orderLeft.length){
+        res.push(orderLeft.shift())
+      }else if(orderRight.length){
+        res.push(orderRight.shift())
+      }
+    }
+    return res
+  }
+  return recc(arr)
+}
 // 快速排序
+function quickSort(arr){
+  let recc = (array)=>{
+    if(array.length <= 1){
+      return array
+    }
+    let left = []
+    let right = []
+    let mid = array[0]
+    for(let i=1;i<array.length;i++){
+      if(array[i] > mid){
+        right.push(array[i])
+      }else{
+        left.push(array[i])
+      }
+    }
+    return [...recc(left),mid,...recc(right)]
+  }
+  return recc(arr)
+}
 // 选择排序
+function selectSrot(arr){
+  
+}
 // 堆排序
 // 各排序算法的稳定性，时间复杂度，空间复杂度
 // 二分法和进阶

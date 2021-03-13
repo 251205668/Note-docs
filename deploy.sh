@@ -7,10 +7,10 @@
 npm run docs:build
 
 # 进入生成的构建文件夹
-cd docs/.vuepress/dist
+cd public
 
 git init
 git add -A
 git commit -m 'deploy'
 
-git push -f https://gitee.com/wohenpi0918/wohenpi0918.gitee.io.git master 
+git push -f https://gitee.com/wohenpi0918/public.git master 

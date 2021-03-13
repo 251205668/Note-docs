@@ -951,10 +951,8 @@ promise 封装实现：
 
 ```js
 function getJSON(url) {
-  // 返回一个 promise 对象
   return new Promise(function (resolve, reject) {
     let xhr = new XMLHttpRequest()
-
     // 新建一个 http 请求， 第三个参数为async，指定请求是否为异步方式，默认为 true。
     xhr.open('GET', url, true)
 
@@ -966,23 +964,16 @@ function getJSON(url) {
         3: 请求处理中
         4: 请求已完成，且响应已就绪*/
       if (this.readyState !== 4) return
-
-      // 当请求成功或失败时，改变 promise 的状态
-      /*200: "OK"
-        404: 未找到页面*/
       if (this.status === 200) {
         resolve(this.responseText)
       } else {
         reject(new Error(this.statusText))
       }
     }
-
     // 设置响应的数据类型
     xhr.responseType = 'json'
-
     // 设置请求头信息
     xhr.setRequestHeader('Accept', 'application/json')
-
     // 发送 http 请求
     xhr.send(null)
   })
@@ -1121,54 +1112,6 @@ console.log(oA === oB) // true
 
 ### 手写一个观察者模式
 
-```js
-var events = (function () {
-  var topics = {}
-
-  return {
-    // 注册监听函数
-    subscribe: function (topic, handler) {
-      if (!topics.hasOwnProperty(topic)) {
-        topics[topic] = []
-      }
-      topics[topic].push(handler)
-    },
-
-    // 发布事件，触发观察者回调事件
-    publish: function (topic, info) {
-      if (topics.hasOwnProperty(topic)) {
-        topics[topic].forEach(function (handler) {
-          handler(info)
-        })
-      }
-    },
-
-    // 移除主题的一个观察者的回调事件
-    remove: function (topic, handler) {
-      if (!topics.hasOwnProperty(topic)) return
-
-      var handlerIndex = -1
-      topics[topic].forEach(function (item, index) {
-        if (item === handler) {
-          handlerIndex = index
-        }
-      })
-
-      if (handlerIndex >= 0) {
-        topics[topic].splice(handlerIndex, 1)
-      }
-    },
-
-    // 移除主题的所有观察者的回调事件
-    removeAll: function (topic) {
-      if (topics.hasOwnProperty(topic)) {
-        topics[topic] = []
-      }
-    },
-  }
-})()
-```
-
 ES6 写法：
 
 ```js
@@ -1197,7 +1140,6 @@ class Event {
       )
     }
   }
-
   reomveAll(eventName) {
     if (this.events[eventName]) {
       this.events[eventName] = []
@@ -2320,7 +2262,7 @@ function isPrimeNumber(x){
   // 因数从2开始取
   for(let i = 2;i < x;i++){
     if(x % i === 0){
-      tmp = false
+      tmp = false 
       break
     }
   }
@@ -2333,4 +2275,52 @@ for(let i = 1;i<=100;i++){
   }
 }
 console.log(res)
+```
+
+### 异步调度器
+
+JS实现一个带并发限制的异步调度器Scheduler，保证同时运行的任务最多有两个。完善代码中Scheduler类，使得以下程序能正确输出。
+
+```js
+class Scheduler {
+  add(promiseCreator) { ... }
+  // ...}const timeout = (time) => new Promise(resolve => {
+  setTimeout(resolve, time)
+})const scheduler = new Scheduler()const addTask = (time, order) => {
+  scheduler.add(() => timeout(time))
+    .then(() => console.log(order))
+}
+
+addTask(1000, '1')
+addTask(500, '2')
+addTask(300, '3')
+addTask(400, '4')// output: 2 3 1 4// 一开始，1、2两个任务进入队列// 500ms时，2完成，输出2，任务3进队// 800ms时，3完成，输出3，任务4进队// 1000ms时，1完成，输出1// 1200ms时，4完成，输出4
+```
+
+```js
+
+class Scheduler {
+    constructor() {
+        this.count = 0
+        this.waitQueue = [];
+    }
+    add(promiseCreator) {
+        if (this.count < 2) {
+            this.count += 1;
+            return this.run(promiseCreator)
+        } else {
+            return new Promise(resolve => {
+                this.waitQueue.push(() => promiseCreator().then(resolve));
+            })
+        }
+    }
+    run(promiseCreator) {
+        return promiseCreator().then(() => {
+            this.count -= 1;
+            if (this.waitQueue.length) {
+                this.run(this.waitQueue.shift())
+            }
+        });
+    }
+}
 ```

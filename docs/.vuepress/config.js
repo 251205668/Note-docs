@@ -1,7 +1,7 @@
 module.exports = {
   title: '前端面试知识总结',
   description: '自家使用,暂不外传',
-  bashL:'/blog/',
+  base: '/public/',
   head: [
     [
       'link',
@@ -15,7 +15,7 @@ module.exports = {
     // markdown-it-toc 的选项
     toc: { includeLevel: [1, 2,3,4] },
   },
-  dest: './docs/.vuepress/dist',
+  dest: 'public',
   evergreen: true,
   // 配置导航
   themeConfig: {

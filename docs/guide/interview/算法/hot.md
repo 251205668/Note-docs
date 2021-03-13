@@ -529,6 +529,29 @@ var restoreIpAddresses = function(s) {
 };
 ```
 
+### [验证IP地址](https://leetcode-cn.com/problems/validate-ip-address/)
+
+![](https://image.yangxiansheng.top/img/20210313223656.png?imglist)
+
+```js
+var validIPAddress = function(IP) {
+    const arr4 = IP.split(".");
+    const arr6 = IP.split(":");
+    if (arr4.length === 4) {
+        //如果用正则表达式判断每组数小于256比较繁杂。这里先用正则判断是否为3位数字以内/^0$|^[1-9]\d{0,2}$/（注意单个0要单独判断，避免出现01.01.01.01这样的情况）
+        if (arr4.every(part => (part.match(/^0$|^([1-9]\d{0,2})$/) && part < 256) )) {
+            return "IPv4";
+        }
+    } else if (arr6.length === 8) {
+        if (arr6.every(part => part.match(/^[0-9a-fA-F]{1,4}$/))) {
+            return "IPv6";
+        }
+    }
+    return "Neither";
+};
+
+```
+
 ### [面试题 16.11. 跳水板](https://leetcode-cn.com/problems/diving-board-lcci/)
 
 ![](https://image.yangxiansheng.top/img/20210224213636.png?imglist)
@@ -795,6 +818,28 @@ class MinStack{
         return this.stack[this.size - 1].min
     }
 }
+```
+
+### 输出数组元素右侧第一个元素大于该元素的下标数组
+
+```js
+// 找出每个数组元素右侧第一个比当前数大的数的下标，时间复杂度O(N)
+// 例：输入[1, 3, 2, 5, 4, 6, 7, 10]，输出[1, 3, 3, 5, 5, 6, 7, -1]
+const func = (nums)=>{
+  const stack = [[0,nums[0]]]
+  const res = Array(nums.length).fill(-1)
+  for(let i = 1;i<nums.length;i++){
+    // 如果栈顶小于nums[i] , res[i] = i,然后出栈
+    while(stack.length && nums[i] > stack[stack.length - 1][1]){
+      res[stack[stack.length - 1][0]] = i
+      stack.pop()
+    }
+    stack.push([i,nums[i]])
+  }
+  return res
+}
+
+console.log(func([1, 3, 2, 5, 4, 6, 7, 10]))
 ```
 
 ### [用栈实现队列](https://leetcode-cn.com/problems/implement-queue-using-stacks/)
@@ -3579,7 +3624,7 @@ function lengthOfLIS(nums){
 
 
 
-### [最大连续子数组和](https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/)🥇
+### [最大连续子数组和 | 最大连续子序和](https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/)🥇
 
 
 ![](https://image.yangxiansheng.top/img/20201229194438.png?imglist)
@@ -4623,6 +4668,42 @@ var spiralOrder = function(matrix) {
     return res.filter(item => item !== undefined)
 };
 ```
+
+### 矩阵旋转180deg
+
+```js
+   function fn(array){
+    let dd = []
+    dd = array.map((val,index)=>{
+      let arr = []
+      for(let i = val.length -1 ;i>=0;i--){
+        arr.push(array[i][index])
+      }
+      return arr
+    })
+    return dd
+  }
+```
+
+### [旋转图像](https://leetcode-cn.com/problems/rotate-image/)
+
+![](https://image.yangxiansheng.top/img/20210313171925.png?imglist)
+
+```js
+var rotate = function(matrix) {
+    // 转置，然后再水平对折
+    const m = matrix.length
+    for(let i=0;i<m;i++){
+        for(let j =i;j<m;j++){
+            [matrix[i][j],matrix[j][i]] = [matrix[j][i],matrix[i][j]]
+        }
+    }
+    matrix = matrix.map(item=>item.reverse())
+};
+```
+
+
+
 
 ### [矩阵置零](https://leetcode-cn.com/problems/set-matrix-zeroes/)
 
