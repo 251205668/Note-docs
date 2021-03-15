@@ -2324,3 +2324,21 @@ class Scheduler {
     }
 }
 ```
+
+### js实现简易版模板引擎
+
+```js
+function compile(tpl, data) {
+  // data必须要是{name:value} 形式 ，key作为模板变量
+  const regex = /\{\{([^}]*)\}\}/g
+  const string = tpl.trim().replace(regex, function(match, $1) {
+    if ($1) {
+      return data[$1]
+    } else {
+      return ''
+    }
+  })
+}
+
+compile(tpl, data)
+```
