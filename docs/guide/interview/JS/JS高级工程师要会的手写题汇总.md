@@ -2321,7 +2321,7 @@ class Scheduler {
                 this.run(this.waitQueue.shift())
             }
         });
-    }
+    } 
 }
 ```
 
@@ -2341,4 +2341,23 @@ function compile(tpl, data) {
 }
 
 compile(tpl, data)
+```
+
+### 给你一个连续的数字字符串，要求从尾部3个一个的输出，例如12345678输出 12,345,678
+
+```js
+  function fn(str) {
+        let newStr = '';
+        let count = 0;
+        for (let i = str.length - 1; i >= 0; i--) {
+            count++;
+            newStr += str[i];
+            if (count == 3 && i != 0) {
+                count = 0;
+                newStr += ',';
+            }
+        }
+        return newStr.split('').reverse().join('');
+    }
+    console.log(fn('1234567'));
 ```
